@@ -1,0 +1,45 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+
+  {% block title %}Login Page 2 | Creative - Bootstrap 3 Responsive Admin Template
+  {% endblock title %}
+
+  
+
+  
+
+  {% block body-content %}
+
+  <div class="container" style="width; 800px">
+
+    <form class="login-form" action = "" method="POST">
+      {% csrf_token %}
+      <div class="login-wrap">
+        <p class="login-img"><i class="icon_lock_alt"></i></p>
+        <table class="input-group">
+          {% for fm in form %}
+          {{ fm.label_tag }} {{ fm }} {{ fm.errors }} <br><br>
+          {% endfor %}
+          <!-- {{ form.as_table }} -->
+          <!-- {{ fm.errors | striptags }} -->
+          
+        </table>
+        <button class="btn btn-info btn-lg btn-block" type="submit">
+           Create User
+        </button>
+        <button class="btn btn-info btn-lg btn-block">
+          <a href="/core/login">Login</a>
+        </button>
+      </div>
+    </form>
+    <div class="text-right">
+      <div class="credits">
+          
+          Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
+        </div>
+    </div>
+  </div>
+
+  {% endblock body-content %}
+

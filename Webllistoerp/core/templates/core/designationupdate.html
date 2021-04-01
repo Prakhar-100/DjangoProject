@@ -1,0 +1,155 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+
+  {% block title %} Designation Update Form
+  {% endblock title %}
+
+{% block body-content %}
+<div class="container txt-center">
+
+<form method="POST" style="margin-top: 150px; margin-left:300px;" >
+	{% csrf_token %}
+	<h4>Designation Update</h4>
+	<p>
+    	<label for="parent">Parent : </label>
+		<select name="parent2" id="">
+		
+	  <optgroup label="Director">
+          {% for member in DIR %}
+          <option value="{{ member.username }}" selected>{{ member.first_name }} 
+            {{ member.last_name }}
+          </option>
+          {% endfor %}
+    </optgroup>
+	  
+      
+	  <optgroup label="Cheif Technical Officer">
+          {% for member in CTO %}
+            <option value="{{ member.username }}" selected>{{ member.first_name }} 
+            {{ member.last_name }}</option>
+          {% endfor %}
+      </optgroup>
+
+      <optgroup label="Project Manager">
+          {% for member in PM %}
+            <option value="{{ member.username }}" selected>{{ member.first_name }} 
+            {{ member.last_name }}</option>
+          {% endfor %}
+      </optgroup>
+
+      <optgroup label="Tech Leader">
+          {% for member in TL %}
+            <option value="{{ member.username }}" selected>{{ member.first_name }} 
+            {{ member.last_name }}</option>
+          {% endfor %}
+      </optgroup>
+
+      <optgroup label="Web Developer">
+          {% for member in Web %}
+            <option value="{{ member.username }}" selected>{{ member.first_name }} 
+            {{ member.last_name }}</option>
+          {% endfor %}
+          <option value=" " selected>-----------</option>
+      </optgroup>
+
+	</select> 
+	</p>
+
+	<p>
+	<label for="child">Child : </label>
+	 <select name="child2" id="secondChild" >
+		
+	  <optgroup label="Director">
+          {% for member in DIR %}
+          <option value="{{ member.username }}" 
+          data-designation = "{{ member.designation }}" selected>
+          {{ member.first_name }} 
+            {{ member.last_name }}
+          </option>
+          {% endfor %}
+      </optgroup>
+	    
+	  <optgroup label="Cheif Technical Officer">
+          {% for member in CTO %}
+            <option value="{{ member.username }}" 
+            data-designation = "{{ member.designation }}" selected>
+            {{ member.first_name }} 
+            {{ member.last_name }}
+        	</option>
+          {% endfor %}
+      </optgroup>
+
+      <optgroup label="Project Manager">
+          {% for member in PM %}
+            <option value="{{ member.username }}" 
+            data-designation = "{{ member.designation }}" selected>
+            {{ member.first_name }} 
+            {{ member.last_name }}</option>
+          {% endfor %}
+      </optgroup>
+
+      <optgroup label="Tech Leader">
+          {% for member in TL %}
+            <option value="{{ member.username }}" 
+            data-designation = "{{ member.designation }}" selected>
+            {{ member.first_name }} 
+            {{ member.last_name }}</option>
+          {% endfor %}
+      </optgroup>
+
+      <optgroup label="Web Developer">
+          {% for member in Web %}
+          <option value="{{ member.username }}" 
+          data-designation = "{{ member.designation }}" selected>
+          {{ member.first_name }} 
+            {{ member.last_name }}</option>
+          {% endfor %}
+          <option value=" " selected>-----------</option>
+      </optgroup>
+
+	</select> 
+	</p>
+
+	<p>
+    	<label for="desination1">Current Designation:</label>
+    	<input type="text" name="" id="currentDesignation" value="" />
+		<!-- <select name="designation1" id="">
+		  <option value="">----------</option>
+		  <option value="Web Developer">Web Developer</option>
+		  <option value="Tech Leader">Tech Leader</option>
+		  <option value="Project Manager">Project Manager</option>
+		</select>  -->
+	</p>
+
+	<p>
+	<label for="desination2">Update Designation:</label>
+		<select name="designation2" id="">
+		  <option value="">----------</option>
+		  <option value="Cheif Technical Officer">Cheif Technical Officer</option>
+		  <option value="Web Developer">Web Developer</option>
+		  <option value="Tech Leader">Tech Leader</option>
+		  <option value="Project Manager">Project Manager</option>
+		</select>
+	</p>
+	<input type="Submit" name="" value="Update">
+</form>
+
+</div>
+{% endblock body-content %}
+
+{% block javascript-code %}
+  
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+$("#secondChild").on("change",function(){
+		
+		var setValue = $(this).find(':selected').data('designation')
+         //Setting Value
+        $("#currentDesignation").val(setValue);
+});
+</script>
+
+{% endblock javascript-code %}
+

@@ -1,0 +1,152 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+
+{% block body-content %}
+ <div class="container txt-center">
+
+  <form method="POST" id="personForm" style="margin-left:300px; margin-top: 150px"
+     data-names-url="{% url 'ajax_load_names' %}"  novalidate>
+	   {% csrf_token %}
+    <h3>User Heirarchy</h3>
+    
+	    <!-- <ul class="errorlist"><li>This field is required.</li></ul> -->
+    <p>
+      <label for="id_usernm">Parent:</label>
+        
+        <select name="usernm" required id="id_usernm">
+          
+          <optgroup label="Director">
+          {% for member in DIR %}
+            <option value="{{ member.id }}" class="dropdown-item" selected>
+              {{ member.first_name }} 
+            {{ member.last_name }}</option>
+          {% endfor %}
+          </optgroup>
+
+          <optgroup label="Cheif Technical Officer">
+          {% for member in CTO %}
+            <option value="{{ member.id }}" class="dropdown-item"
+            selected>{{ member.first_name }} 
+            {{ member.last_name }}</option>
+          {% endfor %}
+          </optgroup>
+          
+          <optgroup label="Project Manager">
+          {% for member in PM %}
+            <option value="{{ member.id }}" selected class="dropdown-item">
+              {{ member.first_name }} 
+            {{ member.last_name }}</option>
+          {% endfor %}
+          </optgroup>
+
+          <optgroup label="Tech Leader">
+          {% for member in TL %}
+            <option value="{{ member.id }}" class="dropdown-item" selected>
+              {{ member.first_name }} 
+            {{ member.last_name }}</option>
+          {% endfor %}
+          </optgroup>
+
+          <optgroup label="Web Developer">
+          {% for member in Web %}
+            <option value="{{ member.id }}" class="dropdown-item" selected>
+              {{ member.first_name }} 
+            {{ member.last_name }}</option>
+          {% endfor %}
+          <option value=" " selected>-----------</option>
+          </optgroup>
+        </select>
+        
+    </p>
+  
+
+  
+  <!-- <ul class="errorlist">
+    <li>This field is required.</li>
+  </ul> -->
+    <p>
+      <label for="id_child">Child:</label> 
+      <select name="child[]"  required id="id_child" multiple>
+      </select>
+    </p>
+      
+  
+    <input type="Submit" class = "btn btn-lg btn-primary" name="" value="Save">
+  </form>
+</div>
+
+	
+	
+	<input type="Submit" class = "btn btn-lg btn-primary" name="" value="Save">
+</form>
+
+   </div>
+{% endblock body-content %}
+
+{% block general-js %}
+ <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+ <script>
+ 	$('#id_usernm').change(function() {
+ 		const url = $('#personForm').attr("data-names-url");
+ 		const usernmId = $(this).val();
+
+ 		 $.ajax({
+ 		 	url: url,
+ 		 	data: {
+ 		 		'usernmId': usernmId
+ 		 	},
+ 		 	success: function (data){
+        var j;
+        var pm = [];
+        var web = [];
+        var tl = [];
+        var cto = [];
+        for (j = 0; j < data.length; j++) {
+            if (data[j]["designation"] == "Project Manager") {
+                pm.push(data[j]);
+            } else if (data[j]["designation"] == "Tech Leader") {
+                tl.push(data[j]);
+            }else if (data[j]["designation"] == "Cheif Technical Officer"){
+                cto.push(data[j]);
+            } else {
+                web.push(data[j]);
+            }
+        } 
+
+        html="<optgroup label=Project Manager>";
+        for(j = 0; j < pm.length; j++) {
+          html+="<option value="+pm[j]["id"]+" name=option-value>"+pm[j]
+                ["first_name"]+ pm[j]["last_name"]+"</option></optgroup>"
+        }
+        html+="<optgroup label=Tech Leader>";
+        for(j = 0; j < tl.length; j++) {
+          html+="<option value="+tl[j]["id"]+" name=option-value>"+tl[j]
+                ["first_name"]+ tl[j]["last_name"]+"</option></optgroup>"
+        }
+        html+="<optgroup label=Web Developer>";
+        for(j = 0; j < web.length; j++) {
+          html+="<option value="+web[j]["id"]+" name=option-value>"+web[j]
+                ["first_name"]+ web[j]["last_name"]+"</option></optgroup>"
+        }
+        
+        
+
+
+
+ 		 		$('#id_child').html(html);
+ 		 	}
+ 		 });
+ 	});
+
+  
+ </script>
+ 
+{% endblock general-js %}
+<!-- <label>Username : </label> -->
+  <!-- <select  id="user" name="user">
+      {% for cat in category %}
+      <option value="{{ cat }}" name="user">{{ cat.username }}</option>
+      {% endfor %}
+      
+    </select><br> -->
