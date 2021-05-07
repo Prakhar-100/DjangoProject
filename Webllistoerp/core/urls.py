@@ -1,10 +1,12 @@
 from django.urls import path
 from .  import views
+from django.views.decorators.csrf import csrf_exempt
+from django.conf.urls.static import static
 # from django.contrib.auth import views
 
 
 urlpatterns = [
-  path('', views.Login1.as_view(), name = 'login1'),
+  path('', csrf_exempt(views.Login1.as_view()), name = 'login1'),
   path('accounts/signup/index/', views.Index.as_view(), name = 'index'),
   path('index/', views.Index.as_view(), name = 'index'),
   # path('index2/', views.index2, name = 'index2'),
@@ -17,6 +19,8 @@ urlpatterns = [
   # path('ajax/load-names/', views.load_usernames, name = 'ajax_load_usernames'),
   path('core/datatable/', views.datatable, name = 'datatable'),
   path('core/promodel/', views.promodel, name = 'promodel'),
-  path('core/designationupdate/', views.designation_update, name = 'designationupdate')
+  path('core/designationupdate/', views.designation_update, name = 'designationupdate'),
+  path('core/data-view/', csrf_exempt(views.DataView_Json.as_view()), name = "data-view")
   # path('core/promodel/', views.promodel.as_view(), name = 'promodel')
 ]
+

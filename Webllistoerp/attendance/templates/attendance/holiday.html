@@ -1,0 +1,163 @@
+{% extends 'attendance/base.html' %}
+{% load static %}
+
+  {% block title %} Creative - Bootstrap Admin Template {% endblock title %}
+
+{% block body-content %}
+ 
+ <div class="container">
+ {% if request.user.designation == 'Director' %}
+ 	<table style="width: 80%; margin-left: 200px; margin-top: 150px;">
+ <p>Holiday lists</p>
+  <tr>
+  	<th>ID</th>
+    <th>Date</th>
+    <th>Ocassion</th>
+    <th>Remove Holiday</th>
+   
+  </tr>
+
+  {% for ele in data %}
+  <tr>
+  	<td>{{ ele.id }}</td>
+    <td>{{ ele.date }}</td>
+    <td>{{ ele.occasion }}</td>
+    <td><button class="btn btn-primary" 
+    	onclick="location.href='{% url 'remove-holiday' ele.id %}'">
+    	Remove
+    	</button>
+    </td>
+    
+  </tr>
+  {% endfor %}
+ 	</table>
+ {% elif request.user.designation == 'Cheif Technical Officer' %}
+ <table style="width: 80%; margin-left: 200px; margin-top: 150px;">
+ <p>Holiday lists</p>
+  <tr>
+  	<th>ID</th>
+    <th>Date</th>
+    <th>Ocassion</th>
+    <th>Remove Holiday</th>
+   
+  </tr>
+
+  {% for ele in data %}
+  <tr>
+  	<td>{{ ele.id }}</td>
+    <td>{{ ele.date }}</td>
+    <td>{{ ele.occasion }}</td>
+    <td><button class="btn btn-primary" 
+    	onclick="location.href='{% url 'remove-holiday' ele.id %}'">
+    	Remove
+    	</button>
+    </td>
+    
+  </tr>
+  {% endfor %}
+ 	</table>
+ {% else %}
+ 	<table style="width: 80%; margin-left: 200px; margin-top: 150px;">
+  <tr>
+  	<th>ID</th>
+    <th>Date</th>
+    <th>Ocassion</th>
+   
+  </tr>
+
+  {% for ele in data %}
+  <tr>
+  	<td>{{ ele.id }}</td>
+    <td>{{ ele.date }}</td>
+    <td>{{ ele.occasion }}</td>
+    
+  </tr>
+  {% endfor %}
+  
+ 	</table>
+
+ {% endif %}
+
+  {% if request.user.designation == 'Director' %}
+
+  <div style="width: 80%; margin-left: 830px; margin-top: 10px;">
+  	<button type="button" id="addholi" class="btn btn-primary" >
+  	Add Holiday
+  	</button>
+  </div>
+
+  <div id="holidayform">
+  	<form method="POST" style="width: 80%; margin-left: 200px; margin-top: 10px; display: block;">
+  	{% csrf_token %}
+  	<h2 style="text-align: center;">Holiday Form</h2>
+
+  	<p>
+		<label for="fcalender">Holiday Date : </label>
+		<input type="date" name="calen1" id="fcalender">
+	</p>
+	<p>
+		<label  class="p-2" for="focca">Occassion : </label>
+		<input type="text" class="form-control" name="occassion" id="focca">
+	</p>
+	<p>
+		<input type="submit" name="" class="btn btn-primary" value="Save">
+	</p>
+	  
+  </form>
+  </div>
+
+  {% elif request.user.designation == 'Cheif Technical Officer' %}
+
+  <div style="width: 80%; margin-left: 830px; margin-top: 10px;">
+  	<button type="button" id="addholi" class="btn btn-primary" >
+  	Add Holiday
+  	</button>
+  </div>
+
+  <div id="holidayform">
+  	<form method="POST" style="width: 80%; margin-left: 200px; margin-top: 10px; display: block;">
+  	{% csrf_token %}
+  	<h2 style="text-align: center;">Holiday Form</h2>
+
+  	<p>
+		<label for="fcalender">Holiday Date : </label>
+		<input type="date" name="calen1" id="fcalender">
+	</p>
+	<p>
+		<label  class="p-2" for="focca">Occassion : </label>
+		<input type="text" class="form-control" name="occassion" id="focca">
+	</p>
+	<p>
+		<input type="submit" name="" class="btn btn-primary" value="Save">
+	</p>
+	  
+  </form>
+  </div>
+
+  {% endif %}
+  <div style="margin-top: 300px;">
+  	
+  </div>
+ </div>
+ 	
+
+{% endblock body-content %}
+
+<!-- javascripts -->
+  {% block javascript %}
+  <script src="{% static 'js/jquery-ui-1.10.4.min.js' %}"></script>
+  <script src="{% static 'js/jquery-1.8.3.min.js' %}"></script>
+  <script type="text/javascript" src="{% static 'js/jquery-ui-1.9.2.custom.min.js' %}">
+  </script>
+  <script type="text/javascript">
+
+      $(document).ready(function(){
+      	$("#holidayform").hide();
+
+         $("#addholi").click(function(){
+           $("#holidayform").toggle();
+       });
+    });
+  
+  </script>
+  {% endblock javascript %}

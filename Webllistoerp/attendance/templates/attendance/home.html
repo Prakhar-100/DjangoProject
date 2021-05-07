@@ -1,0 +1,93 @@
+{% extends 'attendance/base.html' %}
+{% load static %}
+
+  {% block title %} Creative - Bootstrap Admin Template {% endblock title %}
+  
+  
+  <!-- Custom styles -->
+  
+
+  {% block jquery-datatable-css %}
+    <link rel="stylesheet" href="//cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
+  {% endblock jquery-datatable-css %}
+
+  {% block body-content %}
+   <!-- <div class="container">
+      {% if user.is_superuser %}
+      <table class="" id="mytable"
+          style="width: 80%; margin-left: 200px; padding-top: 50px;">
+
+        <thead>
+          <tr>
+          <th>id</th>
+          <th>Name</th>
+          <th>Date</th>
+          <th>Week</th>
+          <th>Time In</th>
+          <th>Time Out</th>
+          <th>Work Status</th>
+          </tr>
+        </thead>
+        <tbody>
+        
+        </tbody>  
+      </table> 
+{% else %}
+      <table class="" id="mytable" 
+              style="width: 80%;margin-left: 200px; padding-top: 50px;">
+        <thead>
+           <tr>
+          <th>id</th>
+          <th>Name</th>
+          <th>Date</th>
+          <th>Week</th>
+          <th>Time In</th>
+          <th>Time Out</th>
+          <th>Work Status</th>
+          </tr>
+        </thead>
+        <tbody>
+        </tbody>
+      </table> 
+{% endif %}
+</div> -->
+  {% endblock body-content %}
+
+  {% block jquery-datatable-plugin %}
+  
+  <script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
+  <script src="//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+  <!-- <script type="text/javascript">
+      $(document).ready(function () {
+        
+        $('#mytable').dataTable({
+
+          serverSide: true,
+                    
+          ajax: {
+            url: "{% url "attendance-view" %}",
+            type: "GET"
+          },
+          
+          columns: [
+            {name: "id", data: "id", "autoWidth": true},
+            {name: "name", data: "name", "autoWidth": true},
+            {name: "date", data: "date", "autoWidth": true},
+            {name: "week", data: "week", "autoWidth": true},
+            {name: "time_in", data: "time_in", "autoWidth": true},
+            {name: "time_out", data: "time_out", "autoWidth": true},
+            {name: "work_status", data: "work_status", "autoWidth": true},
+          ]
+          
+         });
+        });
+   </script> -->
+   {% endblock jquery-datatable-plugin %}
+
+  <!-- javascripts -->
+  {% block javascript %}
+  <script src="{% static 'js/jquery-ui-1.10.4.min.js' %}"></script>
+  <script src="{% static 'js/jquery-1.8.3.min.js' %}"></script>
+  <script type="text/javascript" src="{% static 'js/jquery-ui-1.9.2.custom.min.js' %}">
+  </script>
+  {% endblock javascript %}

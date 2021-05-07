@@ -1,0 +1,82 @@
+{% extends 'attendance/base.html' %}
+{% load static %}
+
+  {% block title %} Creative - Bootstrap Admin Template {% endblock title %}
+  
+  
+  <!-- Custom styles -->
+  
+
+  {% block jquery-datatable-css %}
+    <link rel="stylesheet" href="//cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
+  {% endblock jquery-datatable-css %}
+
+  {% block body-content %}
+  <div class= "container txt-center" style="">
+  	<form method="POST" enctype="multipart/form-data" 
+    style="margin-left:300px; margin-top: 150px" >
+      <h3>Attendance Form</h3>
+  		{% csrf_token %}
+      <p>
+      <label for="id_usernm">Name:</label>
+      <select name="name2" required id="id_usernm">
+          
+          <optgroup label="Director">
+          {% for member in DIR %}
+            <option value="{{ member.id }}" class="dropdown-item" selected>
+              {{ member.first_name }} 
+            {{ member.last_name }}</option>
+          {% endfor %}
+          </optgroup>
+
+          <optgroup label="Cheif Technical Officer">
+          {% for member in CTO %}
+            <option value="{{ member.id }}" class="dropdown-item"
+            selected>{{ member.first_name }} 
+            {{ member.last_name }}</option>
+          {% endfor %}
+          </optgroup>
+          
+          <optgroup label="Project Manager">
+          {% for member in PM %}
+            <option value="{{ member.id }}" selected class="dropdown-item">
+              {{ member.first_name }} 
+            {{ member.last_name }}</option>
+          {% endfor %}
+          </optgroup>
+
+          <optgroup label="Tech Leader">
+          {% for member in TL %}
+            <option value="{{ member.id }}" class="dropdown-item" selected>
+              {{ member.first_name }} 
+            {{ member.last_name }}</option>
+          {% endfor %}
+          </optgroup>
+
+          <optgroup label="Web Developer">
+          {% for member in Web %}
+            <option value="{{ member.id }}" class="dropdown-item" selected>
+              {{ member.first_name }} 
+            {{ member.last_name }}</option>
+          {% endfor %}
+          <option value=" " selected>-----------</option>
+          </optgroup>
+        </select>
+      </p>
+      <p>
+  		<label for="img">Select image:</label>
+        <input type="file" id="myFile" name="userimage" >
+      </p>
+      <input type="Submit" name="" value="Submit">
+      
+  	</form>
+  </div>
+  {% endblock body-content %}
+
+  <!-- javascripts -->
+  {% block javascript %}
+  <script src="{% static 'js/jquery-ui-1.10.4.min.js' %}"></script>
+  <script src="{% static 'js/jquery-1.8.3.min.js' %}"></script>
+  <script type="text/javascript" src="{% static 'js/jquery-ui-1.9.2.custom.min.js' %}">
+  </script>
+  {% endblock javascript %}

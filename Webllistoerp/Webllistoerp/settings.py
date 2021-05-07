@@ -26,7 +26,7 @@ SECRET_KEY = '1re0r@u7+oa^1z&0gn(37$u^#bo11$p1c%s2j+q-mpd=hyv324'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['1b104ef3c8f9.ngrok.io', '127.0.0.1','testserver']
 
 
 # Application definition
@@ -39,7 +39,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'core',
+    'attendance',
     'multiselectfield',
+    'rest_framework',
+    'notifications',
     # 'debug_toolbar',
     # 'django_pdb',
 ]
@@ -83,12 +86,23 @@ STATIC_DIR = os.path.join(BASE_DIR, 'static')
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+     'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'erp',
+        'USER': 'erp_user',
+        'PASSWORD': 'erp_user',
+        'HOST': '127.0.0.1',
+        'PORT': '5432',
+       }
 }
-
+# 'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'CustomUser',
+#         'USER': 'postgres',
+#         'PASSWORD': 'mydata123',
+#         'HOST': 'localhost',
+#         'PORT': '5432',
+#     }
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
@@ -153,3 +167,15 @@ EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 EMAIL_HOST_USER = "anil.kapoorland@gmail.com"
 EMAIL_HOST_PASSWORD = "Anu1onehai"
+
+FILE_UPLOAD_HANDLERS = [
+    "django.core.files.uploadhandler.MemoryFileUploadHandler",
+    "django.core.files.uploadhandler.TemporaryFileUploadHandler"
+ ]
+
+MEDIA_URL = '/media/'
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+DJANGO_NOTIFICATIONS_CONFIG = { 'USE_JSONFIELD': True}
+
