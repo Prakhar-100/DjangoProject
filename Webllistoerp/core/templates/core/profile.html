@@ -114,7 +114,12 @@
             }
         } 
 
-        html="<optgroup label=Project Manager>";
+        html="<optgroup label=Cheif Technical Officer>";
+        for(j = 0; j < cto.length; j++) {
+          html+="<option value="+cto[j]["id"]+" name=option-value>"+cto[j]
+                ["first_name"]+ cto[j]["last_name"]+"</option></optgroup>"
+        }
+        html+="<optgroup label=Project Manager>";
         for(j = 0; j < pm.length; j++) {
           html+="<option value="+pm[j]["id"]+" name=option-value>"+pm[j]
                 ["first_name"]+ pm[j]["last_name"]+"</option></optgroup>"

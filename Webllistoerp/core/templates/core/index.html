@@ -38,44 +38,72 @@
   {% endblock jquery-datatable-css %}
   
   {% block body-content %}
-    <div class="container">
-      {% if user.is_superuser %}
-      <table class="" id="mytable"
-          style="width: 80%; margin-left: 200px; padding-top: 50px;">
+  <div class="container">
+  <aside 
+  style="width: 30%;  margin-left: 950px; margin-top: 100px; background-color: grey; color: white">
+    <div>
+      <h3>User Heirarchy</h3>
+      <ul id="mylist">
 
-        <thead>
-          <tr>
-          <th>First Name</th>
-          <th>Last Name</th>
-          <th>Email</th>
-          <th>Designation</th>
-          <th>Username</th>
-        </tr>
-        </thead>
-        <tbody>
+        {% if DIR %}
+        <b>Director: </b><br>
+        {% for ele in DIR %}
+          {% if request.user.username == ele.username %}
+            <li>{{ ele.first_name }} {{ ele.last_name }} (YOU)</li>
+          {% else %}
+            <li>{{ ele.first_name }} {{ ele.last_name }}</li>
+          {% endif %}
+        {% endfor %}
+        {% endif %}
+
+        {% if CTO %}
+        <b>Cheif Technical Officer: </b><br>
+        {% for ele in CTO %}
+          {% if request.user.username == ele.username %}
+            <li>{{ ele.first_name }} {{ ele.last_name }} (YOU)</li>
+          {% else %}
+            <li>{{ ele.first_name }} {{ ele.last_name }}</li>
+          {% endif %}
+        {% endfor %}
+        {% endif %}
         
-        </tbody>  
-      </table> 
-{% else %}
-<table class="" id="mytable" style="width: 80%;margin-left: 200px; padding-top: 50px;">
-  <thead>
-    <tr>
-   
-    <th>First Name</th>
-    <th>Last Name</th>
-    <th>Email</th>
-    <th>Designation</th>
-    <th>Username</th>
-    
-  </tr>
-  </thead>
-  <tbody>
-    
-  </tbody>
-</table> 
-{% endif %}
-</div>
+        {% if PM %}
+        <b>Project Manager: </b><br>
+        {% for ele in PM %}
+          {% if request.user.username == ele.username %}
+            <li>{{ ele.first_name }} {{ ele.last_name }} (YOU)</li>
+          {% else %}
+            <li>{{ ele.first_name }} {{ ele.last_name }}</li>
+          {% endif %}
+        {% endfor %}
+        {% endif %}
 
+        {% if TL %}
+        <b>Team Leader: </b><br>
+        {% for ele in TL %}
+          {% if request.user.username == ele.username %}
+            <li>{{ ele.first_name }} {{ ele.last_name }} (YOU)</li>
+          {% else %}
+            <li>{{ ele.first_name }} {{ ele.last_name }}</li>
+          {% endif %}
+        {% endfor %}
+        {% endif %}
+
+        {% if Web %}
+        <b>Web Developer: </b><br>
+        {% for ele in Web %}
+          {% if request.user.username == ele.username %}
+            <li>{{ ele.first_name }} {{ ele.last_name }} (YOU)</li>
+          {% else %}
+            <li>{{ ele.first_name }} {{ ele.last_name }}</li>
+          {% endif %}
+        {% endfor %}
+        {% endif %}
+
+        </ul>
+    </div>
+  </aside>
+  </div>
   {% endblock body-content %}
 
   {% block jquery-datatable-plugin %}
@@ -83,30 +111,7 @@
   src="https://cdn.datatables.net/v/dt/dt-1.10.23/datatables.min.js"></script> -->
   <script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
   <script src="//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
-  <script type="text/javascript">
-      $(document).ready(function () {
-        
-        $('#mytable').dataTable({
-
-          serverSide: true,
-                    
-          ajax: {
-            url: "{% url "data-view" %}",
-            type: "GET"
-          },
-          
-          columns: [
-            
-            {name: "first_name", data: "first_name", "autoWidth": true},
-            {name: "last_name", data: "last_name", "autoWidth": true},
-            {name: "email", data: "email", "autoWidth": true},
-            {name: "designation", data: "designation", "autoWidth": true},
-            {name: "username", data: "username", "autoWidth": true},
-          ]
-          
-         });
-        });
-   </script>
+  
    {% endblock jquery-datatable-plugin %}
   
 

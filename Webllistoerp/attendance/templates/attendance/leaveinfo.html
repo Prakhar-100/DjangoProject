@@ -1,0 +1,40 @@
+{% extends 'attendance/base.html' %}
+{% load static %}
+
+  {% block title %} Creative - Bootstrap Admin Template {% endblock title %}
+
+
+{% block body-content %}
+<div class="container">
+	
+		<h2>Leave Record</h2>
+		<table style="width: 80%; margin-left: 200px; margin-top: 150px;">
+		  <tr>
+		    <th>Name</th>
+		    <th>Date</th>
+		    <th>Time In</th>
+		    <th>Time Out </th>
+		    <th>Work Status </th>
+		  </tr>
+		  
+		{% for ele in data %}
+		  <tr>
+		    <td>{{ ele.name }}</td>
+		    <td>{{ ele.date }}</td>
+		    <td>{{ ele.time_in }}</td>
+		    <td>{{ ele.time_out }}</td>
+		    <td>{{ ele.work_status }}</td>
+		  </tr>
+		{% endfor %}
+		  
+		</table>
+</div>
+{% endblock body-content %}
+
+<!-- javascripts -->
+  {% block javascript %}
+  <script src="{% static 'js/jquery-ui-1.10.4.min.js' %}"></script>
+  <script src="{% static 'js/jquery-1.8.3.min.js' %}"></script>
+  <script type="text/javascript" src="{% static 'js/jquery-ui-1.9.2.custom.min.js' %}">
+  </script>
+  {% endblock javascript %}

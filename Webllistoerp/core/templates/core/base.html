@@ -1,5 +1,6 @@
-<!DOCTYPE html>
 {% load static %}
+{% load notifications_tags %}
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -47,7 +48,9 @@
 
     <header class="header dark-bg">
       <div class="toggle-nav">
-        <div class="icon-reorder tooltips" data-original-title="Toggle Navigation" data-placement="bottom"><i class="icon_menu"></i></div>
+        <div class="icon-reorder tooltips" data-original-title="Toggle Navigation" data-placement="bottom">
+          <i class="icon_menu"></i>
+        </div>
       </div>
 
       <!--logo start-->
@@ -62,11 +65,13 @@
               <input class="form-control" placeholder="Search" type="text">
             </form>
           </li>
+          <li style="margin-left: 750px">
+            <h4>{{ request.user.first_name }}  {{ request.user.last_name }}</h4>
+          </li>
         </ul>
+        <span style="margin-left: 900px">{{ request.user.designation }}</span>
         <!--  search form end -->
-      </div>
-
-      
+      </div>   
     </header>
 
         <!--sidebar start-->
@@ -86,9 +91,28 @@
           <li><a class="" href="/core/designationupdate">Designation Update</a></li>
           {% endif %}
           <!-- <li><a class="" href="/core/datatable">Records</a></li> -->
-          <li><a class="" href="{% url 'home' %}">Attendance</a></li>
+          <li><a id="attid">Attendance</a></li>
+          <div class="showhai">
+          {% if user.is_superuser %}
+            <li id="attformid" class="showhai">
+              <a class="" href="/attendance/form">Attendance Form</a>
+            </li>
+          {% endif %}
+            <li id="attinfoid"><a class="" href="/attendance/info">Search Attendance</a></li>
+          </div>
+          <li ><a id="leaveid" >Leave</a></li>
+          <div class="leaveshow">
+            <li id=""><a class="" href='/attendance/dayoff/form'>Leave Request</a></li>
+            <li id=""><a class="" href='/attendance/leave/info'>Leave Record</a></li>
+          </div>
+          <li id="notid">
+            <a class="" href="/attendance/notifications_page">Notifications 
+              <span style="color: red">({% live_notify_badge %})</span>
+            </a>
+          </li>
+          <li id="lformid"><a class="" href='/attendance/holidays'>Holidays</a></li>
           <li><a class="" href="{% url 'login1' %}">Log Out</a></li>
-          
+        <!-- sidebar menu end-->
         </ul>
         <!-- sidebar menu end-->
       </div>
@@ -117,6 +141,23 @@
 
   <!--custome script for all page-->
   <script src="{% static 'js/scripts.js' %}"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script>
+  $(document).ready(function(){
+       $(".showhai").hide();
+       $(".leaveshow").hide();
+
+     $("#attid").click(function(){
+        $(".showhai").toggle();
+        
+     });
+
+     $("#leaveid").click(function(){
+       $(".leaveshow").toggle();
+     });
+     
+  });
+</script>
   
   {% block full-calendar %}
   {% endblock full-calendar %}

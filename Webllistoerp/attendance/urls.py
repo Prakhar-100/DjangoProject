@@ -17,7 +17,10 @@ from .views import (
   hr_leave_approve,
   hr_not_approve,
   holiday_display,
-  remove_holiday
+  remove_holiday,
+  leave_info,
+  tl_leave,
+  hr_leave
 	)
 
 
@@ -30,16 +33,20 @@ urlpatterns = [
   path('attendance/dayoff/form', dayoff_form, name = 'dayoff-form'),
   path('attendance/notifications_page', notifications_page, name = 'notifications_page'),
   path('attendance/holidays', holiday_display, name = 'holidays-page'),
+  path('attendance/leave/info', leave_info, name = 'leave-info'),
 
   # Button Click event
   # TL approve path
-  path('attendance/approve/<str:name>/<str:date>/<str:recp>/', tl_leave_approve, name = 'tl-approve'),
-  path('attendance/not-approve/<str:name>/<str:date>/<str:recp>/', tl_leave_not_approve, name = 'tl-not-approve'),
+  path('att/tl/not/<int:id>/<int:id2>/', tl_leave, name = 'tl-leave'),
+  path('attendance/tl/approve/<int:id1>/<int:id2>/', tl_leave_approve, name = 'tl-approve'),
+  path('attendance/tl/not-approve/<int:id1>/<int:id2>/', tl_leave_not_approve, name = 'tl-not-approve'),
   path('attendance/remove-holiday/<int:pk>/', remove_holiday, name = 'remove-holiday'),
 
   # HR approve path
-  path('attendance/approve/<str:name>/<str:date>/', hr_leave_approve, name = 'hr-approve'),
-  path('attendance/approve/<str:name>/<str:date>/', hr_not_approve, name = 'hr-not-approve'),
+  # path('attendance/hr/notifications')
+  path('att/hr/not/<int:id1>/<int:id2>/', hr_leave, name = 'hr-leave'),
+  path('attendance/approve/hr/<int:id1>/<int:id2>/', hr_leave_approve, name = 'hr-approve'),
+  path('attendance/hr/not-approve/<int:id1>/<int:id2>/', hr_not_approve, name = 'hr-not-approve'),
   
 
   # API

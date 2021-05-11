@@ -1,0 +1,28 @@
+{% extends 'attendance/base.html' %}
+{% load static %}
+{% load notifications_tags %}
+
+  {% block title %} Creative - Bootstrap Admin Template {% endblock title %}
+
+{% block body-content %}
+
+<div class="container txt-center">
+   <div style="margin-left:250px; margin-top: 150px">
+   	<h4>{{ id }}. Request for Leave</h4>
+         <p>{{ des }}</p>
+         <button type="submit" value=""  name='mybtn2' class="btn btn-primary"
+         onclick="location.href='{% url 'tl-approve' id recipient_id %}'">
+          Approve</button>
+         <button type="submit" value="" name='mybtn3' class="btn btn-primary"
+         onclick="location.href='{% url 'tl-not-approve' id recipient_id %}'">
+          Not Approve</button>
+   </div>
+</div>
+{% endblock body-content %}
+
+{% block javascript %}
+  <script src="{% static 'js/jquery-ui-1.10.4.min.js' %}"></script>
+  <script src="{% static 'js/jquery-1.8.3.min.js' %}"></script>
+  <script type="text/javascript" src="{% static 'js/jquery-ui-1.9.2.custom.min.js' %}">
+  </script>
+{% endblock javascript %}
