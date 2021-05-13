@@ -17,26 +17,47 @@
   	{% for ele in data %}
   	<div style="background-color: white">
       {% if request.user.designation == "Project Manager" %}
-      <h4><a href="{% url 'tl-leave'  ele.id ele.recipient_id %}">{{ ele.id }}. Request for Leave</a></h4>
+          {% if "Response" in ele.verb %}
+           <h4>Notification by {{ ele.actor }}  at  {{ ele.timestamp }}</h4>
+           <h5>{{ ele.description }}</h5>
+           <button class="btn btn-primary" style="margin-left: 750px"
+           onclick="location.href='{% url 'make-read' ele.id ele.recipient_id %}'">
+           OK</button>
+          {% else %}
+           <h4><a href="{% url 'tl-leave'  ele.id ele.recipient_id %}">
+            Notification by {{ ele.actor }}  at  {{ ele.timestamp }}</a></h4>
+          {% endif %}
          
       {% elif request.user.designation == "Cheif Technical Officer" %}
-      <h4><a href="{% url 'hr-leave'  ele.id ele.recipient_id %}">{{ ele.id }}. Request for Leave</a></h4>
+      <h4><a href="{% url 'hr-leave'  ele.id  ele.recipient_id %}">
+       Notification by {{ ele.actor }}  at  {{ ele.timestamp }}</a></h4>
 
       {% elif request.user.designation == "Tech Leader" %}
-          <h4>{{ ele.id }}. Request for Leave</h4> 
-         <p>{{ ele.description }}</p>
-         <button type="submit" value="{{ ele.actor }}"  name='mybtn2' class="btn btn-primary"
-         onclick="location.href='{% url 'tl-approve' ele.actor ele.verb ele.action_object  %}'">
-          Approve</button>
-         <button type="submit" value="{{ ele.actor }}" name='mybtn3' class="btn btn-primary"
-         onclick="location.href='{% url 'tl-not-approve' ele.actor ele.verb ele.action_object %}'">
-          Not Approve</button>
-          
-      {% elif request.user.designation == "Cheif Technical Officer" and ele.verb == "not approve" %}
-         <h4>{{ ele.id }}. Request for Leave</h4> 
-         <p>{{ ele.description }}</p>
+         {% if "Response" in ele.verb %}
+           <h4>Notification by {{ ele.actor }}  at  {{ ele.timestamp }}</h4>
+           <h5>{{ ele.description }}</h5>
+           <button class="btn btn-primary" style="margin-left: 750px"
+           onclick="location.href='{% url 'make-read' ele.id ele.recipient_id %}'">
+           OK</button>
+         {% else %}
+           <h4><a href="{% url 'tl-leave'  ele.id ele.recipient_id %}">
+           Notification by {{ ele.actor }}  at  {{ ele.timestamp }}</a></h4>
+         {% endif %}
+      
+      {% elif request.user.designation == "Web Developer" %}
+          {% if "Response" in ele.verb %}
+           <h4>Notification by {{ ele.actor }}  at  {{ ele.timestamp }}</h4>
+           <h5>{{ ele.description }}</h5>
+           <button class="btn btn-primary" style="margin-left: 750px"
+           onclick="location.href='{% url 'make-read' ele.id ele.recipient_id %}'">
+           OK</button>
+          {% else %}
+          {% endif %}
       {% else %}
+         <h4>Notification by {{ ele.actor }}  at  {{ ele.timestamp }}</h4>
+           <h5>{{ ele.description }}</h5>
       {% endif %}
+          
       
     </div>
     {% endfor %}

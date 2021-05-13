@@ -433,9 +433,11 @@ def dayoff_form(request):
         data = str(sender)+" wants to take leave from "+str(calen1)+" to "+str(calen2)+" because "+ request.POST['reason']
         UserDayoffData.objects.create(
                                   name = username,
-                                  date = calen1,
-                                  hr_approval = "Not Approved",
-                                  tl_approval = "Not Approved",
+                                  leave_request_date = calen1,
+                                  leave_from = calen1,
+                                  leave_to = calen2,
+                                  hr_approval = "Pending",
+                                  tl_approval = "Pending",
                                   leave_reason = request.POST['reason']
                                )
         notify.send(sender = sender, 
@@ -443,8 +445,11 @@ def dayoff_form(request):
                     verb = message, 
                     description = data,
                     action_object = recp1)
-        return redirect('/attendance/dayoff/form')
+        return redirect('/attendance/dayoff/success')
     return render(request, 'attendance/dayoff_form.html', display_empname())
+
+def leave_form_success(request):
+    return render(request, 'attendance/leave_success.html', {})
 
 def notifications_page(request):
     data = request.user.notifications.unread()
@@ -454,8 +459,25 @@ def not_object(obj, id1):
     for i in obj:
         if i.id == id1:
             mydata = {'des':i.description, 'verb': i.verb, 'actor': i.actor, 'recipient': i.recipient,
-                        'id': i.id, 'recipient_id': i.recipient_id, 'action_object': i.action_object}
+                        'id': i.id, 'recipient_id': i.recipient_id, 'action_object': i.action_object,
+                        'timestamp': i.timestamp}
+            
     return mydata
+
+def delete_not_object(obj, id1):
+    for i in obj:
+        if i.id == id1:
+            i.mark_as_read()
+
+def delete_not(request, id1, id2):
+    user = CustomUser.objects.get(pk = id2)
+    obj = user.notifications.unread()
+    for i in obj:
+        if i.id == id1:
+            i.mark_as_read()
+    return redirect('/attendance/notifications_page')
+
+            
 
 def tl_leave(request, id, id2):
     user = CustomUser.objects.get(pk = id2)
@@ -463,7 +485,7 @@ def tl_leave(request, id, id2):
     mydata = not_object(obj, id)
     return render(request, 'attendance/tl_leave.html', mydata)
 
-def tl_leave_approve(request, id1, id2):
+def tl_leave_approve(request,  id1, id2):
     data = request.user.notifications.unread()
     user = CustomUser.objects.get(pk = id2)
     obj = user.notifications.unread()
@@ -471,8 +493,10 @@ def tl_leave_approve(request, id1, id2):
 
     date1 = mydata['verb'][:mydata['verb'].rfind('@')]
     date2 = mydata['verb'][mydata['verb'].rfind('@') + 1:]
-    object1 = UserDayoffData.objects.get(name = mydata['actor'], date = date1)
+    object1 = UserDayoffData.objects.get(name = mydata['actor'], leave_from = date1)
     object1.tl_approval = 'Approved'
+    object1.leave_request_date = mydata['timestamp']
+
     object1.save()
     object2 = CustomUser.objects.get(email = request.user.email)
     sender = CustomUser.objects.get(email = mydata['actor'])
@@ -482,6 +506,13 @@ def tl_leave_approve(request, id1, id2):
                 recipient = recp2,
                 verb = mydata['verb'],
                 description = data1)
+
+    data2 = str(object2)+" Approved your Leave Request"
+    notify.send(sender = object2,
+               recipient = sender,
+               verb = "Response "+ mydata['verb'],
+               description = data2)
+    delete_not_object(obj, id1)
     return render(request, 'attendance/notifications.html', {'data': data})
 
 def tl_leave_not_approve(request, id1, id2):
@@ -494,20 +525,25 @@ def tl_leave_not_approve(request, id1, id2):
     date2 = mydata['verb'][mydata['verb'].rfind('@') + 1:]
 
     object2 = CustomUser.objects.get(email = request.user.email)
-    object1 = UserDayoffData.objects.get(name = mydata['actor'], date = date1)
+    object1 = UserDayoffData.objects.get(name = mydata['actor'], leave_from = date1)
 
-    # If the user is hr then the record is updated as Approved
-    if object2.designation != "Cheif Technical Officer":       
-        # If the user is not hr then the record is updated as Not Approved
-        object1.tl_approval = 'Not Approved'
-        object1.save()
-        sender = CustomUser.objects.get(email = mydata['actor'])
-        recp2 = CustomUser.objects.get(email = mydata['action_object'])
-        data1 = str(sender)+" wants to take leave from "+str(date1)+" to "+str(date2)+" but not approved by "+str(request.user.email)
-        notify.send(sender = sender, 
-                    recipient = recp2, 
-                    verb = "not approve",
-                    description = data1)
+    object1.tl_approval = 'Not Approved'
+    object1.leave_request_date = mydata['timestamp']
+    object1.save()
+    sender = CustomUser.objects.get(email = mydata['actor'])
+    recp2 = CustomUser.objects.get(email = mydata['action_object'])
+    data1 = str(sender)+" wants to take leave from "+str(date1)+" to "+str(date2)+" but not approved by "+str(request.user.email)
+
+    notify.send(sender = sender, 
+                recipient = recp2, 
+                verb = mydata['verb'],
+                description = data1)
+    data2 = str(object2)+" Not Approved your Leave Request"
+    notify.send(sender = object2,
+               recipient = sender,
+               verb = "Response "+ mydata['verb'],
+               description = data2)
+    delete_not_object(obj, id1)
     return render(request, 'attendance/notifications.html', {'data': data})
 
 def hr_leave_approve(request, id1, id2):
@@ -516,12 +552,13 @@ def hr_leave_approve(request, id1, id2):
     obj = user.notifications.unread()
     mydata = not_object(obj, id1)
 
+
     date1 = mydata['verb'][:mydata['verb'].rfind('@')]
     date2 = mydata['verb'][mydata['verb'].rfind('@') + 1:]
 
     object2 = CustomUser.objects.get(email = request.user.email)
-    object1 = UserDayoffData.objects.get(name = mydata['actor'], date = date1)
-
+    recp = CustomUser.objects.get(email = mydata['actor'])
+    object1 = UserDayoffData.objects.get(name = mydata['actor'], leave_from = date1)
     object1.hr_approval = 'Approved'
     object1.save()
 
@@ -532,7 +569,7 @@ def hr_leave_approve(request, id1, id2):
     num = 0
     if date_diff.days == 0:
         DatewiseData.objects.create(
-                        name = mydata['actor'][:mydata['actor'].rfind('@')],
+                        name = mydata['actor'].username[:mydata['actor'].username.rfind('@')],
                         date = date_obj1,
                         week = calendar.day_name[date_obj1.weekday()],
                         time_in  = "-----",
@@ -551,6 +588,12 @@ def hr_leave_approve(request, id1, id2):
                                 work_status = 'Leave'
                             )
         num = num + 1
+    data2 = str(object2)+" Approved your Leave Request"
+    notify.send(sender = object2,
+               recipient = recp,
+               verb = "Response "+ mydata['verb'],
+               description = data2)
+    delete_not_object(obj, id1)
     return render(request, 'attendance/notifications.html', {'data': data})
 
 def hr_leave(request, id1, id2):
@@ -569,10 +612,17 @@ def hr_not_approve(request, id1, id2):
     date2 = mydata['verb'][mydata['verb'].rfind('@') + 1:]
 
     object2 = CustomUser.objects.get(email = request.user.email)
-    object1 = UserDayoffData.objects.get(name = mydata['actor'], date = date1)
+    recp = CustomUser.objects.get(email = mydata['actor'])
+    object1 = UserDayoffData.objects.get(name = mydata['actor'], leave_from = date1)
 
     object1.hr_approval = 'Not Approved'
     object1.save()
+    data2 = str(object2)+" Not Approved your Leave Request"
+    notify.send(sender = object2,
+                recipient = recp,
+                verb = "Response "+ mydata['verb'],
+                description = data2)
+    delete_not_object(obj, id1)
     return render(request, 'attendance/notifications.html', {'data': data})
 
 def remove_holiday(request, pk):
@@ -593,8 +643,10 @@ def holiday_display(request):
 
 def leave_info(request):
     nm = request.user.username
-    obj1 = DatewiseData.objects.filter(name = nm[:nm.rfind('@')],work_status = 'Leave').order_by('-date')
-    return render(request, 'attendance/leaveinfo.html', {'data': obj1})
+    obj1 = UserDayoffData.objects.filter(name = request.user.username)
+    obj2 = obj1.exclude(hr_approval = 'Not Approved')
+    obj3 = obj2.exclude(tl_approval = 'Not Approved').order_by('-leave_to')
+    return render(request, 'attendance/leaveinfo.html', {'data': obj3})
 
 
 

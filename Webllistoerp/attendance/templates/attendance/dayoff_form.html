@@ -49,6 +49,7 @@
 			<label for="tl">Send request to Tech Lead : </label>
 		<select name="tl" required id="id_usernm">
 
+		{% if request.user.designation == "Web Developer" %}
           <optgroup label="Tech Leader">
           {% for member in TL %}
             <option value="{{ member.email }}" class="dropdown-item" selected>
@@ -57,6 +58,28 @@
           {% endfor %}
           <option value=" " selected>-----------</option>
           </optgroup>
+        {% elif request.user.designation == "Tech Leader" %}
+        	<optgroup label="Project Manager">
+              {% for member in PM %}
+            <option value="{{ member.email }}" class="dropdown-item" selected>
+              {{ member.first_name }} 
+            {{ member.last_name }}</option>
+             {% endfor %}
+          <option value=" " selected>-----------</option>
+          </optgroup>
+        {% elif request.user.designation == "Project Manager" %}
+        	<optgroup label="Cheif Technical Officer">
+              {% for member in CTO %}
+            <option value="{{ member.email }}" class="dropdown-item" selected>
+              	{{ member.first_name }} 
+            	{{ member.last_name }}</option>
+             {% endfor %}
+          <option value=" " selected>-----------</option>
+          </optgroup>
+        {% else %}
+        {% endif %}
+        
+        
         </select>
 		</p>
 		<p>

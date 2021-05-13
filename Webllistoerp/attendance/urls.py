@@ -20,7 +20,9 @@ from .views import (
   remove_holiday,
   leave_info,
   tl_leave,
-  hr_leave
+  hr_leave,
+  leave_form_success,
+  delete_not
 	)
 
 
@@ -31,9 +33,11 @@ urlpatterns = [
   path('attendance/form', attendance_data, name = 'attendance-form'),
   path('attendance/info', attendance_form, name = 'attendance-info'),
   path('attendance/dayoff/form', dayoff_form, name = 'dayoff-form'),
+  path('attendance/dayoff/success', leave_form_success, name = 'dayoff-form-success'),
   path('attendance/notifications_page', notifications_page, name = 'notifications_page'),
   path('attendance/holidays', holiday_display, name = 'holidays-page'),
   path('attendance/leave/info', leave_info, name = 'leave-info'),
+  path('not/read/<int:id1>/<int:id2>/', delete_not, name = 'make-read'),
 
   # Button Click event
   # TL approve path

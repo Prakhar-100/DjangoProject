@@ -1,0 +1,20 @@
+{% extends 'attendance/base.html' %}
+{% load static %}
+
+  {% block title %} Creative - Bootstrap Admin Template {% endblock title %}
+
+{% block body-content %}
+<div class="container txt-center">
+	<div style="margin-left:250px; margin-top: 150px">
+		<h2>Leave Request Sent Succesfully !!</h2>
+	</div>
+</div>
+{% endblock body-content %}
+
+<!-- javascripts -->
+{% block javascript %}
+<script src="{% static 'js/jquery-ui-1.10.4.min.js' %}"></script>
+<script src="{% static 'js/jquery-1.8.3.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/jquery-ui-1.9.2.custom.min.js' %}">
+</script>
+{% endblock javascript %}

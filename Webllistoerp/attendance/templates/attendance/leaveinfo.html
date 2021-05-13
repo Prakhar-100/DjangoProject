@@ -11,19 +11,23 @@
 		<table style="width: 80%; margin-left: 200px; margin-top: 150px;">
 		  <tr>
 		    <th>Name</th>
-		    <th>Date</th>
-		    <th>Time In</th>
-		    <th>Time Out </th>
-		    <th>Work Status </th>
+		    <th>Leave Request Date</th>
+		    <th>Leave From</th>
+		    <th>Leave To</th>
+		    <th>HR Approval</th>
+		    <th>TL Approval </th>
+		    <th>Leave Reason</th>
 		  </tr>
 		  
 		{% for ele in data %}
 		  <tr>
 		    <td>{{ ele.name }}</td>
-		    <td>{{ ele.date }}</td>
-		    <td>{{ ele.time_in }}</td>
-		    <td>{{ ele.time_out }}</td>
-		    <td>{{ ele.work_status }}</td>
+		    <td>{{ ele.leave_request_date }}</td>
+		    <td>{{ ele.leave_from }}</td>
+		    <td>{{ ele.leave_to }}</td>
+		    <td>{{ ele.hr_approval }}</td>
+		    <td>{{ ele.tl_approval }}</td>
+		    <td>{{ ele.leave_reason }}</td>
 		  </tr>
 		{% endfor %}
 		  

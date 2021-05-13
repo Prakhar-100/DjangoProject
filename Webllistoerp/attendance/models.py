@@ -48,7 +48,9 @@ class HolidayData(models.Model):
 
 class UserDayoffData(models.Model):
 	name = models.CharField(max_length = 100)
-	date = models.DateField()
+	leave_request_date = models.DateField(blank=True, null=True)
+	leave_from = models.DateField(default = 2)
+	leave_to = models.DateField(default = 3)
 	hr_approval = models.CharField(max_length = 100)
 	tl_approval = models.CharField(max_length = 100)
 	leave_reason = models.TextField(max_length = 1500)
