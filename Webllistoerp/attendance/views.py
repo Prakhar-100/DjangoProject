@@ -228,6 +228,7 @@ def display_empname():
     return {'all_members': all_members,'PM': PM, 'Web':Web,'CTO':CTO, 'DIR':DIR, 'TL': TL}
 
 def attendance_data(request):
+    ''' Uploading the image of employees or users in the form'''
     if request.method == 'POST':
         emp_id, emp_image = request.POST['name2'], request.FILES['userimage']
         custom_user = CustomUser.objects.get(id = emp_id)
@@ -249,6 +250,7 @@ class DataCollection(APIView):
 		return Response(serializer.data)
 
 def formatted_time(ele):
+    ''' Returns the formatted time and date '''
     num = ele.rfind('(')
     ele2, ele3 = ele[:num - 1], ele[num+1:len(ele)-1]
     date_obj = datetime.datetime.strptime(ele2, '%d-%b-%Y').date()
@@ -257,6 +259,7 @@ def formatted_time(ele):
     return time_obj, time_obj2, date_obj
 
 def user_attendance_update(obj3, time_obj, time_obj2):
+    ''' Updates the time out and work Status of the employees attendance record '''
     t2 = datetime.datetime.strptime(obj3[0].time_in, '%I:%M %p')
     t3 = datetime.timedelta(hours = time_obj.hour,minutes = time_obj.minute) - datetime.timedelta(hours = t2.hour, minutes = t2.minute)
     if t3 >= datetime.timedelta(hours = 4) and t3 <= datetime.timedelta(hours = 5):
@@ -268,6 +271,7 @@ def user_attendance_update(obj3, time_obj, time_obj2):
 
 
 def weekday_attendance_record(date_obj, nm):
+    ''' Updates the weekend record of employee '''
     for i in range(1,3):
         DatewiseData.objects.create(
                     name = nm,
@@ -282,6 +286,7 @@ def weekend_attendance_update(obj3, time_obj2):
     obj3.update(time_in = time_obj2)
 
 def holiday_attendance_record(nm, date_obj):
+    ''' Updates the holiday record of employee '''
     month_list = []
     
     for ele in HolidayData.objects.all():
@@ -348,6 +353,7 @@ def get_dates(week, month, year=2021):
     return calendar.monthcalendar(year,month)[week]
 
 def filter_attendance_name(request):
+    ''' Filter attendance name according to their UserHeirarchy'''
     if request.user.designation == 'Director':
         newlist = CustomUser.objects.all()
     else:
@@ -365,6 +371,7 @@ def filter_attendance_name(request):
     return newlist
 
 def attendance_form_filter(context, context1):
+    ''' Returns a list of objects according to their designation'''
     Web = [ele for ele in context['Web'] if ele in context1]
     DIR = [ele for ele in context['DIR'] if ele in context1]
     TL  = [ele for ele in context['TL']  if ele in context1]
@@ -375,6 +382,7 @@ def attendance_form_filter(context, context1):
 
 
 def attendance_form(request):
+    ''' User can search attendance record w.r.t. monthly , weekly, yearly and of juniors also. '''
     context =  display_empname()
     context1 = filter_attendance_name(request)
     data = attendance_form_filter(context, context1)
@@ -382,6 +390,7 @@ def attendance_form(request):
 
 
 def load_names(request):
+    ''' AJAX function so that user can display attendance record weekly '''
     name, week, month = request.GET.get('name'), request.GET.get('week'), request.GET.get('month')
     tup, dict2, week_data  = [], {}, []
     obj1 = DatewiseData.objects.filter(name = name[:name.rfind('@')])
@@ -400,12 +409,18 @@ def load_names(request):
         if ele1.date.day in obj3:
             week_data.append(ele1.id)
     obj4 = DatewiseData.objects.filter(id__in = week_data)
+
+    # Filtering the records yearly
     obj5 = [ele.date for ele in obj4 if ele.date.year == int(request.GET.get('year'))]
     obj6 = DatewiseData.objects.filter(date__in = obj5).order_by('date')
+
+    # Converting the record in list data type
     obj7 = list(obj6.values())
+
     return JsonResponse(obj7, safe=False)
 
 def load_names_monthly(request):
+    ''' Function to display user's attendance record monthly '''
     name, week, month = request.GET.get('name'), request.GET.get('week'), request.GET.get('month')
     tup = []
     obj1 = DatewiseData.objects.filter(name = name[:name.rfind('@')])
@@ -415,22 +430,30 @@ def load_names_monthly(request):
         if ele.date.month == int(month):
             tup.append(ele.id)
     obj2 = DatewiseData.objects.filter(id__in = tup)
+
+    # Filtering the attendance record yearly 
     obj3 = [ele.date for ele in obj2 if ele.date.year == int(request.GET.get('year'))]
     obj4 = DatewiseData.objects.filter(date__in = obj3).order_by('date')
+
+    # Converting the record in list data type
     obj5 = list(obj4.values())
+
     return JsonResponse(obj5, safe=False)
 
 def dayoff_form(request):
+    ''' Function to display Leave Request Form '''
     username = request.user.email
     name = username[:username.rfind('@')]
     if request.method == 'POST':
         calen1, calen2 =  request.POST['calen1'], request.POST['calen2']
         rec1, rec2 = request.POST['hr'], request.POST['tl']
+
+        # Retreiving a record from CustomUser
         recp1 = CustomUser.objects.get(email = rec1)
         recp2 = CustomUser.objects.get(email = rec2)
         sender = CustomUser.objects.get(email = username)
-        message = str(calen1) +'@'+ str(calen2)
-        data = str(sender)+" wants to take leave from "+str(calen1)+" to "+str(calen2)+" because "+ request.POST['reason']
+
+        # Creating a attendance record of employee
         UserDayoffData.objects.create(
                                   name = username,
                                   leave_request_date = calen1,
@@ -440,6 +463,10 @@ def dayoff_form(request):
                                   tl_approval = "Pending",
                                   leave_reason = request.POST['reason']
                                )
+
+        # Sending notification to the Tl or PM 
+        message = str(calen1) +'@'+ str(calen2)
+        data = str(sender)+" wants to take leave from "+str(calen1)+" to "+str(calen2)+" because "+ request.POST['reason']
         notify.send(sender = sender, 
                     recipient = recp2, 
                     verb = message, 
@@ -449,27 +476,31 @@ def dayoff_form(request):
     return render(request, 'attendance/dayoff_form.html', display_empname())
 
 def leave_form_success(request):
+    ''' Function ensuring that Request have been sent successfully by displaying this message'''
     return render(request, 'attendance/leave_success.html', {})
 
 def notifications_page(request):
+    ''' This function display the notifications '''
     data = request.user.notifications.unread()
     return render(request, 'attendance/notifications.html', {'data': data})
 
 def not_object(obj, id1):
+    ''' This function filter the particular object of notification ''' 
     for i in obj:
         if i.id == id1:
             mydata = {'des':i.description, 'verb': i.verb, 'actor': i.actor, 'recipient': i.recipient,
                         'id': i.id, 'recipient_id': i.recipient_id, 'action_object': i.action_object,
-                        'timestamp': i.timestamp}
-            
+                        'timestamp': i.timestamp}    
     return mydata
 
 def delete_not_object(obj, id1):
+    ''' Makes the particular object of notifications as read '''
     for i in obj:
         if i.id == id1:
             i.mark_as_read()
 
 def delete_not(request, id1, id2):
+    ''' Makes the particular object of notifications as read '''
     user = CustomUser.objects.get(pk = id2)
     obj = user.notifications.unread()
     for i in obj:
@@ -480,12 +511,15 @@ def delete_not(request, id1, id2):
             
 
 def tl_leave(request, id, id2):
+    ''' Displaying the particular notifications of TL/PM '''
     user = CustomUser.objects.get(pk = id2)
     obj = user.notifications.unread()
     mydata = not_object(obj, id)
     return render(request, 'attendance/tl_leave.html', mydata)
 
 def tl_leave_approve(request,  id1, id2):
+    ''' This is a AJAX function and this will call when the TL/PM will approve the 
+          leave request. '''
     data = request.user.notifications.unread()
     user = CustomUser.objects.get(pk = id2)
     obj = user.notifications.unread()
@@ -493,11 +527,14 @@ def tl_leave_approve(request,  id1, id2):
 
     date1 = mydata['verb'][:mydata['verb'].rfind('@')]
     date2 = mydata['verb'][mydata['verb'].rfind('@') + 1:]
+
+    # Updating the attendance record as Approved and timestamp
     object1 = UserDayoffData.objects.get(name = mydata['actor'], leave_from = date1)
     object1.tl_approval = 'Approved'
     object1.leave_request_date = mydata['timestamp']
-
     object1.save()
+
+    # Sending notifications to HR or CTO after receiving by TL or PM
     object2 = CustomUser.objects.get(email = request.user.email)
     sender = CustomUser.objects.get(email = mydata['actor'])
     recp2 = CustomUser.objects.get(email = mydata['action_object'])
@@ -507,15 +544,21 @@ def tl_leave_approve(request,  id1, id2):
                 verb = mydata['verb'],
                 description = data1)
 
+    # Sending notifications to the user who requests for leave
     data2 = str(object2)+" Approved your Leave Request"
     notify.send(sender = object2,
                recipient = sender,
                verb = "Response "+ mydata['verb'],
                description = data2)
+
+    # Unread the particular object of notification
     delete_not_object(obj, id1)
+
     return render(request, 'attendance/notifications.html', {'data': data})
 
 def tl_leave_not_approve(request, id1, id2):
+    ''' This is a AJAX function and this will call when the TL/PM will not approve the 
+          leave request. '''
     data = request.user.notifications.unread()
     user = CustomUser.objects.get(pk = id2)
     obj = user.notifications.unread()
@@ -525,8 +568,9 @@ def tl_leave_not_approve(request, id1, id2):
     date2 = mydata['verb'][mydata['verb'].rfind('@') + 1:]
 
     object2 = CustomUser.objects.get(email = request.user.email)
-    object1 = UserDayoffData.objects.get(name = mydata['actor'], leave_from = date1)
 
+    # Updating the attendance record as Approved and timestamp
+    object1 = UserDayoffData.objects.get(name = mydata['actor'], leave_from = date1)
     object1.tl_approval = 'Not Approved'
     object1.leave_request_date = mydata['timestamp']
     object1.save()
@@ -534,19 +578,27 @@ def tl_leave_not_approve(request, id1, id2):
     recp2 = CustomUser.objects.get(email = mydata['action_object'])
     data1 = str(sender)+" wants to take leave from "+str(date1)+" to "+str(date2)+" but not approved by "+str(request.user.email)
 
+    # Sending notification to the HR or CTO
     notify.send(sender = sender, 
                 recipient = recp2, 
                 verb = mydata['verb'],
                 description = data1)
+
+    # Sending notification to the user who requested for leave
     data2 = str(object2)+" Not Approved your Leave Request"
     notify.send(sender = object2,
                recipient = sender,
                verb = "Response "+ mydata['verb'],
                description = data2)
+
+    # Unread the particular object of notification
     delete_not_object(obj, id1)
+
     return render(request, 'attendance/notifications.html', {'data': data})
 
 def hr_leave_approve(request, id1, id2):
+    ''' This is a AJAX function and this will call when the CTO/HR will approve the 
+          leave request. '''
     data = request.user.notifications.unread()
     user = CustomUser.objects.get(pk = id2)
     obj = user.notifications.unread()
@@ -556,13 +608,12 @@ def hr_leave_approve(request, id1, id2):
     date1 = mydata['verb'][:mydata['verb'].rfind('@')]
     date2 = mydata['verb'][mydata['verb'].rfind('@') + 1:]
 
-    object2 = CustomUser.objects.get(email = request.user.email)
-    recp = CustomUser.objects.get(email = mydata['actor'])
+    # Updating the attendance record as Approved and timestamp
     object1 = UserDayoffData.objects.get(name = mydata['actor'], leave_from = date1)
     object1.hr_approval = 'Approved'
     object1.save()
 
-    # Record of the user have been stored as Day Off
+    # Creating a attendance record of user as Dayoff
     date_obj1 = datetime.datetime.strptime(date1, '%Y-%m-%d').date()
     date_obj2 = datetime.datetime.strptime(date2, '%Y-%m-%d').date()
     date_diff = datetime.timedelta(days = date_obj2.day) - datetime.timedelta(days = date_obj1.day)
@@ -588,21 +639,31 @@ def hr_leave_approve(request, id1, id2):
                                 work_status = 'Leave'
                             )
         num = num + 1
+
+    # Sending notification to the user who requested for leave
     data2 = str(object2)+" Approved your Leave Request"
+    object2 = CustomUser.objects.get(email = request.user.email)
+    recp = CustomUser.objects.get(email = mydata['actor'])
     notify.send(sender = object2,
                recipient = recp,
                verb = "Response "+ mydata['verb'],
                description = data2)
+
+    # Making a particular notification object as read
     delete_not_object(obj, id1)
+
     return render(request, 'attendance/notifications.html', {'data': data})
 
 def hr_leave(request, id1, id2):
+    ''' Displaying the particular notifications of HR/ CTO '''
     user = CustomUser.objects.get(pk = id2)
     obj = user.notifications.unread()
     mydata = not_object(obj, id1)
     return render(request, 'attendance/hr_leave.html', mydata)
 
 def hr_not_approve(request, id1, id2):
+    ''' This is a AJAX function and this will call when the CTO/HR will NOT approve the 
+          leave request. '''
     data = request.user.notifications.unread()
     user = CustomUser.objects.get(pk = id2)
     obj = user.notifications.unread()
@@ -611,27 +672,34 @@ def hr_not_approve(request, id1, id2):
     date1 = mydata['verb'][:mydata['verb'].rfind('@')]
     date2 = mydata['verb'][mydata['verb'].rfind('@') + 1:]
 
-    object2 = CustomUser.objects.get(email = request.user.email)
-    recp = CustomUser.objects.get(email = mydata['actor'])
+    # Updating the attendance record as Approved and timestamp
     object1 = UserDayoffData.objects.get(name = mydata['actor'], leave_from = date1)
-
     object1.hr_approval = 'Not Approved'
     object1.save()
+
+     # Sending notification to the user who requested for leave
+    object2 = CustomUser.objects.get(email = request.user.email)
+    recp = CustomUser.objects.get(email = mydata['actor'])
     data2 = str(object2)+" Not Approved your Leave Request"
     notify.send(sender = object2,
                 recipient = recp,
                 verb = "Response "+ mydata['verb'],
                 description = data2)
+
+    # Making a particular notification object as read
     delete_not_object(obj, id1)
+
     return render(request, 'attendance/notifications.html', {'data': data})
 
 def remove_holiday(request, pk):
+    ''' This function will call when particular holiday object have been delete '''
     obj1 = HolidayData.objects.get(id = pk)
     obj1.delete()
     return redirect('/attendance/holidays')
 
 
 def holiday_display(request):
+    ''' This function will display holiday list '''
     data = HolidayData.objects.all()
     if request.method == "POST":
         HolidayData.objects.create(
@@ -642,6 +710,7 @@ def holiday_display(request):
 
 
 def leave_info(request):
+    ''' This function will display leave information of a particular employee '''
     nm = request.user.username
     obj1 = UserDayoffData.objects.filter(name = request.user.username)
     obj2 = obj1.exclude(hr_approval = 'Not Approved')
