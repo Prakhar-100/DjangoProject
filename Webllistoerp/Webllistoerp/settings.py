@@ -165,8 +165,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
-EMAIL_HOST_USER = "anil.kapoorland@gmail.com"
-EMAIL_HOST_PASSWORD = "Anu1onehai"
+EMAIL_HOST_USER = "shakshi.jshai@gmail.com"
+EMAIL_HOST_PASSWORD = "Shi0shihai"
 
 FILE_UPLOAD_HANDLERS = [
     "django.core.files.uploadhandler.MemoryFileUploadHandler",

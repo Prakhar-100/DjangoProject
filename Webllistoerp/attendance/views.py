@@ -31,6 +31,8 @@ import datetime
 import time
 import calendar
 from notifications.signals import notify
+from django.conf import settings
+from django.core.mail import send_mail
 
 
 class DatatablesServerSideView(View):
@@ -440,6 +442,10 @@ def load_names_monthly(request):
 
     return JsonResponse(obj5, safe=False)
 
+def mail_for_leave(subject, message, email_from, recipient_list):
+    send_mail(subject, message, email_from, recipient_list)
+
+
 def dayoff_form(request):
     ''' Function to display Leave Request Form '''
     username = request.user.email
@@ -472,6 +478,13 @@ def dayoff_form(request):
                     verb = message, 
                     description = data,
                     action_object = recp1)
+
+        # Sending email to tl and hr
+        subject = 'Leave Request'
+        message = data
+        email_from = settings.EMAIL_HOST_USER
+        recipient_list = [rec2, rec1]
+        mail_for_leave(subject, message, email_from, recipient_list)
         return redirect('/attendance/dayoff/success')
     return render(request, 'attendance/dayoff_form.html', display_empname())
 
@@ -641,13 +654,19 @@ def hr_leave_approve(request, id1, id2):
         num = num + 1
 
     # Sending notification to the user who requested for leave
-    data2 = str(object2)+" Approved your Leave Request"
     object2 = CustomUser.objects.get(email = request.user.email)
+    data2 = str(object2)+" Approved your Leave Request"
     recp = CustomUser.objects.get(email = mydata['actor'])
     notify.send(sender = object2,
                recipient = recp,
                verb = "Response "+ mydata['verb'],
                description = data2)
+
+    subject = 'Leave Request Accepted'
+    message = "Your Leave Request have been approved by both "+str(request.user.email)+ " and your Tech Lead"
+    email_from = settings.EMAIL_HOST_USER
+    recipient_list = [mydata['actor']]
+    mail_for_leave(subject, message, email_from, recipient_list)
 
     # Making a particular notification object as read
     delete_not_object(obj, id1)
@@ -706,6 +725,20 @@ def holiday_display(request):
                             date = request.POST['calen1'],
                             occasion = request.POST['occassion']
                             )
+        subject = 'Holiday Alert'
+        message = """ On occassion of """+str(request.POST['occassion'])+ """ there is holiday tomorrow .
+         Let your client's be informed. Have a good time , """+str(request.POST['occassion'])+""" to all
+         in advance.
+         """
+        email_from = settings.EMAIL_HOST_USER
+        recipient_list = ["anushtha.shree321@gmail.com", "alban.shhai32@gmail.com"]
+
+        date_obj1 = datetime.datetime.strptime(request.POST['calen1'], '%Y-%m-%d').date()
+
+        time_diff = date_obj1 - datetime.date.today()
+        if time_diff ==  datetime.timedelta(1):
+            mail_for_leave(subject, message, email_from, recipient_list)
+        
     return render(request, 'attendance/holiday.html',{'data': data})
 
 

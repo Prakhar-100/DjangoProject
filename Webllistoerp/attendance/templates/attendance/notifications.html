@@ -27,11 +27,28 @@
            <h4><a href="{% url 'tl-leave'  ele.id ele.recipient_id %}">
             Notification by {{ ele.actor }}  at  {{ ele.timestamp }}</a></h4>
           {% endif %}
-         
       {% elif request.user.designation == "Cheif Technical Officer" %}
-      <h4><a href="{% url 'hr-leave'  ele.id  ele.recipient_id %}">
-       Notification by {{ ele.actor }}  at  {{ ele.timestamp }}</a></h4>
-
+          {% if "Response" in ele.verb %}
+           <h4>Notification by {{ ele.actor }}  at  {{ ele.timestamp }}</h4>
+           <h5>{{ ele.description }}</h5>
+           <button class="btn btn-primary" style="margin-left: 750px"
+           onclick="location.href='{% url 'make-read' ele.id ele.recipient_id %}'">
+           OK</button>
+          {% else %}
+           <h4><a href="{% url 'hr-leave'  ele.id ele.recipient_id %}">
+            Notification by {{ ele.actor }}  at  {{ ele.timestamp }}</a></h4>
+          {% endif %}
+      {% elif request.user.designation == "Director" %}
+          {% if "Response" in ele.verb %}
+           <h4>Notification by {{ ele.actor }}  at  {{ ele.timestamp }}</h4>
+           <h5>{{ ele.description }}</h5>
+           <button class="btn btn-primary" style="margin-left: 750px"
+           onclick="location.href='{% url 'make-read' ele.id ele.recipient_id %}'">
+           OK</button>
+          {% else %}
+           <h4><a href="{% url 'tl-leave'  ele.id ele.recipient_id %}">
+            Notification by {{ ele.actor }}  at  {{ ele.timestamp }}</a></h4>
+          {% endif %}
       {% elif request.user.designation == "Tech Leader" %}
          {% if "Response" in ele.verb %}
            <h4>Notification by {{ ele.actor }}  at  {{ ele.timestamp }}</h4>
