@@ -6,7 +6,6 @@ from .views import (
 	attendance_data,
 	DataCollection,
 	PostCollection,
-	AttendanceDataViewJson,
   attendance_form,
   load_names,
   load_names_monthly,
@@ -60,7 +59,6 @@ urlpatterns = [
   # AJAX
   path('attendance/ajax/employee-names/', load_names, name = 'employee_load_names'),
   path('attendance/ajax/employee-names-monthly/', load_names_monthly, name = 'load_names_monthly'),
-  path('attendance/attendance-data-view/', csrf_exempt(AttendanceDataViewJson.as_view()), name = "attendance-view")
 ]
 
 # leave_approve,

@@ -34,6 +34,9 @@
            <button class="btn btn-primary" style="margin-left: 750px"
            onclick="location.href='{% url 'make-read' ele.id ele.recipient_id %}'">
            OK</button>
+          {% elif "Holiday" in ele.verb %}
+          <!-- <h4>Notification by {{ ele.actor }}  at  {{ ele.timestamp }}</h4> -->
+           <h5>{{ ele.description }}</h5>
           {% else %}
            <h4><a href="{% url 'hr-leave'  ele.id ele.recipient_id %}">
             Notification by {{ ele.actor }}  at  {{ ele.timestamp }}</a></h4>

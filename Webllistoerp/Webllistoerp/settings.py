@@ -43,6 +43,8 @@ INSTALLED_APPS = [
     'multiselectfield',
     'rest_framework',
     'notifications',
+    # 'django_crontab',
+    'django_cron',
     # 'debug_toolbar',
     # 'django_pdb',
 ]
@@ -95,14 +97,6 @@ DATABASES = {
         'PORT': '5432',
        }
 }
-# 'default': {
-#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#         'NAME': 'CustomUser',
-#         'USER': 'postgres',
-#         'PASSWORD': 'mydata123',
-#         'HOST': 'localhost',
-#         'PORT': '5432',
-#     }
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
@@ -179,3 +173,12 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DJANGO_NOTIFICATIONS_CONFIG = { 'USE_JSONFIELD': True}
 
+# CRONJOBS = [
+#    # ('* * * * *', 'Webllistoerp.attendance.cron.my_schedule_job'),
+#    ('* * * * *', 'Webllistoerp.attendance.cron.my_schedule_holiday'),
+#  ]
+
+
+CRON_CLASSES = [
+  "attendance.demo.MyCronJob",
+]
