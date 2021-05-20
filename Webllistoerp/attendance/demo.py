@@ -31,13 +31,12 @@ class MyCronJob(CronJobBase):
 				send_mail(subject, message, email_from, recipient_list)
 
 
-				recp2 = CustomUser.objects.all()
+				recp2 = list(CustomUser.objects.all())
 				sender = CustomUser.objects.get(designation = 'Director')
 				data = """ On occassion of """+i.occassion+ """ there is holiday tomorrow .
 									Let your client's be informed. Have a good time , """+i.occassion+""" to all
 									in advance."""
 				message = "Holiday Notification"
-
 				notify.send(sender = sender, 
 							recipient = recp2, 
 							verb = message, 

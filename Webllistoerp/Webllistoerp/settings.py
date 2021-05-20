@@ -26,7 +26,7 @@ SECRET_KEY = '1re0r@u7+oa^1z&0gn(37$u^#bo11$p1c%s2j+q-mpd=hyv324'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['37c49095bbd9.ngrok.io', '127.0.0.1','testserver']
+ALLOWED_HOSTS = ['b00678e3c416.ngrok.io', '127.0.0.1','testserver']
 
 
 # Application definition
@@ -43,8 +43,9 @@ INSTALLED_APPS = [
     'multiselectfield',
     'rest_framework',
     'notifications',
-    # 'django_crontab',
-    'django_cron',
+    'django_crontab',
+    'channels',
+    # 'django_cron',
     # 'debug_toolbar',
     # 'django_pdb',
 ]
@@ -173,12 +174,12 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DJANGO_NOTIFICATIONS_CONFIG = { 'USE_JSONFIELD': True}
 
-# CRONJOBS = [
-#    # ('* * * * *', 'Webllistoerp.attendance.cron.my_schedule_job'),
-#    ('* * * * *', 'Webllistoerp.attendance.cron.my_schedule_holiday'),
-#  ]
+CRONJOBS = [
+   ('*/1 * * * *', 'Webllistoerp.attendance.cron,my_schedule_job'),
+   # ('* 17 * * *', 'Webllistoerp.attendance.cron.my_schedule_holiday'),
+ ]
 
 
-CRON_CLASSES = [
-  "attendance.demo.MyCronJob",
-]
+# CRON_CLASSES = [
+#   "attendance.demo.MyCronJob",
+# ]

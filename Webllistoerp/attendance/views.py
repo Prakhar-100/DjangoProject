@@ -175,7 +175,6 @@ class PostCollection(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-DATATABLES_SERVERSIDE_MAX_COLUMNS = 30
 
 def get_dates(week, month, year=2021):
     return calendar.monthcalendar(year,month)[week]
