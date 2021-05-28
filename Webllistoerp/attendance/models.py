@@ -54,3 +54,4 @@ class UserDayoffData(models.Model):
 	hr_approval = models.CharField(max_length = 100)
 	tl_approval = models.CharField(max_length = 100)
 	leave_reason = models.TextField(max_length = 1500)
+

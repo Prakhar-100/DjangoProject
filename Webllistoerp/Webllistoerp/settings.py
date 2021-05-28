@@ -26,12 +26,13 @@ SECRET_KEY = '1re0r@u7+oa^1z&0gn(37$u^#bo11$p1c%s2j+q-mpd=hyv324'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['b00678e3c416.ngrok.io', '127.0.0.1','testserver']
+ALLOWED_HOSTS = ['9d5985cbf040.ngrok.io', '127.0.0.1','testserver']
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    'channels',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -40,11 +41,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'core',
     'attendance',
-    'multiselectfield',
     'rest_framework',
     'notifications',
-    'django_crontab',
-    'channels',
+    'chat',
+    # 'chat',
+    # 'django_crontab',
     # 'django_cron',
     # 'debug_toolbar',
     # 'django_pdb',
@@ -179,7 +180,14 @@ CRONJOBS = [
    # ('* 17 * * *', 'Webllistoerp.attendance.cron.my_schedule_holiday'),
  ]
 
+ASGI_APPLICATION = "Webllistoerp.asgi.application"
 
-# CRON_CLASSES = [
-#   "attendance.demo.MyCronJob",
-# ]
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+    },
+}
+

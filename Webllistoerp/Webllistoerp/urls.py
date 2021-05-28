@@ -22,6 +22,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('core.urls')),
     path('', include('attendance.urls')),
+    path('chat/', include('chat.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
     path('^inbox/notifications/', include(notifications.urls, namespace='notifications')),
 ]

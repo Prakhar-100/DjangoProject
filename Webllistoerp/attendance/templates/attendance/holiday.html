@@ -1,9 +1,10 @@
-{% extends 'attendance/base.html' %}
+{% extends 'core/base.html' %}
 {% load static %}
 
   {% block title %} Creative - Bootstrap Admin Template {% endblock title %}
 
 {% block body-content %}
+ 
  
  <div class="container">
  {% if request.user.designation == 'Director' %}
