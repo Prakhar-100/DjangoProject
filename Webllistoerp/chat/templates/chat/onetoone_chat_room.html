@@ -8,27 +8,24 @@
 {% block body-content %}
 <div class="container txt-center">
     <div style="margin-left:250px; margin-top: 150px">
-        {% for i in txtmsg %}
+    {% for i in message %}
         <ul style="background-color: white">
             <li><b>{{ i.e_name }}</b></li>
             <li>{{ i.e_message }}</li>
         </ul>
-        {% endfor %}
-    
+    {% endfor %}
     <textarea id="chat-log" cols="100" rows="20"></textarea><br><br>
     <form method="POST">
-        {% csrf_token %}
-        <div>
-        <input id="chat-message-input" type="text" size="100" name="mytext">
-        <input id="chat-message-submit" type="submit" value="Send">
-        </div>
+    {% csrf_token %}
+    <div>
+    <input id="chat-message-input" type="text" size="100" name="mytext" placeholder="Type Your Message">
+    <input id="chat-message-submit" type="submit" value="Send">
+    </div>
     </form>
     {{ room_name|json_script:"room-name" }}
   </div>
   </div>
     {% endblock body-content %}
-
-
 
     {% block general-js %}
     <script>

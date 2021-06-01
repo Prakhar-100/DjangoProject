@@ -85,33 +85,16 @@
               <span>Dashboard</span>
             </a>
           </li>
-          {% if user.is_superuser %}
-          <li><a class="" href="/accounts/signup">Create User</a></li>
-          <li><a class="" href="/core/promodel">UserProfileForm</a></li>
-          <li><a class="" href="/core/designationupdate">Designation Update</a></li>
-          {% endif %}
-          <!-- <li><a class="" href="/core/datatable">Records</a></li> -->
-          <li><a id="attid">Attendance</a></li>
-          <div class="showhai">
-          {% if user.is_superuser %}
-            <li id="attformid" class="showhai">
-              <a class="" href="/attendance/form">Attendance Form</a>
-            </li>
-          {% endif %}
-            <li id=""><a class="" href="/attendance/info">Search Attendance</a></li>
+          <li><a class="" href="{% url 'create-channel' %}">Create Channel</a></li>
+          
+          <li><a id="directid" href="{% url 'user-chat-room' %}">Group Channels</a></li>
+          <div class="directchathai">
+          {% for link in chatlink %}
+          <li><a class="" id="" href="{% url 'group-chat-room' link.id  %}">{{ link.group_name }}</a></li>
+          {% endfor %}
           </div>
-          <li ><a id="leaveid" >Leave</a></li>
-          <div class="leaveshow">
-            <li id=""><a class="" href='/attendance/dayoff/form'>Leave Request</a></li>
-            <li id=""><a class="" href='/attendance/leave/info'>Leave Record</a></li>
-          </div>
-          <li id="notid">
-            <a class="" href="/attendance/notifications_page">Notifications 
-              <span style="color: red">({% live_notify_badge %})</span>
-            </a>
-          </li>
-          <li id="lformid"><a class="" href='/attendance/holidays'>Holidays</a></li>
-          <li id="lformid"><a class="" href='/chat/user_list'>Chat</a></li>
+          <li><a class="" href="">Direct Messages</a></li>
+          
           <li><a class="" href="{% url 'login1' %}">Log Out</a></li>
         <!-- sidebar menu end-->
         </ul>
@@ -143,22 +126,16 @@
   <!--custome script for all page-->
   <script src="{% static 'js/scripts.js' %}"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script>
-    $(document).ready(function(){
-       $(".showhai").hide();
-       $(".leaveshow").hide();
+  <script type="text/javascript">
+  $(document).ready(function(){
+       // $(".directchathai").hide();
 
-     $("#attid").click(function(){
-        $(".showhai").toggle();
-        
-     });
-
-     $("#leaveid").click(function(){
-        $(".leaveshow").toggle();
-        
-     });
+       // $("#directid").click(function(){
+       //  $(".directchathai").toggle();
+       // })
+     
   });
-  </script>
+</script>
   
   {% block full-calendar %}
   {% endblock full-calendar %}
