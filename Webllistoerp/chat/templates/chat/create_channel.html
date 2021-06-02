@@ -6,69 +6,7 @@
 {% block body-content %}
  <div class="container txt-center">
  	<div style="margin-left:300px; margin-top: 150px">
-	   <h2>Create a Channel or Group</h2>
- 		<input type="radio" id="channelid" name="channel" value="Create Channel">
-  		<label for="male">Create a one to one Conversation Channel</label>
-  		<input type="radio" id="groupid" name="channel" style="margin-left: 100px" value="Create Group">
-  		<label for="channel" >Create a one to many Conversation Group</label>
-
-  	<!-- Form to create a channel having one-to-one conversation -->
-  	<div class="channelshow" style="background-color: white">
- 	<form method="POST" id="personForm"  novalidate>
-	   {% csrf_token %}
-	   <h2>Create Channel</h2>
-     <p id="usernmid">Admin: {{ request.user.first_name }} {{ request.user.last_name }}</p>
-	  <p>
-      <label for="id_usernm">Choose Member:</label>
-        <select name="members" required id="id_usernm">
-          <optgroup label="Director">
-          {% for member in DIR %}
-            <option value="{{ member.id }}" class="dropdown-item" selected>
-              {{ member.first_name }} 
-            {{ member.last_name }}</option>
-          {% endfor %}
-          </optgroup>
-
-          <optgroup label="Cheif Technical Officer">
-          {% for member in CTO %}
-            <option value="{{ member.id }}" class="dropdown-item"
-            selected>{{ member.first_name }} 
-            {{ member.last_name }}</option>
-          {% endfor %}
-          </optgroup>
-          
-          <optgroup label="Project Manager">
-          {% for member in PM %}
-            <option value="{{ member.id }}" selected class="dropdown-item">
-              {{ member.first_name }} 
-            {{ member.last_name }}</option>
-          {% endfor %}
-          </optgroup>
-
-          <optgroup label="Tech Leader">
-          {% for member in TL %}
-            <option value="{{ member.id }}" class="dropdown-item" selected>
-              {{ member.first_name }} 
-            {{ member.last_name }}</option>
-          {% endfor %}
-          </optgroup>
-
-          <optgroup label="Web Developer">
-          {% for member in Web %}
-            <option value="{{ member.id }}" class="dropdown-item" selected>
-              {{ member.first_name }} 
-            {{ member.last_name }}</option>
-          {% endfor %}
-          <option value=" " selected>-----------</option>
-          </optgroup>
-        </select>
-    </p>
     
-    <input type="Submit" class = "btn btn-lg btn-primary" name="" value="Create"
-    style="margin-left: 100px">
-	</form>
-	</div>
-
 	<!-- Form to create group having one-to-many conversation -->
 	<div class="groupshow" style="background-color: white">
 	<form method="POST" id="personForm" novalidate>
@@ -102,19 +40,6 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
 <script type="text/javascript">
   $(document).ready(function(){
-       $(".channelshow").hide();
-       $(".groupshow").hide();
-
-  $("#channelid").click(function(){
-       $(".channelshow").toggle();
-       $(".groupshow").hide();
-     });
-
-  $("#groupid").click(function(){
-       $(".groupshow").toggle();
-       $(".channelshow").hide();
-     });
-
 	const url = $('#personForm').attr("data-names-url");
  	const usernmId = $('#').val();
 

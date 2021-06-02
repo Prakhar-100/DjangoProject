@@ -42,10 +42,12 @@
 
         chatSocket.onmessage = function(e) {
             const data = JSON.parse(e.data);
+            console.log("Connection is opened")
             document.querySelector('#chat-log').value += (data.message + '\n');
         };
 
         chatSocket.onclose = function(e) {
+            console.log("Connection is closed")
             console.error('Chat socket closed unexpectedly');
         };
 
