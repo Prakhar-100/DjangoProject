@@ -13,6 +13,7 @@ def index(request):
 
 def room(request, room_name):
     name = request.user.first_name +"  "+ request.user.last_name
+    onelink, multilink = filter_channel_names(request)
 
     if request.method == 'POST':
     	txt = request.POST['mytext']
@@ -23,7 +24,7 @@ def room(request, room_name):
     		                       )
 
     text_msg = GroupMessage.objects.all()
-    context = {'room_name': room_name, 'txtmsg': text_msg}
+    context = {'onelink': onelink, 'multilink': multilink,'room_name': room_name, 'txtmsg': text_msg}
     return render(request, 'chat/room.html', context)
 
 def display_empname():
@@ -43,7 +44,8 @@ def display_empname():
     return {'all_members': all_members,'PM': PM, 'Web':Web,'CTO':CTO, 'DIR':DIR, 'TL': TL}
 
 def create_channel(request):
-    context =  display_empname()
+    empdict =  display_empname()
+    onelink, multilink = filter_channel_names(request)
     if request.method == "POST":
         l3 = request.POST.getlist('members') + [str(request.user.id)]
         ides = CustomUser.objects.filter(id__in = l3)
@@ -55,7 +57,8 @@ def create_channel(request):
         obj2.member_name.set(ides)
         return redirect('user-chat-room')
         # return redirect()
-    return render(request, 'chat/create_channel.html', context)
+    mydict = {'onelink': onelink, 'multilink': multilink}
+    return render(request, 'chat/create_channel.html', {**mydict, **empdict})
 
 def load_channel_usernames(request):
     """ This function is used to pass the record of the user on ajax request 
@@ -114,8 +117,9 @@ def group_chat_room(request, id):
                                     e_groupid = id
                                    )
 
-    context = {'onelink': onelink, 'multilink': multilink, 'message': message, 'room_name': 'groupchat'}
-    return render(request, 'chat/group_chat_room.html', context)
+    context = {'onelink': onelink, 'multilink': multilink, 'message': message,
+             'room_name': id, 'user_name': name}
+    return render(request, 'chat/group_room.html', context)
 
 def onetoone_chat_room(request, id):
     onelink, multilink = filter_channel_names(request)
@@ -132,12 +136,9 @@ def onetoone_chat_room(request, id):
                                     e_groupid = id
                                    )
 
-    context = {'onelink': onelink, 'multilink': multilink, 'message': message, 'room_name': 'onechat'}
-    return render(request, 'chat/group_chat_room.html', context)
-
-
-# def load_channel_data(request):
-#     return JsonResponse(choice, safe=False)
+    context = {'onelink': onelink, 'multilink': multilink, 'message': message,
+               'room_name': id, 'user_name': name }
+    return render(request, 'chat/one_room.html', context)
 
 def user_chat_room(request):
     onelink, multilink = filter_channel_names(request)
@@ -146,6 +147,7 @@ def user_chat_room(request):
     return render(request, 'chat/user_chat_room.html', context)
 
 def createone_channel(request):
+    # Function to create one channel
     enames =  display_empname()
     onelink, multilink = filter_channel_names(request)
     if request.method == "POST":
@@ -155,12 +157,13 @@ def createone_channel(request):
         obj2 = ChatGroupList.objects.create(
                                 admin_name = request.user.username,
                                 group_name = obj1.first_name +"  "+ obj1.last_name,
+                                description = request.user.first_name +"  "+ request.user.last_name
                                 )
         obj2.member_name.set(ides)
         return redirect('user-chat-room')
     mydict = {'onelink': onelink, 'multilink': multilink}
     context =  {**mydict , **enames}
-    return render(request, 'chat/onelinkcreate_channel.html', context)
+    return render(request, 'chat/create_oneroom.html', context)
 
 
 

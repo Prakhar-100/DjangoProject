@@ -14,35 +14,41 @@
             <li>{{ i.e_message }}</li>
         </ul>
     {% endfor %}
-    <textarea id="chat-log" cols="100" rows="20"></textarea><br><br>
+    <textarea id="chat-log" cols="108" rows="5" style="resize: none; border: none;">
+    </textarea><br><br>
     <form method="POST">
     {% csrf_token %}
     <div>
-    <input id="chat-message-input" type="text" size="100" name="mytext" placeholder="Type Your Message">
+    <input id="chat-message-input" type="text" size="100" name="mytext"
+     style="position: sticky;"  placeholder="Type Your Message">
     <input id="chat-message-submit" type="submit" value="Send">
     </div>
     </form>
     {{ room_name|json_script:"room-name" }}
+    {{ user_name|json_script:"user-name" }}
   </div>
   </div>
     {% endblock body-content %}
 
     {% block general-js %}
     <script>
-
+        // const username = '{{ request.user.username }}'
+        const username = JSON.parse(document.getElementById('user-name').textContent);
         const roomName = JSON.parse(document.getElementById('room-name').textContent);
 
         const chatSocket = new WebSocket(
             'ws://'
             + window.location.host
-            + '/ws/chat/'
+            + '/ws/onechat/'
             + roomName
             + '/'
         );
 
         chatSocket.onmessage = function(e) {
             const data = JSON.parse(e.data);
-            document.querySelector('#chat-log').value += (data.message + '\n');
+            document.querySelector('#chat-log').value += (data.username + '\n' + data.message);
+
+            // Here we need ul id and than that whatever message comming and add it in the form of list elemet.
         };
 
         chatSocket.onclose = function(e) {
@@ -60,7 +66,8 @@
             const messageInputDom = document.querySelector('#chat-message-input');
             const message = messageInputDom.value;
             chatSocket.send(JSON.stringify({
-                'message': message
+                'message': message,
+                'username': username,
             }));
             // messageInputDom.value = '';
         };

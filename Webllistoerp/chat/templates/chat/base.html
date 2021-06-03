@@ -85,11 +85,19 @@
               <span>Dashboard</span>
             </a>
           </li>
-          <li><a class="" href="{% url 'create-group' %}">Create Group</a></li>
-          <li><a id="multiid">Group Channels</a></li>
+          <!-- <li><a class="" href="{% url 'create-group' %}">Create Group</a></li> -->
+          <li>
+            <a id="multiid">Group Channels
+            <button onclick="location.href='{% url 'create-group' %}'">+</button>
+            </a>
+          </li>
           <div class="multichathai">
           {% for link in multilink %}
-          <li><a class="" id="" href="{% url 'group-chat-room' link.id  %}">{{ link.group_name }}</a></li>
+          <li>
+            <a class="" id="" href="{% url 'group-chat-room' link.id  %}">
+              {{ link.group_name }}
+            </a>
+          </li>
           {% endfor %}
           </div>
   
@@ -100,7 +108,11 @@
           </li>
           <div class="onechathai">
           {% for link in onelink %}
-          <li><a class="" id="" href="{% url 'one-chat-room' link.id  %}">{{ link.group_name }}</a></li>
+            {% if link.admin_name == request.user.username %}
+             <li><a class="" id="" href="{% url 'one-chat-room' link.id  %}">{{ link.group_name }}</a></li>
+            {% else %}
+             <li><a class="" id="" href="{% url 'one-chat-room' link.id  %}">{{ link.description }}</a></li>
+            {% endif %}
           {% endfor %}
           </div>
           <li><a class="" href="{% url 'login1' %}">Log Out</a></li>

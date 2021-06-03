@@ -7,22 +7,25 @@
 
 {% block body-content %}
 <div class="container txt-center">
-    <div style="margin-left:250px; margin-top: 150px">
+    <div id="msglist" style="margin-left:250px; margin-top: 150px">
     {% for i in message %}
         <ul style="background-color: white">
             <li><b>{{ i.e_name }}</b></li>
             <li>{{ i.e_message }}</li>
         </ul>
     {% endfor %}
-    <textarea id="chat-log" cols="100" rows="20"></textarea><br><br>
+    <textarea id="chat-log" cols="108" rows="5" style="resize: none; border: none;">
+    </textarea><br><br>
     <form method="POST">
     {% csrf_token %}
     <div>
-    <input id="chat-message-input" type="text" size="100" name="mytext" placeholder="Type Your Message">
+    <input id="chat-message-input" type="text" size="100" name="mytext"
+     style="position: sticky;"  placeholder="Type Your Message">
     <input id="chat-message-submit" type="submit" value="Send">
     </div>
     </form>
     {{ room_name|json_script:"room-name" }}
+    {{ user_name|json_script:"user-name" }}
   </div>
   </div>
     {% endblock body-content %}
@@ -31,23 +34,22 @@
     <script>
 
         const roomName = JSON.parse(document.getElementById('room-name').textContent);
+        const username = JSON.parse(document.getElementById('user-name').textContent);
 
         const chatSocket = new WebSocket(
             'ws://'
             + window.location.host
-            + '/ws/chat/'
+            + '/ws/grpchat/'
             + roomName
             + '/'
         );
 
         chatSocket.onmessage = function(e) {
             const data = JSON.parse(e.data);
-            console.log("Connection is opened")
-            document.querySelector('#chat-log').value += (data.message + '\n');
+            document.querySelector('#chat-log').value += (data.username + '\n' + data.message);
         };
 
         chatSocket.onclose = function(e) {
-            console.log("Connection is closed")
             console.error('Chat socket closed unexpectedly');
         };
 
@@ -62,7 +64,8 @@
             const messageInputDom = document.querySelector('#chat-message-input');
             const message = messageInputDom.value;
             chatSocket.send(JSON.stringify({
-                'message': message
+                'message': message,
+                'username': username,
             }));
             // messageInputDom.value = '';
         };
