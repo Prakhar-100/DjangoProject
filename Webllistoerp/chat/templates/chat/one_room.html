@@ -14,14 +14,18 @@
             <li>{{ i.e_message }}</li>
         </ul>
     {% endfor %}
-    <textarea id="chat-log" cols="108" rows="5" style="resize: none; border: none;">
-    </textarea><br><br>
+    <ul style="background-color: white">
+        <b><li id="demo1"> </li></b>
+        <li id="demo2">  </li>
+    </ul>
+    <!-- <textarea id="chat-log" cols="108" rows="5" style="resize: none; border: none;"> -->
+    <!-- </textarea><br><br> -->
     <form method="POST">
     {% csrf_token %}
     <div>
     <input id="chat-message-input" type="text" size="100" name="mytext"
      style="position: sticky;"  placeholder="Type Your Message">
-    <input id="chat-message-submit" type="submit" value="Send">
+    <input id="chat-message-submit" type="submit" class="btn btn-primary" value="Send">
     </div>
     </form>
     {{ room_name|json_script:"room-name" }}
@@ -46,21 +50,44 @@
 
         chatSocket.onmessage = function(e) {
             const data = JSON.parse(e.data);
-            document.querySelector('#chat-log').value += (data.username + '\n' + data.message);
+            // document.querySelector('#chat-log').value += (data.username + '\n' + data.message);
 
-            // Here we need ul id and than that whatever message comming and add it in the form of list elemet.
+            var person = {
+                fullName: function() {
+                return this.userName;
+                }
+            }
+
+            var message = {
+                myMessage: function(){
+                    return this.myMsg
+                }
+            }
+
+            var data1 = {
+                userName:    data.username,
+            }
+
+            var data2 = {
+                myMsg :      data.message,
+            }
+
+            var x = person.fullName.call(data1); 
+            var y = message.myMessage.call(data2)
+            document.getElementById("demo1").innerHTML = x;
+            document.getElementById("demo2").innerHTML = y;
         };
 
         chatSocket.onclose = function(e) {
             console.error('Chat socket closed unexpectedly');
         };
 
-        document.querySelector('#chat-message-input').focus();
-        document.querySelector('#chat-message-input').onkeyup = function(e) {
-            if (e.keyCode === 13) {  // enter, return
-                document.querySelector('#chat-message-submit').click();
-            }
-        };
+        // document.querySelector('#chat-message-input').focus();
+        // document.querySelector('#chat-message-input').onkeyup = function(e) {
+        //     if (e.keyCode === 13) {  // enter, return
+        //         document.querySelector('#chat-message-submit').click();
+        //     }
+        // };
 
         document.querySelector('#chat-message-submit').onclick = function(e) {
             const messageInputDom = document.querySelector('#chat-message-input');

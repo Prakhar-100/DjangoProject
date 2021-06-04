@@ -6,22 +6,28 @@
 
 
 {% block body-content %}
-<div class="container txt-center">
-    <div id="msglist" style="margin-left:250px; margin-top: 150px">
+<div class="container txt-center" id="mydoc">
+    <div style="margin-left:250px; margin-top: 150px">
     {% for i in message %}
         <ul style="background-color: white">
             <li><b>{{ i.e_name }}</b></li>
             <li>{{ i.e_message }}</li>
         </ul>
     {% endfor %}
-    <textarea id="chat-log" cols="108" rows="5" style="resize: none; border: none;">
-    </textarea><br><br>
+    <ul style="background-color: white">
+        <b><li id="demo1"> </li></b>
+        <li id="demo2">  </li>
+    </ul>
+    <!-- <textarea id="chat-log" cols="108" rows="5" style="resize: none; border: none;"> -->
+    <!-- </textarea><br><br> -->
     <form method="POST">
     {% csrf_token %}
     <div>
-    <input id="chat-message-input" type="text" size="100" name="mytext"
-     style="position: sticky;"  placeholder="Type Your Message">
-    <input id="chat-message-submit" type="submit" value="Send">
+    <input id="chat-message-input" type="text" 
+     size="100" 
+     name="mytext"
+     placeholder="Type Your Message">
+    <input id="chat-message-submit" type="submit" value="Send" class="btn btn-primary">
     </div>
     </form>
     {{ room_name|json_script:"room-name" }}
@@ -32,33 +38,63 @@
 
     {% block general-js %}
     <script>
-
-        const roomName = JSON.parse(document.getElementById('room-name').textContent);
+        // const username = '{{ request.user.username }}'
         const username = JSON.parse(document.getElementById('user-name').textContent);
+        const roomName = JSON.parse(document.getElementById('room-name').textContent);
 
         const chatSocket = new WebSocket(
             'ws://'
             + window.location.host
-            + '/ws/grpchat/'
+            + '/ws/onechat/'
             + roomName
             + '/'
         );
 
+        function myFunction() {
+            document.querySelector('#chat-message-input').value = ""
+            console.log("Prakhar Dwivedi")
+        }
+
         chatSocket.onmessage = function(e) {
             const data = JSON.parse(e.data);
-            document.querySelector('#chat-log').value += (data.username + '\n' + data.message);
+            // document.querySelector('#chat-log').value += (data.username + '\n' + data.message);
+
+            var person = {
+                fullName: function() {
+                return this.userName;
+                }
+            }
+
+            var message = {
+                myMessage: function(){
+                    return this.myMsg;
+                }
+            }
+
+            var data1 = {
+                userName:  data.username,
+            }
+
+            var data2 = {
+                myMsg :    data.message,
+            }
+
+            var x = person.fullName.call(data1); 
+            var y = message.myMessage.call(data2);
+            document.getElementById("demo1").innerHTML = x;
+            document.getElementById("demo2").innerHTML = y;
         };
 
         chatSocket.onclose = function(e) {
             console.error('Chat socket closed unexpectedly');
         };
 
-        document.querySelector('#chat-message-input').focus();
-        document.querySelector('#chat-message-input').onkeyup = function(e) {
-            if (e.keyCode === 13) {  // enter, return
-                document.querySelector('#chat-message-submit').click();
-            }
-        };
+        // document.querySelector('#chat-message-input').focus();
+        // document.querySelector('#chat-message-input').onkeyup = function(e) {
+        //     if (e.keyCode === 13) {  // enter, return
+        //         document.querySelector('#chat-message-submit').click();
+        //     }
+        // };
 
         document.querySelector('#chat-message-submit').onclick = function(e) {
             const messageInputDom = document.querySelector('#chat-message-input');
@@ -69,5 +105,15 @@
             }));
             // messageInputDom.value = '';
         };
+
+    </script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $("#mydoc").load(function(){
+                alert("Image loaded.");
+                console.log("Prakhar Dwivedi");
+            });
+        });
     </script>
     {% endblock general-js %}

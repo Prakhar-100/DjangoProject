@@ -3,10 +3,8 @@ from .models import GroupMessage, ChatGroupList, OnetoOneMessage
 import datetime
 from core.models import CustomUser
 from django.http import JsonResponse
+from django.views import View
 
-# def index(request):
-# 	print("here")
-# return render(request, 'chat/index.html')
 
 def index(request):
     return render(request,'chat/index.html') 
@@ -101,44 +99,52 @@ def filter_channel_names(request):
             onelink.append(obj1)
     return onelink, multilink
 
-def group_chat_room(request, id):
+class GroupChat(View):
 
-    onelink, multilink = filter_channel_names(request)
+    template_name = 'chat/group_room.html'
 
-    message = GroupMessage.objects.filter(e_groupid = id)
-    name = request.user.first_name +"  "+ request.user.last_name
+    def get(self, request, id, **kwargs):
+        onelink, multilink = filter_channel_names(request)
+        message = GroupMessage.objects.filter(e_groupid = id).order_by('id')
+        name = request.user.first_name +"  "+ request.user.last_name
+        context = {'onelink': onelink, 'multilink': multilink, 'message': message,
+             'room_name': id, 'user_name': name}
+        return render(request, self.template_name, context)
 
-    if request.method == "POST":
+    def post(self, request, id, **kwargs):
         txt = request.POST['mytext']
+        name = request.user.first_name +"  "+ request.user.last_name
         GroupMessage.objects.create(e_id = request.user.id,
                                     e_name = name,
                                     e_message = txt,
                                     e_time =  datetime.datetime.today().time(),
                                     e_groupid = id
                                    )
+        return redirect('/chat/group/%d'%(id))
 
-    context = {'onelink': onelink, 'multilink': multilink, 'message': message,
-             'room_name': id, 'user_name': name}
-    return render(request, 'chat/group_room.html', context)
 
-def onetoone_chat_room(request, id):
-    onelink, multilink = filter_channel_names(request)
+class OneChatRoom(View):
+    template_name = 'chat/one_room.html'
 
-    message = OnetoOneMessage.objects.filter(e_groupid = id)
-    name = request.user.first_name +"  "+ request.user.last_name
+    def get(self, request, id, **kwargs):
+        onelink, multilink = filter_channel_names(request)
+        message = OnetoOneMessage.objects.filter(e_groupid = id).order_by('id')
+        name = request.user.first_name +"  "+ request.user.last_name
+        context = {'onelink': onelink, 'multilink': multilink, 'message': message,
+                    'room_name': id, 'user_name': name}
+        return render(request, self.template_name, context)
 
-    if request.method == "POST":
+    def post(self, request, id, **kwargs):
         txt = request.POST['mytext']
+        name = request.user.first_name +"  "+ request.user.last_name
         OnetoOneMessage.objects.create(e_id = request.user.id,
-                                    e_name = name,
-                                    e_message = txt,
-                                    e_time =  datetime.datetime.today().time(),
-                                    e_groupid = id
-                                   )
+                                       e_name = name,
+                                       e_message = txt,
+                                       e_time =  datetime.datetime.today().time(),
+                                       e_groupid = id
+                                    )
+        return redirect('/chat/one/%d'%(id))
 
-    context = {'onelink': onelink, 'multilink': multilink, 'message': message,
-               'room_name': id, 'user_name': name }
-    return render(request, 'chat/one_room.html', context)
 
 def user_chat_room(request):
     onelink, multilink = filter_channel_names(request)
