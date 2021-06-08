@@ -146,9 +146,10 @@
               var i;
               html = "<tr>"
               for(i = 0; i < data.length; i++){
+                
                 html += "<td>"+data[i]['name']+"</td><td>"+data[i]['date']+"</td><td>"+data[i]
                 ['start_time']+"</td><td>"+data[i]['finish_time']+"</td>"+
-                "<td>"+ data[i]['start_time'] +"</td>"+
+                "<td>"+ data[i]['total_time'] +"</td>"+
                 "</tr>"
               }
               $('#mytablebody').html(html);

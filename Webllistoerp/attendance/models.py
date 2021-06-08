@@ -62,9 +62,9 @@ class TimeSheetData(models.Model):
 		related_name='usernames', null = True)
 	name = models.CharField(null = True, max_length = 100)
 	date = models.DateField(auto_now = True)
-	start_time = models.TimeField(auto_now = True)
-	finish_time = models.TimeField(null = True)
-	total_time = models.TimeField(null = True)
+	start_time = models.CharField(max_length = 100)
+	finish_time = models.CharField(max_length = 100)
+	total_time = models.CharField(max_length = 100)
 	
 
 

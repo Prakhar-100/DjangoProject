@@ -585,9 +585,10 @@ def timerecord(request):
 
 def start_time(request):
     obj1 = CustomUser.objects.get(id = request.user.id)
+    start_tm = str(datetime.datetime.now().time())[:8]
     TimeSheetData.objects.create(user_id = obj1,
                                  name = request.user.first_name +" "+ request.user.last_name,
-                                 start_time = datetime.datetime.now()
+                                 start_time = start_tm,
                                  )
     btndict = {'Disabled': "True", "Disabled1" : ""}
     return render(request, 'attendance/timesheet_form.html', btndict)
@@ -600,11 +601,12 @@ def finish_time(request):
                                     user_id = obj2,
                                     date = datetime.datetime.now(),
                                     )
-    obj3.finish_time = current_time
+    obj3.finish_time = str(datetime.datetime.now().time())[:8]
+    start_tm = datetime.datetime.strptime(str(obj3.start_time), "%H:%M:%S").time()
     t1 = datetime.timedelta(hours = current_time.hour, minutes = current_time.minute)
-    t2 = datetime.timedelta(hours = obj3.start_time.hour, minutes = obj3.start_time.minute)
+    t2 = datetime.timedelta(hours = start_tm.hour, minutes = start_tm.minute)
     time_diff = t1 - t2
-    obj3.total_time = datetime.datetime.strptime(str(time_diff), "%H:%M:%S")
+    obj3.total_time = str(datetime.datetime.strptime(str(time_diff), "%H:%M:%S").time())
     obj3.save()
     btndict = {'Disabled': "True", "Disabled1" : "True"}
     return render(request, 'attendance/timesheet_form.html', btndict)
@@ -620,13 +622,14 @@ def timesheet_record(request):
 def record_updation(obj6):
     current_time = datetime.datetime.now()
     for ob in obj6:
-        if ob.finish_time is None:
-            obj1 = TimeSheetData.objects.get(id = ob.id)
+        if ob.finish_time != False:
+            # obj1 = TimeSheetData.objects.get(id = ob.id)
+            start_tm = datetime.datetime.strptime(str(ob.start_time), "%H:%M:%S").time()
             t1 = datetime.timedelta(hours = current_time.hour, minutes = current_time.minute)
-            t2 = datetime.timedelta(hours = obj1.start_time.hour, minutes = obj1.start_time.minute)
+            t2 = datetime.timedelta(hours = start_tm.hour, minutes = start_tm.minute)
             time_diff = t1 - t2
-            obj1.total_time = datetime.datetime.strptime(str(time_diff), "%H:%M:%S")
-            obj1.save()
+            ob.total_time = str(datetime.datetime.strptime(str(time_diff), "%H:%M:%S").time())
+            ob.save()
     return obj6
 
 
@@ -647,6 +650,7 @@ def emp_timesheet_record(request):
     obj5 = [ele.id for ele in obj4 if ele.date.year == int(request.GET.get('year'))]
     obj6 = TimeSheetData.objects.filter(id__in = obj5).order_by('date')
     obj7 = record_updation(obj6)
+    # obj7 = TimeSheetData.objects.filter(id__in = obj5).order_by('date')
 
     # Converting the record in list data type
     obj8 = list(obj7.values())
