@@ -5,6 +5,7 @@ from .forms import AttendanceInfo, DayoffForm
 from core.models import CustomUser, UserHeirarchy
 from .somewhere import handle_uploaded_file
 from .models import AttendanceModel, AttendanceData, DatewiseData, HolidayData, UserDayoffData
+from .models import TimeSheetData
 from .serializers import AttendanceSerializer
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -576,6 +577,83 @@ def leave_info(request):
     obj2 = obj1.exclude(hr_approval = 'Not Approved')
     obj3 = obj2.exclude(tl_approval = 'Not Approved').order_by('-leave_to')
     return render(request, 'attendance/leaveinfo.html', {'data': obj3})
+
+def timerecord(request):
+    ''' This function will display the timesheet form '''
+    btndict = {'Disabled': ""}
+    return render(request, 'attendance/timesheet_form.html', btndict)
+
+def start_time(request):
+    obj1 = CustomUser.objects.get(id = request.user.id)
+    TimeSheetData.objects.create(user_id = obj1,
+                                 name = request.user.first_name +" "+ request.user.last_name,
+                                 start_time = datetime.datetime.now()
+                                 )
+    btndict = {'Disabled': "True", "Disabled1" : ""}
+    return render(request, 'attendance/timesheet_form.html', btndict)
+    # return redirect('/timesheet/form')
+
+def finish_time(request):
+    current_time = datetime.datetime.now()
+    obj2 = CustomUser.objects.get(id = request.user.id)
+    obj3 = TimeSheetData.objects.get(
+                                    user_id = obj2,
+                                    date = datetime.datetime.now(),
+                                    )
+    obj3.finish_time = current_time
+    t1 = datetime.timedelta(hours = current_time.hour, minutes = current_time.minute)
+    t2 = datetime.timedelta(hours = obj3.start_time.hour, minutes = obj3.start_time.minute)
+    time_diff = t1 - t2
+    obj3.total_time = datetime.datetime.strptime(str(time_diff), "%H:%M:%S")
+    obj3.save()
+    btndict = {'Disabled': "True", "Disabled1" : "True"}
+    return render(request, 'attendance/timesheet_form.html', btndict)
+    # return redirect('/timesheet/form')
+
+
+def timesheet_record(request):
+    context =  display_empname()
+    context1 = filter_attendance_name(request)
+    data = attendance_form_filter(context, context1)
+    return render(request, 'attendance/timesheet_record.html', data)
+
+def record_updation(obj6):
+    current_time = datetime.datetime.now()
+    for ob in obj6:
+        if ob.finish_time is None:
+            obj1 = TimeSheetData.objects.get(id = ob.id)
+            t1 = datetime.timedelta(hours = current_time.hour, minutes = current_time.minute)
+            t2 = datetime.timedelta(hours = obj1.start_time.hour, minutes = obj1.start_time.minute)
+            time_diff = t1 - t2
+            obj1.total_time = datetime.datetime.strptime(str(time_diff), "%H:%M:%S")
+            obj1.save()
+    return obj6
+
+
+
+def emp_timesheet_record(request):
+    name, week, month = request.GET.get('name'), request.GET.get('week'), request.GET.get('month')
+    tup = []
+    nm = CustomUser.objects.get(email = name)
+    obj3 = TimeSheetData.objects.filter(user_id = nm)
+
+    # Filter data monthly as per individual user
+    for ele in obj3:
+        if ele.date.month == int(month):
+            tup.append(ele.id)
+    obj4 = TimeSheetData.objects.filter(id__in = tup)
+
+    # Filtering the attendance record yearly 
+    obj5 = [ele.id for ele in obj4 if ele.date.year == int(request.GET.get('year'))]
+    obj6 = TimeSheetData.objects.filter(id__in = obj5).order_by('date')
+    obj7 = record_updation(obj6)
+
+    # Converting the record in list data type
+    obj8 = list(obj7.values())
+    return JsonResponse(obj8, safe=False)
+
+
+
 
 
 

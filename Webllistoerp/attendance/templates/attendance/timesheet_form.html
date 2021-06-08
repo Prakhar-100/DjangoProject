@@ -1,0 +1,93 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+  {% block title %} Creative - Bootstrap Admin Template {% endblock title %}
+
+{% block body-content %}
+<div class="container txt-center">
+	<form method="POST" id="personForm"
+		style="margin-left:250px; margin-top: 150px" novalidate>
+		{% csrf_token %}
+		<h2>Timesheet Form</h2>
+		<table>
+  		<tr>
+    		<th></th>
+    		<th></th>
+    		<th></th>
+  		</tr>
+  		<tr>
+    		<td>
+          {% if Disabled %}
+          <button  onclick="location.href='{% url 'start-time'  %}'" id="startbtn"
+            class="btn  btn-primary" disabled>
+            START</button>
+          {% else %}
+          <button  onclick="location.href='{% url 'start-time'  %}'" id="startbtn"
+            class="btn  btn-primary">
+            START</button>
+          {% endif %}
+        </td>
+          
+    		<td>
+          {% if Disabled1 %}
+          <button onclick="location.href='{% url 'finish-time'  %}'" id="finishbtn"
+            class="btn  btn-primary" disabled>
+            FINISH</button>
+          {% else %}
+          <button onclick="location.href='{% url 'finish-time'  %}'" id="finishbtn"
+            class="btn  btn-primary">
+            FINISH</button>
+          {% endif %}
+        </td>
+  		</tr>
+  		<tr>
+    		<td><button class="btn  btn-primary" id="lunchinbtn">LUNCH IN</button></td>
+    		<td><button class="btn  btn-primary" id="lunchoutbtn"> LUNCH OUT</button></td>
+  		</tr>
+  		<tr>
+    		<td><button class="btn  btn-primary" id="breakinbtn">BREAK IN</button></td>
+    		<td><button class="btn  btn-primary" id="breakoutbtn">BREAK OUT</button></td>
+  		</tr>
+  		</table>
+	</form>
+</div>
+{% endblock body-content %}
+
+{% block javascript %}
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script>
+$(document).ready(function(){
+
+  $("#lunchinbtn").click(function(){
+    $("#lunchinbtn").prop('disabled', true);
+  })
+
+  $("#lunchoutbtn").click(function(){
+    $("#lunchoutbtn").prop('disabled', true);
+  })
+
+  $("#breakinbtn").click(function(){
+    $("#breakoutbtn").prop('disabled', false);
+    $("#breakinbtn").prop('disabled', true);
+
+  })
+
+  $("#breakoutbtn").click(function(){
+    $("#breakoutbtn").prop('disabled', true);
+    $("#breakinbtn").prop('disabled', false);
+
+  })
+
+  $("#startbtn").click(function(){
+    $("#startbtn").prop('disabled', true);
+  })
+
+  $("#finishbtn").click(function(){
+    $("#finishbtn").prop('disabled', true);
+  })
+
+
+})
+</script>
+{% endblock javascript %}

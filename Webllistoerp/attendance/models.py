@@ -55,3 +55,16 @@ class UserDayoffData(models.Model):
 	tl_approval = models.CharField(max_length = 100)
 	leave_reason = models.TextField(max_length = 1500)
 
+class TimeSheetData(models.Model):
+	user_id = models.ForeignKey(
+		settings.AUTH_USER_MODEL,
+	    on_delete = models.CASCADE, 
+		related_name='usernames', null = True)
+	name = models.CharField(null = True, max_length = 100)
+	date = models.DateField(auto_now = True)
+	start_time = models.TimeField(auto_now = True)
+	finish_time = models.TimeField(null = True)
+	total_time = models.TimeField(null = True)
+	
+
+

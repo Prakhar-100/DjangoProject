@@ -1,0 +1,164 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+  {% block title %} Creative - Bootstrap Admin Template {% endblock title %}
+
+{% block body-content %}
+<div class="container txt-center">
+	<form method="POST" id="personForm"
+		style="margin-left:250px; margin-top: 150px" novalidate>
+		{% csrf_token %}
+		<h2>TimeSheet Record</h2>
+		<label for="id_usernm">Employee Name:</label>
+        
+        <select name="usernm" required id="id_usernm">
+          
+          <optgroup label="Director">
+          {% for member in DIR %}
+            <option value="{{ member.email }}" class="dropdown-item" selected>
+              {{ member.first_name }} 
+            {{ member.last_name }}</option>
+          {% endfor %}
+          </optgroup>
+
+          <optgroup label="Cheif Technical Officer">
+          {% for member in CTO %}
+            <option value="{{ member.email }}" class="dropdown-item"
+            selected>{{ member.first_name }} 
+            {{ member.last_name }}</option>
+          {% endfor %}
+          </optgroup>
+          
+          <optgroup label="Project Manager">
+          {% for member in PM %}
+            <option value="{{ member.email }}" selected class="dropdown-item">
+              {{ member.first_name }} 
+            {{ member.last_name }}</option>
+          {% endfor %}
+          </optgroup>
+
+          <optgroup label="Tech Leader">
+          {% for member in TL %}
+            <option value="{{ member.email }}" class="dropdown-item" selected>
+              {{ member.first_name }} 
+            {{ member.last_name }}</option>
+          {% endfor %}
+          </optgroup>
+
+          <optgroup label="Web Developer">
+          {% for member in Web %}
+            <option value="{{ member.email }}" class="dropdown-item" selected>
+              {{ member.first_name }} 
+            {{ member.last_name }}</option>
+          {% endfor %}
+          <option value=" " selected>-----------</option>
+          </optgroup>
+        </select>
+        
+    
+		<label for="month">Month :</label>
+		<select name="month" id="mymonth">
+		  <option value="">----------</option>
+		  <option value="1">January</option>
+		  <option value="2">Febuary</option>
+		  <option value="3">March</option>
+		  <option value="4">April</option>
+		  <option value="5">May</option>
+		  <option value="6">June</option>
+		  <option value="7">July</option>
+		  <option value="8">August</option>
+		  <option value="9">September</option>
+		  <option value="10">October</option>
+		  <option value="11">November</option>
+		  <option value="12">December</option>
+		</select>
+	
+    <label for="year">Year :</label>
+    <select name="year1" id="year1">
+      <option value="2021">2021</option>
+      <option value="2020">2020</option>
+      <option value="2019">2019</option>
+    </select>
+   
+	    <!-- <label for="weekly">Week :</label>
+		<select name="week" id="myweek">
+			  <option value="">---------</option>
+			  <option value="1">First Week</option>
+			  <option value="2">Second Week</option>
+			  <option value="3">Third Week</option>
+			  <option value="4">Fourth Week</option>
+			  <option value="5">Fifth Week</option>
+		</select> -->
+	
+    
+    	<input type="button" class = "btn btn-lg btn-primary" name=""
+    	id="empuser" value="Search">
+   
+
+	</form>
+
+	<div class="container"> 
+      <table class="" id="mytable"
+          style="width: 80%; margin-left: 200px; padding-top: 50px;"
+          employee-data-url = "{% url 'emp_timesheet_record' %}" >
+
+        <thead>
+          <tr>
+          <th>Name</th>
+          <th>Date</th>
+          <th>Start Time</th>
+          <th>Finish Time</th>
+          <th>Total Time</th>
+          </tr>
+        </thead>
+        <tbody id="mytablebody">
+        	
+        </tbody>  
+      </table> 
+	</div>
+</div>
+{% endblock body-content %}
+
+{% block javascript %}
+<script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+<script type="text/javascript">
+	$(document).ready(function () {
+		$('#empuser').click(function () {
+        
+        var setName = $('#id_usernm').val();
+        var setMonth = $('#mymonth').val();
+        var setYear = $('#year1').val();
+        const week = $(this).val();
+
+        $.ajax(
+        {
+           type:  "GET",
+           url : "{% url "emp_timesheet_record" %}",
+           data : {
+            'week': week,
+            'name' : setName,
+            'month' : setMonth,
+            'year'  : setYear
+            },
+            dataType: 'json',
+            success: function(data){
+              var i;
+              html = "<tr>"
+              for(i = 0; i < data.length; i++){
+                html += "<td>"+data[i]['name']+"</td><td>"+data[i]['date']+"</td><td>"+data[i]
+                ['start_time']+"</td><td>"+data[i]['finish_time']+"</td>"+
+                "<td>"+ data[i]['start_time'] +"</td>"+
+                "</tr>"
+              }
+              $('#mytablebody').html(html);
+
+              if(html == "<tr>"){
+                 alert("  Data Does Not Exist");
+              }
+            }
+        });
+       });
+	})
+</script>
+{% endblock javascript %}

@@ -21,7 +21,12 @@ from .views import (
   tl_leave,
   hr_leave,
   leave_form_success,
-  delete_not
+  delete_not,
+  timerecord,
+  start_time,
+  finish_time,
+  timesheet_record,
+  emp_timesheet_record
 	)
 
 
@@ -37,6 +42,8 @@ urlpatterns = [
   path('attendance/holidays', holiday_display, name = 'holidays-page'),
   path('attendance/leave/info', leave_info, name = 'leave-info'),
   path('not/read/<int:id1>/<int:id2>/', delete_not, name = 'make-read'),
+  path('timesheet/form/', timerecord, name = 'timesheet-form'),
+  path('timesheet/record/', timesheet_record, name = 'timesheet-record'),
 
   # Button Click event
   # TL approve path
@@ -44,6 +51,9 @@ urlpatterns = [
   path('attendance/tl/approve/<int:id1>/<int:id2>/', tl_leave_approve, name = 'tl-approve'),
   path('attendance/tl/not-approve/<int:id1>/<int:id2>/', tl_leave_not_approve, name = 'tl-not-approve'),
   path('attendance/remove-holiday/<int:pk>/', remove_holiday, name = 'remove-holiday'),
+  path('timesheet/start/', start_time, name = 'start-time'),
+  path('timesheet/finish/', finish_time, name = 'finish-time'),
+
 
   # HR approve path
   # path('attendance/hr/notifications')
@@ -59,6 +69,7 @@ urlpatterns = [
   # AJAX
   path('attendance/ajax/employee-names/', load_names, name = 'employee_load_names'),
   path('attendance/ajax/employee-names-monthly/', load_names_monthly, name = 'load_names_monthly'),
+  path('att/ajax/timesheet/record/', emp_timesheet_record, name = 'emp_timesheet_record'),
 ]
 
 # leave_approve,
