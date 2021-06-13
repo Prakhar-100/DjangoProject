@@ -5,15 +5,19 @@
 
 {% block body-content %}
 <div class="container txt-center">
- 	<div style="margin-left:300px; margin-top: 150px">
- 		<div class="channelshow" style="background-color: white">
- 	<form method="POST" id="personForm"  novalidate>
+ 	<div  class="formcontainer" style="">
+  <center>
+ 	<form method="POST" class="allforms" id="personForm"  novalidate>
 	   {% csrf_token %}
-	   <h2>Create Channel</h2>
-     <p id="usernmid">Admin: {{ request.user.first_name }} {{ request.user.last_name }}</p>
-	  <p>
-      <label for="id_usernm">Choose Member:</label>
-        <select name="members" required id="id_usernm">
+	   <h2><b> Create Channel </b></h2>
+     <p>Admin: {{ request.user.first_name }} {{ request.user.last_name }}</p>
+     <br>
+	  <div class = "row from-group">
+      <div class="col-md-4 col-bg-4 col-sm-4 col-lg-4">
+        <label for="id_usernm">Choose Member:</label>
+      </div>
+      <div class="col-md-8 col-bg-8 col-sm-8 col-lg-8">
+          <select name="members" required id="id_usernm" class="form-control">
           <optgroup label="Director">
           {% for member in DIR %}
             <option value="{{ member.id }}" class="dropdown-item" selected>
@@ -55,12 +59,13 @@
           <option value=" " selected>-----------</option>
           </optgroup>
         </select>
-    </p>
+      </div>
+    </div><br>
     
-    <input type="Submit" class="btn btn-lg btn-primary" name="" value="Create"
-    style="margin-left: 100px">
+    <input type="Submit" class="btn allbtn" name="" value="Create" style="">
+      
 	</form>
-	</div>
+  </center>
  	</div>
 </div>
 {% endblock body-content %}

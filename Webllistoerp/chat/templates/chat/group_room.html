@@ -7,7 +7,7 @@
 
 {% block body-content %}
 <div class="container txt-center" id="mydoc">
-    <div style="margin-left:250px; margin-top: 150px">
+    <div style="margin-left:250px; margin-top: 150px; margin-bottom: 40px;">
     {% for i in message %}
         <ul style="background-color: white">
             <li><b>{{ i.e_name }}</b></li>
@@ -18,22 +18,29 @@
         <b><li id="demo1"> </li></b>
         <li id="demo2">  </li>
     </ul>
+  </div>
+  </div>
+
     <!-- <textarea id="chat-log" cols="108" rows="5" style="resize: none; border: none;"> -->
     <!-- </textarea><br><br> -->
     <form method="POST">
     {% csrf_token %}
-    <div>
-    <input id="chat-message-input" type="text" 
-     size="100" 
-     name="mytext"
-     placeholder="Type Your Message">
-    <input id="chat-message-submit" type="submit" value="Send" class="btn btn-primary">
+    <div class="form-group row" 
+    style="position: fixed; bottom: 0; margin-left:300px; margin-top: 150px;">
+        <div class="col-md-10 col-bg-10 col-sm-10 col-lg-10">
+            <input id="chat-message-input" type="text" 
+             size="100" 
+             class="form-control" 
+             name="mytext"
+             placeholder="Type Your Message">
+        </div>
+        <div class="col-md-2 col-bg-2 col-sm-2 col-lg-2">
+            <input id="chat-message-submit" type="submit" value="Send" class="btn allbtn" style="">
+        </div>
     </div>
     </form>
     {{ room_name|json_script:"room-name" }}
-    {{ user_name|json_script:"user-name" }}
-  </div>
-  </div>
+    {{ user_name|json_script:"user-name" }}s
     {% endblock body-content %}
 
     {% block general-js %}

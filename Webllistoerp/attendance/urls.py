@@ -22,7 +22,6 @@ from .views import (
   hr_leave,
   leave_form_success,
   delete_not,
-  timerecord,
   start_time,
   finish_time,
   timesheet_record,
@@ -42,7 +41,6 @@ urlpatterns = [
   path('attendance/holidays', holiday_display, name = 'holidays-page'),
   path('attendance/leave/info', leave_info, name = 'leave-info'),
   path('not/read/<int:id1>/<int:id2>/', delete_not, name = 'make-read'),
-  path('timesheet/form/', timerecord, name = 'timesheet-form'),
   path('timesheet/record/', timesheet_record, name = 'timesheet-record'),
 
   # Button Click event

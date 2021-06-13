@@ -4,14 +4,18 @@
   {% block title %} Creative - Bootstrap Admin Template {% endblock title %}
 
 {% block body-content %}
-<div class="container txt-center">
-	<form method="POST" id="personForm"
-		style="margin-left:250px; margin-top: 150px" novalidate>
+<div class="container ">
+  <div class="row form-group">
+  <div class="col-md-9 col-bg-9 col-sm-9 col-lg-9">
+	<form method="POST" id="personForm" class="timesheet-record" 
+		style="" novalidate>
 		{% csrf_token %}
-		<h2>TimeSheet Record</h2>
-		<label for="id_usernm">Employee Name:</label>
+		<center><h2><b>TimeSheet Record</b> </h2></center>
+    <div class="row form-group">
+      <div class="col-md-5 col-bg-5 col-sm-5 col-lg-5">
+		    <label for="id_usernm">Employee Name:</label>
         
-        <select name="usernm" required id="id_usernm">
+          <select name="usernm" required id="id_usernm" class="form-control">
           
           <optgroup label="Director">
           {% for member in DIR %}
@@ -54,10 +58,11 @@
           <option value=" " selected>-----------</option>
           </optgroup>
         </select>
-        
-    
+      </div>
+
+    <div class="col-md-3 col-bg-3 col-sm-3 col-lg-3">
 		<label for="month">Month :</label>
-		<select name="month" id="mymonth">
+		<select name="month" id="mymonth" class="form-control">
 		  <option value="">----------</option>
 		  <option value="1">January</option>
 		  <option value="2">Febuary</option>
@@ -72,32 +77,90 @@
 		  <option value="11">November</option>
 		  <option value="12">December</option>
 		</select>
-	
+	</div>
+
+  <div class="col-md-2 col-bg-2 col-sm-2 col-lg-2">
     <label for="year">Year :</label>
-    <select name="year1" id="year1">
+    <select name="year1" id="year1" class="form-control">
       <option value="2021">2021</option>
       <option value="2020">2020</option>
       <option value="2019">2019</option>
     </select>
-   
-	    <!-- <label for="weekly">Week :</label>
-		<select name="week" id="myweek">
-			  <option value="">---------</option>
-			  <option value="1">First Week</option>
-			  <option value="2">Second Week</option>
-			  <option value="3">Third Week</option>
-			  <option value="4">Fourth Week</option>
-			  <option value="5">Fifth Week</option>
-		</select> -->
-	
-    
-    	<input type="button" class = "btn btn-lg btn-primary" name=""
-    	id="empuser" value="Search">
-   
+  </div>
 
+  <div class="col-md-2 col-bg-2 col-sm-2 col-lg-2" style="padding-top: 25px;">
+  	<input type="button" class = "btn allbtn" name=""
+    style=""
+  	id="empuser" value="Search">
+  </div>
+
+    </div>
 	</form>
+  </div>
+  <div class="col-md-3 col-bg-3 col-sm-3 col-lg-3">
+    <form method="POST" id="personForm" class="timesheet-form-maintain" 
+    style="" novalidate>
+    {% csrf_token %}
+    <h4><center>Timesheet Form Maintain</center></h4>
 
-	<div class="container"> 
+      <div class="row form-group">
+        <div class="col-md-6 col-bg-6 col-sm-6 col-lg-6">
+          {% if Start %}
+          <button   id="startbtn" style="" value="Send"
+            class="btn mybutton" disabled>
+            START</button>
+          {% else %}
+          <button  onclick="location.href='{% url 'start-time' %}'" id="startbtn"
+            class="btn mybutton"
+            style="" value="Send">
+            START</button>
+          {% endif %}
+        </div>
+          
+        <div class="col-md-6 col-bg-6 col-sm-6 col-lg-6">
+          {% if Finish %}
+          <button  id="finishbtn" style="" value="Send" 
+            class="btn mybutton" disabled>
+            FINISH</button>
+          {% else %}
+          <button onclick="location.href='{% url 'finish-time' %}'" id="finishbtn"
+            class="btn mybutton" style="" value="Send">
+            FINISH</button>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="row form-group">
+        <div class="col-md-6 col-bg-6 col-sm-6 col-lg-6">
+          <button class="btn mybutton" id="lunchinbtn"
+          style="" value="Send">LUNCH IN
+          </button>
+        </div>
+        <div class="col-md-6 col-bg-6 col-sm-6 col-lg-6">
+          <button class="btn mybutton" id="lunchoutbtn" 
+          style="" value="Send"> LUNCH OUT
+          </button>
+        </div>
+      </div>
+
+      <div class="row form-group">
+        <div class="col-md-6 col-bg-6 col-sm-6 col-lg-6">
+          <button class="btn  mybutton" id="breakinbtn"
+          style="" value="Send">BREAK IN
+          </button>
+        </div>
+        <div class="col-md-6 col-bg-6 col-sm-6 col-lg-6">
+          <button class="btn mybutton" id="breakoutbtn"
+          style="" value="Send">BREAK OUT
+          </button>
+        </div>
+      </div>
+
+  </form>
+  </div>
+</div>
+
+	<div class="container" style="padding-top: 40px;"> 
       <table class="" id="mytable"
           style="width: 80%; margin-left: 200px; padding-top: 50px;"
           employee-data-url = "{% url 'emp_timesheet_record' %}" >
@@ -120,6 +183,42 @@
 {% endblock body-content %}
 
 {% block javascript %}
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script>
+$(document).ready(function(){
+
+  $("#lunchinbtn").click(function(){
+    $("#lunchinbtn").prop('disabled', true);
+  })
+
+  $("#lunchoutbtn").click(function(){
+    $("#lunchoutbtn").prop('disabled', true);
+  })
+
+  $("#breakinbtn").click(function(){
+    $("#breakoutbtn").prop('disabled', false);
+    $("#breakinbtn").prop('disabled', true);
+
+  })
+
+  $("#breakoutbtn").click(function(){
+    $("#breakoutbtn").prop('disabled', true);
+    $("#breakinbtn").prop('disabled', false);
+
+  })
+
+  $("#startbtn").click(function(){
+    $("#startbtn").prop('disabled', true);
+  })
+
+  $("#finishbtn").click(function(){
+    $("#finishbtn").prop('disabled', true);
+  })
+
+
+})
+</script>
 <script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
 <script type="text/javascript">

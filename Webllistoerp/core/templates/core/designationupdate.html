@@ -7,13 +7,18 @@
 
 {% block body-content %}
 <div class="container txt-center">
-
-<form method="POST" style="margin-top: 150px; margin-left:300px;" >
+<center>
+<form method="POST" 
+style="margin-left:300px;margin-top: 150px; background-color: white; padding: 55px" >
 	{% csrf_token %}
-	<h4>Designation Update</h4>
-	<p>
-    	<label for="parent">Parent : </label>
-		<select name="parent2" id="">
+	<h2><b>Designation Update</b></h2>
+  
+	<div class = "row from-group">
+    <div class="col-md-4 col-bg-4 col-sm-4 col-lg-4">
+      <label for="parent">Parent : </label>
+    </div>
+    <div class="col-md-8 col-bg-8  col-sm-8 col-lg-8">
+		<select name="parent2" id="" class="form-control form-control-sm" >  
 		
 	  <optgroup label="Director">
           {% for member in DIR %}
@@ -54,11 +59,15 @@
       </optgroup>
 
 	</select> 
-	</p>
-
-	<p>
-	<label for="child">Child : </label>
-	 <select name="child2" id="secondChild" >
+  </div>
+  <div><br><br><br>
+	
+  <div class = "row from-group">
+	<div class="col-md-4 col-bg-4 col-sm-4 col-lg-4">
+    <label for="child">Child : </label>
+  </div>
+	<div class="col-md-8 col-bg-8 col-sm-8 col-lg-8"> 
+    <select name="child2" id="secondChild" class="form-control form-control-sm" >
 		
 	  <optgroup label="Director">
           {% for member in DIR %}
@@ -109,32 +118,40 @@
       </optgroup>
 
 	</select> 
-	</p>
-
-	<p>
-    	<label for="desination1">Current Designation:</label>
-    	<input type="text" name="" id="currentDesignation" value="" />
-		<!-- <select name="designation1" id="">
-		  <option value="">----------</option>
-		  <option value="Web Developer">Web Developer</option>
-		  <option value="Tech Leader">Tech Leader</option>
-		  <option value="Project Manager">Project Manager</option>
-		</select>  -->
-	</p>
-
-	<p>
-	<label for="desination2">Update Designation:</label>
-		<select name="designation2" id="">
+	</div>
+</div><br>
+<div class = "row from-group">
+	<div class="col-md-4 col-bg-4 col-sm-4 col-lg-4">
+    <label for="desination1">Current Designation:</label>
+  </div>
+  <div class="col-md-8 col-bg-8 col-sm-8 col-lg-8">
+    <input type="text" name="" id="currentDesignation" value="" class="form-control" />
+  </div>
+</div><br>
+<div class = "row from-group">
+	<div class="col-md-4 col-bg-4 col-sm-4 col-lg-4">
+    <label for="desination2">Update Designation:</label>
+  </div>
+	<div class="col-md-8 col-bg-8 col-sm-8 col-lg-8">	
+    <select name="designation2" id="" class="form-control form-control-sm">
 		  <option value="">----------</option>
 		  <option value="Cheif Technical Officer">Cheif Technical Officer</option>
 		  <option value="Web Developer">Web Developer</option>
 		  <option value="Tech Leader">Tech Leader</option>
 		  <option value="Project Manager">Project Manager</option>
 		</select>
-	</p>
-	<input type="Submit" name="" value="Update">
-</form>
+	</div>
+</div><br>
 
+
+	<input type="Submit" name="" class="btn allbtn" 
+    style="" 
+   value="Update">
+  
+ 
+ 
+</form>
+</center>
 </div>
 {% endblock body-content %}
 

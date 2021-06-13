@@ -11,34 +11,31 @@
 
   {% block body-content %}
 
-  <div class="container" style="width; 800px">
-
+  <div class="container" style="width: 700px;">
+    <center>
     <form class="login-form" action = "" method="POST">
       {% csrf_token %}
+      <p style="font-size: 30px; font-family: bold;">CreateUser Form</p>
       <div class="login-wrap">
-        <p class="login-img"><i class="icon_lock_alt"></i></p>
-        <table class="input-group">
+       
+        
           {% for fm in form %}
-          {{ fm.label_tag }} {{ fm }} {{ fm.errors }} <br><br>
+          {{ fm.label_tag }}
+          <br> 
+          {{ fm }} <br>
+           {{ fm.errors }}<br>
           {% endfor %}
-          <!-- {{ form.as_table }} -->
-          <!-- {{ fm.errors | striptags }} -->
-          
-        </table>
-        <button class="btn btn-info btn-lg btn-block" type="submit">
-           Create User
+        
+        <button class="btn btn-lg btn-block"
+          style="background-color: #2e3b46; color: white" value="Send"
+          type="submit">Create User
         </button>
-        <button class="btn btn-info btn-lg btn-block">
+        <!-- <button class="btn btn-info btn-lg btn-block">
           <a href="/core/login">Login</a>
-        </button>
+        </button> -->
       </div>
     </form>
-    <div class="text-right">
-      <div class="credits">
-          
-          Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
-        </div>
-    </div>
+    </center>
   </div>
 
   {% endblock body-content %}

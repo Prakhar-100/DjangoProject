@@ -28,6 +28,8 @@ body {
 
 }
 
+
+
 .mytable-class{
     width: 80%; 
     margin-left: 200px; 
@@ -192,7 +194,7 @@ table tr th { color: #688a7e;}
 
     max-width: 350px;
 
-    margin: 200px auto 0;
+    margin: 90px auto 0;
 
     background: #d5d7de;
 
@@ -9909,3 +9911,123 @@ span.customSelect.changed {
 #sendmessage.show, #errormessage.show, .show {
 	display:block;
 }
+
+.mybutton{
+    /*padding: 6px 20px;*/
+    height: 40px;
+    width: 110px;
+    background-color: #2e3b46;
+    color: white;
+    margin-bottom: -7px;
+}
+
+.timesheet-form-maintain{
+    margin-top: 100px;
+    background-color: white; 
+    padding: 10px; 
+    padding-bottom: 15px; 
+    padding-right: 30px; 
+    padding-left: 20px;
+}
+
+.timesheet-record{
+    margin-left: 120px; 
+    margin-top: 100px; 
+    background-color: white; 
+    padding: 10px; 
+    padding-right: 5px; 
+    padding-bottom: 60px; 
+    padding-left: 20px;
+}
+
+.allbtn{
+    background-color: #2e3b46; 
+    color: white; 
+}
+
+.attendance-record{
+    margin-left:150px; 
+    margin-top: 150px; 
+    background-color: white;
+    padding: 10px;
+    padding-bottom: 40px;
+    padding-left: 40px;
+}
+
+.notibtn{
+    width: 100px; 
+    margin-left: 700px;
+    background-color: #2e3b46; 
+    color: white;
+    margin-bottom: 20px;
+}
+
+.leave-form{
+    margin-left:200px; 
+    margin-top: 100px; 
+    background-color: white; 
+    padding-top: 10px;
+    padding-bottom: 20px;
+    padding-right: 30px;
+    /*padding:55px;*/
+}
+
+.holidaytable{
+    margin-left: 100px; 
+    margin-top: 150px; 
+    /*padding-left: 100px;*/
+}
+
+.holidaylist{
+    width: 70%; 
+    background-color: white;
+
+}
+
+.formcontainer{
+    margin-left:150px; 
+    margin-top: 100px; 
+}
+
+.allforms{
+    padding: 20px;
+    padding-left: 1px;
+    background-color: white;
+}
+
+.nothead{
+    text-align: center;
+}
+
+.desclass{
+    tab-size: 8;
+}
+
+/*.myheader{
+    height: 40px;
+}*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

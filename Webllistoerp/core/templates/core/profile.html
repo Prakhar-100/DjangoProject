@@ -4,17 +4,20 @@
 
 {% block body-content %}
  <div class="container txt-center">
-
-  <form method="POST" id="personForm" style="margin-left:300px; margin-top: 150px"
+  <center>
+  <form method="POST" id="personForm" 
+     style="margin-left:300px;margin-top: 150px; background-color: white; padding: 55px"
      data-names-url="{% url 'ajax_load_names' %}"  novalidate>
 	   {% csrf_token %}
-    <h3>User Heirarchy</h3>
+    <h3><b>User Heirarchy </b></h3>
     
 	    <!-- <ul class="errorlist"><li>This field is required.</li></ul> -->
-    <p>
+    <div class="row form-group">
+      <div class="col-md-4 col-bg-4 col-sm-4 col-lg-4">
       <label for="id_usernm">Parent:</label>
-        
-        <select name="usernm" required id="id_usernm">
+      </div>
+      <div class="col-md-8 col-bg-8 col-sm-8 col-lg-8">
+        <select name="usernm" required id="id_usernm" class="form-control form-control-sm">
           
           <optgroup label="Director">
           {% for member in DIR %}
@@ -57,23 +60,24 @@
           <option value=" " selected>-----------</option>
           </optgroup>
         </select>
-        
-    </p>
-  
-
-  
-  <!-- <ul class="errorlist">
-    <li>This field is required.</li>
-  </ul> -->
-    <p>
+        </div>
+    </div> 
+    <div class="row">
+      <div class="col-md-4 col-bg-4 col-sm-4 col-lg-4">
       <label for="id_child">Child:</label> 
-      <select name="child[]"  required id="id_child" multiple>
+      </div>
+      <div class="col-md-4 col-bg-4 col-sm-4 col-lg-4">
+      <select name="child[]"  required id="id_child" class="form-control" multiple>
       </select>
-    </p>
+      </div>
+    </div><br>
       
   
-    <input type="Submit" class = "btn btn-lg btn-primary" name="" value="Save">
-      </form>
+    <input type="Submit" class="btn allbtn" 
+      style="" value="Send"
+      name="" value="Save">
+    </form>
+      </center>
     </div>
    </div>
 {% endblock body-content %}

@@ -13,45 +13,50 @@
 
   {% block body-content %}
   <div class= "container txt-center" style="">
+    <center>
   	<form method="POST" enctype="multipart/form-data" 
-    style="margin-left:300px; margin-top: 150px" >
-      <h3>Attendance Form</h3>
+        style="margin-left:300px;margin-top: 150px; background-color: white; padding: 55px" >
+      <h3><b>Attendance Form</b></h3>
   		{% csrf_token %}
-      <p>
-      <label for="id_usernm">Name:</label>
-      <select name="name2" required id="id_usernm">
+      
+      <div class = "row from-group">
+        <div class="col-md-4 col-bg-4 col-sm-4 col-lg-4">
+          <label for="id_usernm">Name</label>
+        </div>
+        <div class="col-md-8 col-bg-8  col-sm-8 col-lg-8">
+          <select name="name2" required id="id_usernm" class="form-control form-control-sm">
           
-          <optgroup label="Director">
-          {% for member in DIR %}
-            <option value="{{ member.id }}" class="dropdown-item" selected>
-              {{ member.first_name }} 
-            {{ member.last_name }}</option>
-          {% endfor %}
-          </optgroup>
+            <optgroup label="Director">
+            {% for member in DIR %}
+              <option value="{{ member.id }}" class="dropdown-item" selected>
+                {{ member.first_name }} 
+                {{ member.last_name }}</option>
+            {% endfor %}
+            </optgroup>
 
-          <optgroup label="Cheif Technical Officer">
-          {% for member in CTO %}
-            <option value="{{ member.id }}" class="dropdown-item"
-            selected>{{ member.first_name }} 
-            {{ member.last_name }}</option>
-          {% endfor %}
-          </optgroup>
+           <optgroup label="Cheif Technical Officer">
+           {% for member in CTO %}
+             <option value="{{ member.id }}" class="dropdown-item"
+             selected>{{ member.first_name }} 
+             {{ member.last_name }}</option>
+           {% endfor %}
+           </optgroup>
           
-          <optgroup label="Project Manager">
-          {% for member in PM %}
-            <option value="{{ member.id }}" selected class="dropdown-item">
-              {{ member.first_name }} 
-            {{ member.last_name }}</option>
-          {% endfor %}
-          </optgroup>
+           <optgroup label="Project Manager">
+           {% for member in PM %}
+             <option value="{{ member.id }}" selected class="dropdown-item">
+               {{ member.first_name }} 
+             {{ member.last_name }}</option>
+           {% endfor %}
+           </optgroup>
 
-          <optgroup label="Tech Leader">
-          {% for member in TL %}
-            <option value="{{ member.id }}" class="dropdown-item" selected>
-              {{ member.first_name }} 
-            {{ member.last_name }}</option>
-          {% endfor %}
-          </optgroup>
+           <optgroup label="Tech Leader">
+           {% for member in TL %}
+             <option value="{{ member.id }}" class="dropdown-item" selected>
+                {{ member.first_name }} 
+             {{ member.last_name }}</option>
+           {% endfor %}
+           </optgroup>
 
           <optgroup label="Web Developer">
           {% for member in Web %}
@@ -61,15 +66,25 @@
           {% endfor %}
           <option value=" " selected>-----------</option>
           </optgroup>
-        </select>
-      </p>
-      <p>
-  		<label for="img">Select image:</label>
-        <input type="file" id="myFile" name="userimage" >
-      </p>
-      <input type="Submit" name="" value="Submit">
+          </select>
+        </div>
+      </div><br>
+      <div class = "row from-group">
+        <div class="col-md-4 col-bg-4 col-sm-4 col-lg-4">
+  		   <label for="img">Select image</label>
+        </div>
+        <div class="col-md-8 col-bg-8 col-sm-8 col-lg-8"> 
+          <input type="file" id="myFile" name="userimage" class="form-control">
+        </div>
+      </div><br>
       
+      <input type="Submit" name=""  class="btn allbtn" 
+      style=""
+      value="Submit">
+        
+     
   	</form>
+    </center>
   </div>
   {% endblock body-content %}
 

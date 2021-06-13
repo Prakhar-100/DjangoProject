@@ -5,29 +5,46 @@
 
 {% block body-content %}
  <div class="container txt-center">
- 	<div style="margin-left:300px; margin-top: 150px">
-    
+ 	<div class="formcontainer" style="">
 	<!-- Form to create group having one-to-many conversation -->
-	<div class="groupshow" style="background-color: white">
-	<form method="POST" id="personForm" novalidate>
+	<center>
+	<form method="POST"  id="personForm" class="allforms" novalidate>
 		{% csrf_token %}
-		<h2>Create Group</h2>
-		<p id="usernmid">Admin: {{ request.user.first_name }} {{ request.user.last_name }}</p>
-		<label for="male">Group Name : </label>
-		<input type="text" name="grpname" class=""><br><br>
-		<p>
-  		<label for="id_child">Select Members:</label> 
-  		<select name="members"  required id="id_child" multiple>
-  		</select>
-    </p>
-    <p>
-      <label for="id_usernm">Description:</label>
-      <textarea id="chat-log" cols="100" name="description" rows="20"></textarea><br>
-    </p>
-    <input type="Submit" class = "btn btn-lg btn-primary" name="" value="Create"
-    style="margin-left: 100px">
+		<h2><b>Create Group<b></h2>
+     <p>Admin: {{ request.user.first_name }} {{ request.user.last_name }}</p>
+    <div class = "row from-group">
+		  <div class="col-md-4 col-bg-4 col-sm-4 col-lg-4">
+          <label for="male">Group Name : </label>
+      </div>
+		  <div class="col-md-8 col-bg-8 col-sm-8 col-lg-8">
+          <input type="text" name="grpname" class="form-control">
+      </div>
+    </div><br>
+
+		<div class = "row from-group">
+  		<div class="col-md-4 col-bg-4 col-sm-4 col-lg-4">
+          <label for="id_child">Select Members:</label> 
+      </div>
+  		<div class="col-md-8 col-bg-8 col-sm-8 col-lg-8">
+          <select name="members" class="form-control" required id="id_child" class="form-control" multiple>
+  		    </select>
+      </div>
+    </div><br>
+
+    <div class = "row from-group">
+      <div class="col-md-4 col-bg-4 col-sm-4 col-lg-4">
+          <label for="id_usernm">Description:</label>
+      </div>
+      <div class="col-md-8 col-bg-8 col-sm-8 col-lg-8">
+          <textarea id="chat-log" cols="100" name="description"
+              class="form-control rounded-0" rows="5" style="resize: none;"></textarea>
+      </div><br>
+    </div><br>
+
+   <input type="Submit" class = "btn allbtn" name="" value="Create" style="">
+   
 	</form>
-	</div>
+  </center>
 	</div>
  </div>
 

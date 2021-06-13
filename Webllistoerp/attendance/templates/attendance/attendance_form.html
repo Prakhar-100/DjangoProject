@@ -5,14 +5,15 @@
 
 
 {% block body-content %}
-<div class="container txt-center">
-	<form method="POST" id="personForm"
-		style="margin-left:250px; margin-top: 150px" novalidate>
+<div class="container txt-center"><center>
+	<form method="POST" id="personForm" class="attendance-record" style="" novalidate>
 		{% csrf_token %}
-		<h2>Attendance Information</h2>
-		<label for="id_usernm">Employee Name:</label>
-        
-        <select name="usernm" required id="id_usernm">
+    <h2><b>Attendance Information</b> </h2>
+    <div class = "row from-group">
+      <div class="col-md-4 col-bg-4 col-sm-4 col-lg-4">
+  		  <label for="id_usernm">Employee Name</label>
+          
+        <select name="usernm" required id="id_usernm" class="form-control">
           
           <optgroup label="Director">
           {% for member in DIR %}
@@ -55,52 +56,59 @@
           <option value=" " selected>-----------</option>
           </optgroup>
         </select>
-        
-    
-		<label for="month">Month :</label>
-		<select name="month" id="mymonth">
-		  <option value="">----------</option>
-		  <option value="1">January</option>
-		  <option value="2">Febuary</option>
-		  <option value="3">March</option>
-		  <option value="4">April</option>
-		  <option value="5">May</option>
-		  <option value="6">June</option>
-		  <option value="7">July</option>
-		  <option value="8">August</option>
-		  <option value="9">September</option>
-		  <option value="10">October</option>
-		  <option value="11">November</option>
-		  <option value="12">December</option>
-		</select>
-	
-    <label for="year">Year :</label>
-    <select name="year1" id="year1">
-      <option value="2021">2021</option>
-      <option value="2020">2020</option>
-      <option value="2019">2019</option>
-    </select>
+      </div>
+      
+      <div class="col-md-2 col-bg-2 col-sm-2 col-lg-2">
+        <label for="month">Month </label>
+        <select name="month" id="mymonth" class="form-control">
+          <option value="">----------</option>
+          <option value="1">January</option>
+          <option value="2">Febuary</option>
+          <option value="3">March</option>
+          <option value="4">April</option>
+          <option value="5">May</option>
+          <option value="6">June</option>
+          <option value="7">July</option>
+          <option value="8">August</option>
+          <option value="9">September</option>
+          <option value="10">October</option>
+          <option value="11">November</option>
+          <option value="12">December</option>
+        </select>
+      </div>
+		
+	    <div class="col-md-2 col-bg-2 col-sm-2 col-lg-2">
+        <label for="year">Year </label>
+        <select name="year1" id="year1" class="form-control">
+          <option value="2021">2021</option>
+          <option value="2020">2020</option>
+          <option value="2019">2019</option>
+        </select>
+      </div>
    
-	    <label for="weekly">Week :</label>
-		<select name="week" id="myweek">
-			  <option value="">---------</option>
-			  <option value="1">First Week</option>
-			  <option value="2">Second Week</option>
-			  <option value="3">Third Week</option>
-			  <option value="4">Fourth Week</option>
-			  <option value="5">Fifth Week</option>
-		</select>
+      <div class="col-md-2 col-bg-2 col-sm-2 col-lg-2">
+  	    <label for="weekly">Week </label>
+  		  <select name="week" id="myweek" class="form-control">
+  			  <option value="">---------</option>
+  			  <option value="1">First Week</option>
+  			  <option value="2">Second Week</option>
+  			  <option value="3">Third Week</option>
+  			  <option value="4">Fourth Week</option>
+  			  <option value="5">Fifth Week</option>
+  		  </select>
+      </div>
 	
-    
-    	<input type="button" class = "btn btn-lg btn-primary" name=""
-    	id="empuser" value="Search">
+      <div class="col-md-2 col-bg-2 col-sm-2 col-lg-2" style="padding-top: 25px;">
+  	     <input type="button"  name="" class="btn allbtn" style="" id="empuser" value="Search">
+      </div>
    
-
+    </div>
 	</form>
+  </center>
 
-	<div class="container"> 
+	<div class="container" style="padding-top: 60px;"> 
       <table class="" id="mytable"
-          style="width: 80%; margin-left: 200px; padding-top: 50px;"
+          style="width: 80%; margin-left: 200px; "
           employee-data-url = "{% url 'employee_load_names' %}" >
 
         <thead>

@@ -34,6 +34,7 @@ import calendar
 from notifications.signals import notify
 from django.conf import settings
 from django.core.mail import send_mail
+from dateutil import tz 
 
 
 
@@ -578,10 +579,22 @@ def leave_info(request):
     obj3 = obj2.exclude(tl_approval = 'Not Approved').order_by('-leave_to')
     return render(request, 'attendance/leaveinfo.html', {'data': obj3})
 
-def timerecord(request):
-    ''' This function will display the timesheet form '''
-    btndict = {'Disabled': ""}
-    return render(request, 'attendance/timesheet_form.html', btndict)
+def start_button_status(request):
+    obj1 = TimeSheetData.objects.filter(user_id = request.user.id,
+                                        date = datetime.datetime.now())
+    if obj1:
+        if obj1[0].finish_time == '':
+            return {'Start': "True", "Finish": ""}
+        else:
+            return {'Start': "True", "Finish": "True"}
+    return {'Start': "", "Finish": ""}
+
+def filtered_empnames(request):
+    context =  display_empname()
+    context1 = filter_attendance_name(request)
+    data = attendance_form_filter(context, context1)
+    return data
+
 
 def start_time(request):
     obj1 = CustomUser.objects.get(id = request.user.id)
@@ -590,8 +603,9 @@ def start_time(request):
                                  name = request.user.first_name +" "+ request.user.last_name,
                                  start_time = start_tm,
                                  )
-    btndict = {'Disabled': "True", "Disabled1" : ""}
-    return render(request, 'attendance/timesheet_form.html', btndict)
+    data = filtered_empnames(request)
+    btndict = start_button_status(request)
+    return render(request, 'attendance/timesheet_record.html', {**data, **btndict})
     # return redirect('/timesheet/form')
 
 def finish_time(request):
@@ -608,21 +622,21 @@ def finish_time(request):
     time_diff = t1 - t2
     obj3.total_time = str(datetime.datetime.strptime(str(time_diff), "%H:%M:%S").time())
     obj3.save()
-    btndict = {'Disabled': "True", "Disabled1" : "True"}
-    return render(request, 'attendance/timesheet_form.html', btndict)
+    data = filtered_empnames(request)
+    btndict = start_button_status(request)
+    return render(request, 'attendance/timesheet_record.html', {**data, **btndict})
     # return redirect('/timesheet/form')
 
-
 def timesheet_record(request):
-    context =  display_empname()
-    context1 = filter_attendance_name(request)
-    data = attendance_form_filter(context, context1)
-    return render(request, 'attendance/timesheet_record.html', data)
+    data = filtered_empnames(request)
+    btndict = start_button_status(request)
+    
+    return render(request, 'attendance/timesheet_record.html', {**data, **btndict})
 
 def record_updation(obj6):
     current_time = datetime.datetime.now()
     for ob in obj6:
-        if ob.finish_time != False:
+        if ob.finish_time == '':
             # obj1 = TimeSheetData.objects.get(id = ob.id)
             start_tm = datetime.datetime.strptime(str(ob.start_time), "%H:%M:%S").time()
             t1 = datetime.timedelta(hours = current_time.hour, minutes = current_time.minute)

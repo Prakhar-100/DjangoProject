@@ -8,24 +8,33 @@
   
 {% block body-content %}
 <div class="container">
-	<form method="POST" style="margin-left:250px; margin-top: 150px" novalidate>
+	<center>
+	<form method="POST" class="leave-form" style="" 
+	novalidate>
 		{% csrf_token %}
-		<h2>Leave Form</h2>
-		<p>{{ username }}</p>
-		<!-- <p>
-		<label for="fname">Name:   </label>
-		<input type="text" size="50" name="name" value="">
-		</p> -->
-		<p>
-		<label for="fcalender">Starting Date : </label>
-		<input type="date" name="calen1" id="fcalender">
-		
-		<label for="fcalender">End Date : </label>
-		<input type="date" name="calen2" id="lcalender">
-		</p>
-		<p>
-			<label for="hr">Send request to HR : </label>
-				<select name="hr" required id="id_usernm">
+		<h2><b>Leave Form</b></h2><br>
+		<div class="row form-group">
+			<div class="col-md-4 col-bg-4 col-sm-4 col-lg-4">
+				<label for="fcalender">Starting Date : </label>
+			</div>
+			<div class="col-md-8 col-bg-8 col-sm-8 col-lg-8">
+				<input type="date" name="calen1" id="fcalender" class="form-control">
+			</div>
+		</div>
+		<div class="row form-group">
+			<div class="col-md-4 col-bg-4 col-sm-4 col-lg-4">
+				<label for="fcalender">End Date : </label>
+			</div>
+			<div class="col-md-8 col-bg-8 col-sm-8 col-lg-8">
+				<input type="date" name="calen2" id="lcalender" class="form-control">
+			</div>
+		</div>
+		<div class="row form-group">
+			<div class="col-md-4 col-bg-4 col-sm-4 col-lg-4">
+				<label for="hr">Send request to HR : </label>
+			</div>
+			<div class="col-md-8 col-bg-8 col-sm-8 col-lg-8">
+				<select name="hr" required id="id_usernm" class="form-control">
 		          
 		          <optgroup label="Director">
 		          {% for member in DIR %}
@@ -44,61 +53,70 @@
 		          <option value=" " selected>-----------</option>
 		          </optgroup>
 		        </select>
-		</p>
-		<p>
-			<label for="tl">Send request to Tech Lead : </label>
-		<select name="tl" required id="id_usernm">
+		    </div>
+		</div>
 
-		{% if request.user.designation == "Web Developer" %}
-          <optgroup label="Tech Leader">
-          {% for member in TL %}
-            <option value="{{ member.email }}" class="dropdown-item" selected>
-              {{ member.first_name }} 
-            {{ member.last_name }}</option>
-          {% endfor %}
-          <option value=" " selected>-----------</option>
-          </optgroup>
-        {% elif request.user.designation == "Tech Leader" %}
-        	<optgroup label="Project Manager">
-              {% for member in PM %}
-            <option value="{{ member.email }}" class="dropdown-item" selected>
-              {{ member.first_name }} 
-            {{ member.last_name }}</option>
-             {% endfor %}
-          <option value=" " selected>-----------</option>
-          </optgroup>
-        {% elif request.user.designation == "Project Manager" %}
-        	<optgroup label="Cheif Technical Officer">
-              {% for member in CTO %}
-            <option value="{{ member.email }}" class="dropdown-item" selected>
-              	{{ member.first_name }} 
-            	{{ member.last_name }}</option>
-             {% endfor %}
-          <option value=" " selected>-----------</option>
-          </optgroup>
-        {% else %}
-        {% endif %}
-        
-        
-        </select>
-		</p>
-		<p>
-			<label for="reason">Why you want to take leave ?</label>
-			<textarea id="reass" name="reason" rows="7" cols="70">
-			</textarea>
-		</p>
-		<p>
-			<input type="Submit" name=""  class = "btn btn-lg btn-primary" 
-			value="Send Request">
-		</p>
+		<div class="row form-group">
+			<div class="col-md-4 col-bg-4 col-sm-4 col-lg-4">
+				<label for="tl">Send request to Tech Lead : </label>
+			</div>
+			<div class="col-md-8 col-bg-8 col-sm-8 col-lg-8">
+				<select name="tl" required id="id_usernm" class="form-control">
+			
+					{% if request.user.designation == "Web Developer" %}
+          			<optgroup label="Tech Leader">
+          			{% for member in TL %}
+            			<option value="{{ member.email }}" class="dropdown-item" selected>
+              			{{ member.first_name }} 
+            			{{ member.last_name }}</option>
+          			{% endfor %}
+          			<option value=" " selected>-----------</option>
+          			</optgroup>
+        			{% elif request.user.designation == "Tech Leader" %}
+        				<optgroup label="Project Manager">
+              			{% for member in PM %}
+            			<option value="{{ member.email }}" class="dropdown-item" selected>
+              			{{ member.first_name }} 
+            			{{ member.last_name }}</option>
+             			{% endfor %}
+          			<option value=" " selected>-----------</option>
+          			</optgroup>
+        			{% elif request.user.designation == "Project Manager" %}
+        				<optgroup label="Cheif Technical Officer">
+              			{% for member in CTO %}
+            			<option value="{{ member.email }}" class="dropdown-item" selected>
+              				{{ member.first_name }} 
+            				{{ member.last_name }}</option>
+             			{% endfor %}
+          			<option value=" " selected>-----------</option>
+          			</optgroup>
+        			{% else %}
+        			{% endif %}
+        		</select>
+			</div>
+		</div>
+
+		<div class="row form-group">
+			<div class="col-md-4 col-bg-4 col-sm-4 col-lg-4">
+				<label for="reason">Why you want to take leave ?</label>
+			</div>
+			<div class="col-md-8 col-bg-8 col-sm-8 col-lg-8">
+				<textarea id="reass" name="reason" rows="7" cols="70" class="form-control">
+				</textarea>
+			</div>
+		</div>
+		
+		<input type="Submit" name=""  class = "btn allbtn" value="Send Request" style="">
+		
 	</form>
+	</center>
 </div>
 {% endblock body-content %}
 
 <!-- javascripts -->
-  {% block javascript %}
-  <script src="{% static 'js/jquery-ui-1.10.4.min.js' %}"></script>
-  <script src="{% static 'js/jquery-1.8.3.min.js' %}"></script>
-  <script type="text/javascript" src="{% static 'js/jquery-ui-1.9.2.custom.min.js' %}">
-  </script>
-  {% endblock javascript %}
+{% block javascript %}
+<script src="{% static 'js/jquery-ui-1.10.4.min.js' %}"></script>
+<script src="{% static 'js/jquery-1.8.3.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/jquery-ui-1.9.2.custom.min.js' %}">
+</script>
+{% endblock javascript %}

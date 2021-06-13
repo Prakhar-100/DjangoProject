@@ -23,15 +23,6 @@
   <link href="{% static 'css/font-awesome.min.css' %}" rel="stylesheet" />
   {% block font-icon-css %}
   {% endblock font-icon-css %}
-  
-  {% block fullcalender-css %}
-  {% endblock fullcalender-css %}
-
-  {% block pie-chart-css %}
-  {% endblock pie-chart-css %}
-
-  {% block owl-coursel-css %}
-  {% endblock owl-coursel-css %}
 
   {% block jquery-datatable-css %}
   {% endblock jquery-datatable-css %}
@@ -47,33 +38,24 @@
 <body>
 
     <header class="header dark-bg">
-      <div class="toggle-nav">
-        <div class="icon-reorder tooltips" 
-            data-original-title="Toggle Navigation" 
-            data-placement="bottom">
-          <i class="icon_menu"></i>
-        </div>
-      </div>
-
+      
       <!--logo start-->
-      <a href="index.html" class="logo">Nice <span class="lite">Admin</span></a>
+      <a href="index.html" class="logo">Webllisto<span class="lite">erp</span></a>
       <!--logo end-->
 
-      <div class="nav search-row" id="top_menu">
+      
         <!--  search form start -->
         <ul class="nav top-menu">
-          <li>
-            <form class="navbar-form">
-              <input class="form-control" placeholder="Search" type="text">
-            </form>
+          
+          <li style="margin-left: 870px; ">
+            <div><p style="font-size: 20px; margin: 2px 0 1px">{{ request.user.first_name }}  {{ request.user.last_name }}</p></div>
           </li>
-          <li style="margin-left: 750px">
-            <h4>{{ request.user.first_name }}  {{ request.user.last_name }}</h4>
+        
+          <li style="margin-left: 870px; padding-bottom: 3px;">
+          {{ request.user.designation }}
           </li>
-        </ul>
-        <span style="margin-left: 900px">{{ request.user.designation }}</span>
         <!--  search form end -->
-      </div>   
+        </ul>
     </header>
 
         <!--sidebar start-->
@@ -154,8 +136,7 @@
 
           <li id="ltimeid"><a class="" >Timesheet</a></li>
           <div class="sheetclass">
-            <li id="ltimeid"><a class="" href="/timesheet/form" >Timesheet Form</a></li>
-            <li id="ltimeid"><a class="" href="/timesheet/record">Timesheet Record</a></li>
+            <li id="ltimeid"><a class="" href="{% url 'timesheet-record' %}">Timesheet Record</a></li>
           </div>
           <li><a class="" href="{% url 'login1' %}">Log Out</a></li>
         <!-- sidebar menu end-->
