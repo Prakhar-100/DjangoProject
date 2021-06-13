@@ -2,7 +2,6 @@ from django.contrib import admin
 from django.urls import path , include
 from django.views.decorators.csrf import csrf_exempt
 from .views import (
-	Home,
 	attendance_data,
 	DataCollection,
 	PostCollection,
@@ -32,7 +31,6 @@ from .views import (
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
-  path('attendance/home', Home.as_view(), name = 'home'),
   path('attendance/form', attendance_data, name = 'attendance-form'),
   path('attendance/info', attendance_form, name = 'attendance-info'),
   path('attendance/dayoff/form', dayoff_form, name = 'dayoff-form'),

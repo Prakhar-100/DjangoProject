@@ -82,7 +82,7 @@
    </div>
 {% endblock body-content %}
 
-{% block general-js %}
+{% block javascript-code %}
  <!-- <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script> -->
  <script>
  	$('#id_usernm').change(function() {
@@ -137,15 +137,5 @@
  		 	}
  		 });
  	});
-
-  
  </script>
- 
-{% endblock general-js %}
-<!-- <label>Username : </label> -->
-  <!-- <select  id="user" name="user">
-      {% for cat in category %}
-      <option value="{{ cat }}" name="user">{{ cat.username }}</option>
-      {% endfor %}
-      
-    </select><br> -->
+{% endblock javascript-code %}

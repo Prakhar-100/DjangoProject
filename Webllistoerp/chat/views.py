@@ -6,24 +6,24 @@ from django.http import JsonResponse
 from django.views import View
 
 
-def index(request):
-    return render(request,'chat/index.html') 
+# def index(request):
+#     return render(request,'chat/index.html') 
 
-def room(request, room_name):
-    name = request.user.first_name +"  "+ request.user.last_name
-    onelink, multilink = filter_channel_names(request)
+# def room(request, room_name):
+#     name = request.user.first_name +"  "+ request.user.last_name
+#     onelink, multilink = filter_channel_names(request)
 
-    if request.method == 'POST':
-    	txt = request.POST['mytext']
-    	GroupMessage.objects.create(e_id = request.user.id,
-    		                       e_name = name,
-    		                       e_message = txt,
-    		                       e_time =  datetime.datetime.today().time()
-    		                       )
+#     if request.method == 'POST':
+#     	txt = request.POST['mytext']
+#     	GroupMessage.objects.create(e_id = request.user.id,
+#     		                       e_name = name,
+#     		                       e_message = txt,
+#     		                       e_time =  datetime.datetime.today().time()
+#     		                       )
 
-    text_msg = GroupMessage.objects.all()
-    context = {'onelink': onelink, 'multilink': multilink,'room_name': room_name, 'txtmsg': text_msg}
-    return render(request, 'chat/room.html', context)
+#     text_msg = GroupMessage.objects.all()
+#     context = {'onelink': onelink, 'multilink': multilink,'room_name': room_name, 'txtmsg': text_msg}
+#     return render(request, 'chat/room.html', context)
 
 def display_empname():
     all_members = CustomUser.objects.all()
@@ -146,11 +146,11 @@ class OneChatRoom(View):
         return redirect('/chat/one/%d'%(id))
 
 
-def user_chat_room(request):
-    onelink, multilink = filter_channel_names(request)
+# def user_chat_room(request):
+#     onelink, multilink = filter_channel_names(request)
 
-    context = {'onelink': onelink, 'multilink': multilink}
-    return render(request, 'chat/user_chat_room.html', context)
+#     context = {'onelink': onelink, 'multilink': multilink}
+#     return render(request, 'chat/user_chat_room.html', context)
 
 def createone_channel(request):
     # Function to create one channel

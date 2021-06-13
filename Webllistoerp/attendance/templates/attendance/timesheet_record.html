@@ -182,7 +182,7 @@
 </div>
 {% endblock body-content %}
 
-{% block javascript %}
+{% block javascript-code %}
 <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script>
@@ -228,14 +228,12 @@ $(document).ready(function(){
         var setName = $('#id_usernm').val();
         var setMonth = $('#mymonth').val();
         var setYear = $('#year1').val();
-        const week = $(this).val();
 
         $.ajax(
         {
            type:  "GET",
            url : "{% url "emp_timesheet_record" %}",
            data : {
-            'week': week,
             'name' : setName,
             'month' : setMonth,
             'year'  : setYear
@@ -261,4 +259,4 @@ $(document).ready(function(){
        });
 	})
 </script>
-{% endblock javascript %}
+{% endblock javascript-code %}

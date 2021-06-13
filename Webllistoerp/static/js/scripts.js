@@ -1,10 +1,10 @@
 function initializeJS() {
 
     //tool tips
-    jQuery('.tooltips').tooltip();
+    // jQuery('.tooltips').tooltip();
 
     //popovers
-    jQuery('.popovers').popover();
+    // jQuery('.popovers').popover();
 
     //custom scrollbar
         //for html

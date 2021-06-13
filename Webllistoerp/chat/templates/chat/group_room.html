@@ -43,9 +43,8 @@
     {{ user_name|json_script:"user-name" }}s
     {% endblock body-content %}
 
-    {% block general-js %}
+ {% block javascript-code %}
     <script>
-        // const username = '{{ request.user.username }}'
         const username = JSON.parse(document.getElementById('user-name').textContent);
         const roomName = JSON.parse(document.getElementById('room-name').textContent);
 
@@ -96,13 +95,6 @@
             console.error('Chat socket closed unexpectedly');
         };
 
-        // document.querySelector('#chat-message-input').focus();
-        // document.querySelector('#chat-message-input').onkeyup = function(e) {
-        //     if (e.keyCode === 13) {  // enter, return
-        //         document.querySelector('#chat-message-submit').click();
-        //     }
-        // };
-
         document.querySelector('#chat-message-submit').onclick = function(e) {
             const messageInputDom = document.querySelector('#chat-message-input');
             const message = messageInputDom.value;
@@ -114,13 +106,6 @@
         };
 
     </script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script>
-        $(document).ready(function(){
-            $("#mydoc").load(function(){
-                alert("Image loaded.");
-                console.log("Prakhar Dwivedi");
-            });
-        });
-    </script>
-    {% endblock general-js %}
+ {% endblock javascript-code %}
+
+    

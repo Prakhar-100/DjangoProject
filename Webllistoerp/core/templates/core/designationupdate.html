@@ -2,8 +2,8 @@
 {% load static %}
 
 
-  {% block title %} Designation Update Form
-  {% endblock title %}
+{% block title %} Designation Update Form
+{% endblock title %}
 
 {% block body-content %}
 <div class="container txt-center">
@@ -156,8 +156,6 @@ style="margin-left:300px;margin-top: 150px; background-color: white; padding: 55
 {% endblock body-content %}
 
 {% block javascript-code %}
-  
-
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
 $("#secondChild").on("change",function(){
@@ -167,6 +165,5 @@ $("#secondChild").on("change",function(){
         $("#currentDesignation").val(setValue);
 });
 </script>
-
 {% endblock javascript-code %}
 

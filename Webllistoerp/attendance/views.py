@@ -38,8 +38,8 @@ from dateutil import tz
 
 
 
-class Home(TemplateView):
-    template_name = "attendance/home.html"
+# class Home(TemplateView):
+#     template_name = "attendance/home.html"
 
 def display_empname():
     all_members = CustomUser.objects.all()
@@ -589,22 +589,21 @@ def start_button_status(request):
             return {'Start': "True", "Finish": "True"}
     return {'Start': "", "Finish": ""}
 
-def filtered_empnames(request):
-    context =  display_empname()
-    context1 = filter_attendance_name(request)
-    data = attendance_form_filter(context, context1)
-    return data
-
 
 def start_time(request):
     obj1 = CustomUser.objects.get(id = request.user.id)
     start_tm = str(datetime.datetime.now().time())[:8]
-    TimeSheetData.objects.create(user_id = obj1,
+
+    nm = CustomUser.objects.get(email = request.user.email)
+    obj2 = TimeSheetData.objects.filter(user_id = nm,
+                                        date = datetime.datetime.now()
+                                        )
+
+    if not obj2:
+        TimeSheetData.objects.create(user_id = obj1,
                                  name = request.user.first_name +" "+ request.user.last_name,
                                  start_time = start_tm,
                                  )
-    data = filtered_empnames(request)
-    btndict = start_button_status(request)
     return render(request, 'attendance/timesheet_record.html', {**data, **btndict})
     # return redirect('/timesheet/form')
 
@@ -622,15 +621,14 @@ def finish_time(request):
     time_diff = t1 - t2
     obj3.total_time = str(datetime.datetime.strptime(str(time_diff), "%H:%M:%S").time())
     obj3.save()
-    data = filtered_empnames(request)
-    btndict = start_button_status(request)
-    return render(request, 'attendance/timesheet_record.html', {**data, **btndict})
+    return redirect('/timesheet/record')
     # return redirect('/timesheet/form')
 
 def timesheet_record(request):
-    data = filtered_empnames(request)
+    context =  display_empname()
+    context1 = filter_attendance_name(request)
+    data = attendance_form_filter(context, context1)
     btndict = start_button_status(request)
-    
     return render(request, 'attendance/timesheet_record.html', {**data, **btndict})
 
 def record_updation(obj6):
