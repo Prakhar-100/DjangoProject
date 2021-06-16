@@ -35,6 +35,7 @@ from notifications.signals import notify
 from django.conf import settings
 from django.core.mail import send_mail
 from dateutil import tz 
+from chat.views import filter_channel_names
 
 
 
@@ -69,7 +70,9 @@ def attendance_data(request):
         AttendanceModel.objects.create(emp = custom_user,image = emp_image,encod_image  = encod_image)
         return redirect('/attendance/home')
     context = display_empname()
-    return render(request, 'attendance/att_form.html', context)
+    onelink, multilink = filter_channel_names(request)
+    mydict = {'onelink': onelink, 'multilink': multilink}
+    return render(request, 'attendance/att_form.html', {**context, **mydict})
 
 
 class DataCollection(APIView):
@@ -216,7 +219,9 @@ def attendance_form(request):
     context =  display_empname()
     context1 = filter_attendance_name(request)
     data = attendance_form_filter(context, context1)
-    return render(request, 'attendance/attendance_form.html', data)
+    onelink, multilink = filter_channel_names(request)
+    mydict = {'onelink': onelink, 'multilink': multilink}
+    return render(request, 'attendance/attendance_form.html', {**data, **mydict})
 
 
 def load_names(request):
@@ -314,7 +319,10 @@ def dayoff_form(request):
         recipient_list = [rec2, rec1]
         mail_for_leave(subject, message, email_from, recipient_list)
         return redirect('/attendance/dayoff/success')
-    return render(request, 'attendance/dayoff_form.html', display_empname())
+    onedict = display_empname()
+    onelink, multilink = filter_channel_names(request)
+    mydict = {'onelink': onelink, 'multilink': multilink}
+    return render(request, 'attendance/dayoff_form.html', {**mydict, **onedict})
 
 def leave_form_success(request):
     ''' Function ensuring that Request have been sent successfully by displaying this message'''
@@ -323,7 +331,9 @@ def leave_form_success(request):
 def notifications_page(request):
     ''' This function display the notifications '''
     data = request.user.notifications.unread()
-    return render(request, 'attendance/notifications.html', {'data': data})
+    onelink, multilink = filter_channel_names(request)
+    mydict = {'onelink': onelink, 'multilink': multilink, 'data': data}
+    return render(request, 'attendance/notifications.html', mydict)
 
 def not_object(obj, id1):
     ''' This function filter the particular object of notification ''' 
@@ -547,7 +557,6 @@ def remove_holiday(request, pk):
 
 def holiday_display(request):
     ''' This function will display holiday list '''
-    data = HolidayData.objects.all()
 
     if request.method == "POST":
         HolidayData.objects.create(
@@ -567,8 +576,11 @@ def holiday_display(request):
         time_diff = date_obj1 - datetime.date.today()
         if time_diff ==  datetime.timedelta(1):
             mail_for_leave(subject, message, email_from, recipient_list)
-        
-    return render(request, 'attendance/holiday.html',{'data': data})
+
+    data = HolidayData.objects.all()
+    onelink, multilink = filter_channel_names(request)
+    mydict = {'onelink': onelink, 'multilink': multilink, 'data': data}
+    return render(request, 'attendance/holiday.html',mydict)
 
 
 def leave_info(request):
@@ -577,7 +589,13 @@ def leave_info(request):
     obj1 = UserDayoffData.objects.filter(name = request.user.username)
     obj2 = obj1.exclude(hr_approval = 'Not Approved')
     obj3 = obj2.exclude(tl_approval = 'Not Approved').order_by('-leave_to')
-    return render(request, 'attendance/leaveinfo.html', {'data': obj3})
+
+    onedict = display_empname()
+    onelink, multilink = filter_channel_names(request)
+    mydict = {'onelink': onelink, 'multilink': multilink}
+    alldict = {**mydict, **onedict}
+    objectdict = {'data': obj3}
+    return render(request, 'attendance/leaveinfo.html', {**alldict, **objectdict})
 
 def start_button_status(request):
     obj1 = TimeSheetData.objects.filter(user_id = request.user.id,
@@ -604,7 +622,7 @@ def start_time(request):
                                  name = request.user.first_name +" "+ request.user.last_name,
                                  start_time = start_tm,
                                  )
-    return render(request, 'attendance/timesheet_record.html', {**data, **btndict})
+    return redirect('/timesheet/record')
     # return redirect('/timesheet/form')
 
 def finish_time(request):
@@ -629,7 +647,10 @@ def timesheet_record(request):
     context1 = filter_attendance_name(request)
     data = attendance_form_filter(context, context1)
     btndict = start_button_status(request)
-    return render(request, 'attendance/timesheet_record.html', {**data, **btndict})
+    mydata = {**data, **btndict}
+    onelink, multilink = filter_channel_names(request)
+    mydict = {'onelink': onelink, 'multilink': multilink}
+    return render(request, 'attendance/timesheet_record.html', {**mydata, **mydict})
 
 def record_updation(obj6):
     current_time = datetime.datetime.now()

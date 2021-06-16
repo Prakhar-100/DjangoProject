@@ -7,7 +7,7 @@
 <div class="container txt-center">
  	<div  class="formcontainer" style="">
   <center>
- 	<form method="POST" class="allforms" id="personForm"  novalidate>
+ 	<form method="POST" class="allforms" id="personForm">
 	   {% csrf_token %}
 	   <h2><b> Create Channel </b></h2>
      <p>Admin: {{ request.user.first_name }} {{ request.user.last_name }}</p>
@@ -17,7 +17,7 @@
         <label for="id_usernm">Choose Member:</label>
       </div>
       <div class="col-md-8 col-bg-8 col-sm-8 col-lg-8">
-          <select name="members" required id="id_usernm" class="form-control">
+          <select name="members" required id="id_usernm" class="form-control" required>
           <optgroup label="Director">
           {% for member in DIR %}
             <option value="{{ member.id }}" class="dropdown-item" selected>

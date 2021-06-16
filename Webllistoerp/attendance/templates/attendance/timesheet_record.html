@@ -8,7 +8,7 @@
   <div class="row form-group">
   <div class="col-md-9 col-bg-9 col-sm-9 col-lg-9">
 	<form method="POST" id="personForm" class="timesheet-record" 
-		style="" novalidate>
+		style="" >
 		{% csrf_token %}
 		<center><h2><b>TimeSheet Record</b> </h2></center>
     <div class="row form-group">
@@ -62,7 +62,7 @@
 
     <div class="col-md-3 col-bg-3 col-sm-3 col-lg-3">
 		<label for="month">Month :</label>
-		<select name="month" id="mymonth" class="form-control">
+		<select name="month" id="mymonth" class="form-control" required>
 		  <option value="">----------</option>
 		  <option value="1">January</option>
 		  <option value="2">Febuary</option>
@@ -81,7 +81,7 @@
 
   <div class="col-md-2 col-bg-2 col-sm-2 col-lg-2">
     <label for="year">Year :</label>
-    <select name="year1" id="year1" class="form-control">
+    <select name="year1" id="year1" class="form-control" required>
       <option value="2021">2021</option>
       <option value="2020">2020</option>
       <option value="2019">2019</option>

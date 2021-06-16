@@ -8,7 +8,7 @@
  	<div class="formcontainer" style="">
 	<!-- Form to create group having one-to-many conversation -->
 	<center>
-	<form method="POST"  id="personForm" class="allforms" novalidate>
+	<form method="POST"  id="personForm" class="allforms" >
 		{% csrf_token %}
 		<h2><b>Create Group<b></h2>
      <p>Admin: {{ request.user.first_name }} {{ request.user.last_name }}</p>
@@ -17,7 +17,7 @@
           <label for="male">Group Name : </label>
       </div>
 		  <div class="col-md-8 col-bg-8 col-sm-8 col-lg-8">
-          <input type="text" name="grpname" class="form-control">
+          <input type="text" name="grpname" class="form-control" required>
       </div>
     </div><br>
 
@@ -26,7 +26,7 @@
           <label for="id_child">Select Members:</label> 
       </div>
   		<div class="col-md-8 col-bg-8 col-sm-8 col-lg-8">
-          <select name="members" class="form-control" required id="id_child" class="form-control" multiple>
+          <select name="members" class="form-control" id="id_child" class="form-control" multiple required="required">
   		    </select>
       </div>
     </div><br>
@@ -36,7 +36,7 @@
           <label for="id_usernm">Description:</label>
       </div>
       <div class="col-md-8 col-bg-8 col-sm-8 col-lg-8">
-          <textarea id="chat-log" cols="100" name="description"
+          <textarea id="chat-log" cols="100" name="description" required="required" 
               class="form-control rounded-0" rows="5" style="resize: none;"></textarea>
       </div><br>
     </div><br>
@@ -57,8 +57,8 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
 <script type="text/javascript">
   $(document).ready(function(){
-	const url = $('#personForm').attr("data-names-url");
- 	const usernmId = $('#').val();
+  	const url = $('#personForm').attr("data-names-url");
+   	const usernmId = $('#').val();
 
     $.ajax({
        type:  "GET",

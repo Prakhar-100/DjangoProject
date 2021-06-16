@@ -2,23 +2,18 @@
 {% load static %}
 
 
-  {% block title %}Login Page 2 | Creative - Bootstrap 3 Responsive Admin Template
-  {% endblock title %}
-
-  
-
+{% block title %}Login Page 2 | Creative - Bootstrap 3 Responsive Admin Template
+{% endblock title %}
   
 
   {% block body-content %}
-
-  <div class="container" style="width: 700px;">
-    <center>
+  <div class="container">
+   
     <form class="login-form" action = "" method="POST">
       {% csrf_token %}
-      <p style="font-size: 30px; font-family: bold;">CreateUser Form</p>
+      <p style="font-size: 30px; font-family: bold; text-align: center; margin: 0;">CreateUser Form</p>
       <div class="login-wrap">
-       
-        
+          
           {% for fm in form %}
           {{ fm.label_tag }}
           <br> 
@@ -26,16 +21,15 @@
            {{ fm.errors }}<br>
           {% endfor %}
         
-        <button class="btn btn-lg btn-block"
-          style="background-color: #2e3b46; color: white" value="Send"
+        <button class="btn btn-lg btn-block signbtn"
+          style="" value="Send"
           type="submit">Create User
         </button>
-        <!-- <button class="btn btn-info btn-lg btn-block">
-          <a href="/core/login">Login</a>
-        </button> -->
+        
+        </div>
       </div>
     </form>
-    </center>
+    
   </div>
 
   {% endblock body-content %}

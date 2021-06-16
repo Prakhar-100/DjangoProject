@@ -7,7 +7,7 @@
   <center>
   <form method="POST" id="personForm" 
      style="margin-left:300px;margin-top: 150px; background-color: white; padding: 55px"
-     data-names-url="{% url 'ajax_load_names' %}"  novalidate>
+     data-names-url="{% url 'ajax_load_names' %}">
 	   {% csrf_token %}
     <h3><b>User Heirarchy </b></h3>
     
@@ -17,7 +17,8 @@
       <label for="id_usernm">Parent:</label>
       </div>
       <div class="col-md-8 col-bg-8 col-sm-8 col-lg-8">
-        <select name="usernm" required id="id_usernm" class="form-control form-control-sm">
+        <select name="usernm"  id="id_usernm" class="form-control form-control-sm"  
+        required = "required">
           
           <optgroup label="Director">
           {% for member in DIR %}
@@ -57,7 +58,7 @@
               {{ member.first_name }} 
             {{ member.last_name }}</option>
           {% endfor %}
-          <option value=" " selected>-----------</option>
+          <option value="" selected>-----------</option>
           </optgroup>
         </select>
         </div>
@@ -67,15 +68,14 @@
       <label for="id_child">Child:</label> 
       </div>
       <div class="col-md-4 col-bg-4 col-sm-4 col-lg-4">
-      <select name="child[]"  required id="id_child" class="form-control" multiple>
+      <select name="child[]"  required = "required" id="id_child" class="form-control" multiple>
       </select>
       </div>
-    </div><br>
+    </div>
+    <br>
       
   
-    <input type="Submit" class="btn allbtn" 
-      style="" value="Send"
-      name="" value="Save">
+    <input type="Submit" class="btn allbtn" style="" name="" >
     </form>
       </center>
     </div>
@@ -84,6 +84,7 @@
 
 {% block javascript-code %}
  <!-- <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script> -->
+
  <script>
  	$('#id_usernm').change(function() {
  		const url = $('#personForm').attr("data-names-url");

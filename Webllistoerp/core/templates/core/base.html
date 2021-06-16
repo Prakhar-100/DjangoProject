@@ -31,6 +31,7 @@
   <!-- Custom styles -->
   <link href="{% static 'css/style.css' %}" rel="stylesheet">
   <link href="{% static 'css/style-responsive.css' %}" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   {% block custom-style-css %}
   {% endblock custom-style-css %}
 
@@ -99,7 +100,9 @@
           <div class="goupclass" id="multiid">
           <li>
             <a>Group Channels
-            <button onclick="location.href='{% url 'create-group' %}'">+</button>
+              <i class="fa fa-plus" onclick="location.href='{% url 'create-group' %}'" 
+              aria-hidden="true" style="padding-left: 20px;"></i>
+            <!-- <button >+</button> -->
             </a>
           </li>
           </div>
@@ -117,7 +120,9 @@
           <div class="goupclass">
           <li id="oneid">
               <a class="" >Direct Messages
-                <button onclick="location.href='{% url 'create-one-group' %}'">+</button>
+                <i class="fa fa-plus" onclick="location.href='{% url 'create-one-group' %}'" 
+                    aria-hidden="true" style="padding-left: 20px;"></i>
+                <!-- <button >+</button> -->
               </a>
           </li>
           </div>

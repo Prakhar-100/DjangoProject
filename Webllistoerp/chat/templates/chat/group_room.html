@@ -32,10 +32,11 @@
              size="100" 
              class="form-control" 
              name="mytext"
-             placeholder="Type Your Message">
+             placeholder="Type Your Message" required>
         </div>
         <div class="col-md-2 col-bg-2 col-sm-2 col-lg-2">
-            <input id="chat-message-submit" type="submit" value="Send" class="btn allbtn" style="">
+            <input id="chat-message-submit" type="submit" value="Send" class="btn allbtn"
+             style="" required>
         </div>
     </div>
     </form>
@@ -58,7 +59,6 @@
 
         function myFunction() {
             document.querySelector('#chat-message-input').value = ""
-            console.log("Prakhar Dwivedi")
         }
 
         chatSocket.onmessage = function(e) {

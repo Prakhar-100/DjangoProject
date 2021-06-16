@@ -14,11 +14,11 @@
   	</p>
   	<h2>Notifications list</h2>
   	{% for ele in data %}
-  	<div style="background-color: white">
+  	<div style="background-color: white;" class="nothead">
       {% if request.user.designation == "Project Manager" %}
           {% if "Response" in ele.verb %}
-            <h4 class="nothead">Notification by {{ ele.actor }}  at  {{ ele.timestamp }}</h4>
-            <h5 class = "desclass">{{ ele.description }}</h5>
+            <h4>Notification by {{ ele.actor }}  at  {{ ele.timestamp }}</h4>
+            <h5 class = "">{{ ele.description }}</h5>
             <button class="btn notibtn" style=""
             onclick="location.href='{% url 'make-read' ele.id ele.recipient_id %}'">
             OK</button>
@@ -57,7 +57,7 @@
             onclick="location.href='{% url 'make-read' ele.id ele.recipient_id %}'">
             OK</button>
           {% elif "Holiday" in ele.verb %}
-          <h4 class="nothead">Notification by {{ ele.actor }}  at  {{ ele.timestamp }}</h4>
+          <h4 class="">Notification by {{ ele.actor }}  at  {{ ele.timestamp }}</h4>
            <h5 class = "desclass">{{ ele.description }}</h5>
           <button class="btn notibtn" style=""
             onclick="location.href='{% url 'make-read' ele.id ele.recipient_id %}'">

@@ -8,7 +8,7 @@
  
  <div class="container">
   <center>
-  <div class="holidaytable" style="">
+  <div class="holidaydata" style="">
   {% if request.user.designation == 'Director' %}
     <h2>Holiday List</h2>
  	    <table class="holidaylist" style="">
@@ -30,7 +30,6 @@
           	Remove
           	</button>
           </td>
-          
         </tr>
         {% endfor %}
  	    </table>

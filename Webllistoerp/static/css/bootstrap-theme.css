@@ -3136,20 +3136,25 @@ input[type="button"].btn-block {
 [data-toggle="buttons"] > .btn > input[type="checkbox"] {
   display: none;
 }
+
 .input-group {
   position: relative;
   display: table;
   border-collapse: separate;
 }
+
 .input-group.col {
   float: none;
   padding-left: 0;
   padding-right: 0;
 }
-.input-group .form-control {
+
+
+.input-group  {
   width: 100%;
   margin-bottom: 0;
 }
+
 .input-group-lg > .form-control,
 .input-group-lg > .input-group-addon,
 .input-group-lg > .input-group-btn > .btn {
@@ -3159,17 +3164,20 @@ input[type="button"].btn-block {
   line-height: 1.33;
   border-radius: 6px;
 }
+
 select.input-group-lg > .form-control,
 select.input-group-lg > .input-group-addon,
 select.input-group-lg > .input-group-btn > .btn {
   height: 45px;
   line-height: 45px;
 }
+
 textarea.input-group-lg > .form-control,
 textarea.input-group-lg > .input-group-addon,
 textarea.input-group-lg > .input-group-btn > .btn {
   height: auto;
 }
+
 .input-group-sm > .form-control,
 .input-group-sm > .input-group-addon,
 .input-group-sm > .input-group-btn > .btn {
@@ -3179,22 +3187,26 @@ textarea.input-group-lg > .input-group-btn > .btn {
   line-height: 1.5;
   border-radius: 3px;
 }
+
 select.input-group-sm > .form-control,
 select.input-group-sm > .input-group-addon,
 select.input-group-sm > .input-group-btn > .btn {
   height: 30px;
   line-height: 30px;
 }
+
 textarea.input-group-sm > .form-control,
 textarea.input-group-sm > .input-group-addon,
 textarea.input-group-sm > .input-group-btn > .btn {
   height: auto;
 }
-.input-group-addon,
+
+/*.input-group-addon,
 .input-group-btn,
 .input-group .form-control {
   display: table-cell;
-}
+}*/
+
 .input-group-addon:not(:first-child):not(:last-child),
 .input-group-btn:not(:first-child):not(:last-child),
 .input-group .form-control:not(:first-child):not(:last-child) {

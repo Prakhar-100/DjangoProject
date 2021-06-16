@@ -18,7 +18,7 @@ style="margin-left:300px;margin-top: 150px; background-color: white; padding: 55
       <label for="parent">Parent : </label>
     </div>
     <div class="col-md-8 col-bg-8  col-sm-8 col-lg-8">
-		<select name="parent2" id="" class="form-control form-control-sm" >  
+		<select name="parent2" id="" class="form-control form-control-sm" required="required">  
 		
 	  <optgroup label="Director">
           {% for member in DIR %}
@@ -67,7 +67,7 @@ style="margin-left:300px;margin-top: 150px; background-color: white; padding: 55
     <label for="child">Child : </label>
   </div>
 	<div class="col-md-8 col-bg-8 col-sm-8 col-lg-8"> 
-    <select name="child2" id="secondChild" class="form-control form-control-sm" >
+    <select name="child2" id="secondChild" class="form-control form-control-sm" required="required">
 		
 	  <optgroup label="Director">
           {% for member in DIR %}
@@ -125,7 +125,7 @@ style="margin-left:300px;margin-top: 150px; background-color: white; padding: 55
     <label for="desination1">Current Designation:</label>
   </div>
   <div class="col-md-8 col-bg-8 col-sm-8 col-lg-8">
-    <input type="text" name="" id="currentDesignation" value="" class="form-control" />
+    <input type="text" name="" id="currentDesignation" value="" class="form-control" required />
   </div>
 </div><br>
 <div class = "row from-group">
@@ -133,7 +133,7 @@ style="margin-left:300px;margin-top: 150px; background-color: white; padding: 55
     <label for="desination2">Update Designation:</label>
   </div>
 	<div class="col-md-8 col-bg-8 col-sm-8 col-lg-8">	
-    <select name="designation2" id="" class="form-control form-control-sm">
+    <select name="designation2" id="" class="form-control form-control-sm" required="required">
 		  <option value="">----------</option>
 		  <option value="Cheif Technical Officer">Cheif Technical Officer</option>
 		  <option value="Web Developer">Web Developer</option>

@@ -24,7 +24,8 @@
           <label for="id_usernm">Name</label>
         </div>
         <div class="col-md-8 col-bg-8  col-sm-8 col-lg-8">
-          <select name="name2" required id="id_usernm" class="form-control form-control-sm">
+          <select name="name2" required id="id_usernm" class="form-control form-control-sm" 
+          required="required">
           
             <optgroup label="Director">
             {% for member in DIR %}
@@ -74,7 +75,7 @@
   		   <label for="img">Select image</label>
         </div>
         <div class="col-md-8 col-bg-8 col-sm-8 col-lg-8"> 
-          <input type="file" id="myFile" name="userimage" class="form-control">
+          <input type="file" id="myFile" name="userimage" required class="form-control">
         </div>
       </div><br>
       

@@ -41,9 +41,12 @@ def display_empname():
             TL.append(member)
     return {'all_members': all_members,'PM': PM, 'Web':Web,'CTO':CTO, 'DIR':DIR, 'TL': TL}
 
+# def leaving_to_new_room(request):
+#     return render(request,)
+
 def create_channel(request):
     empdict =  display_empname()
-    onelink, multilink = filter_channel_names(request)
+    
     if request.method == "POST":
         l3 = request.POST.getlist('members') + [str(request.user.id)]
         ides = CustomUser.objects.filter(id__in = l3)
@@ -53,8 +56,9 @@ def create_channel(request):
                                 description = request.POST['description'], 
                                 )
         obj2.member_name.set(ides)
-        return redirect('user-chat-room')
+        return redirect('/index')
         # return redirect()
+    onelink, multilink = filter_channel_names(request)
     mydict = {'onelink': onelink, 'multilink': multilink}
     return render(request, 'chat/create_channel.html', {**mydict, **empdict})
 
@@ -145,13 +149,6 @@ class OneChatRoom(View):
                                     )
         return redirect('/chat/one/%d'%(id))
 
-
-# def user_chat_room(request):
-#     onelink, multilink = filter_channel_names(request)
-
-#     context = {'onelink': onelink, 'multilink': multilink}
-#     return render(request, 'chat/user_chat_room.html', context)
-
 def createone_channel(request):
     # Function to create one channel
     enames =  display_empname()
@@ -166,7 +163,7 @@ def createone_channel(request):
                                 description = request.user.first_name +"  "+ request.user.last_name
                                 )
         obj2.member_name.set(ides)
-        return redirect('user-chat-room')
+        return redirect('/index')
     mydict = {'onelink': onelink, 'multilink': multilink}
     context =  {**mydict , **enames}
     return render(request, 'chat/create_oneroom.html', context)
