@@ -34,6 +34,7 @@
         {% endfor %}
  	    </table>
   {% elif request.user.designation == 'Cheif Technical Officer' %}
+     <h2>Holiday List</h2>
       <table class="holidaylist" style="">
         <tr>
         	<th>ID</th>
@@ -58,6 +59,7 @@
         {% endfor %}
       </table>
   {% else %}
+     <h2>Holiday List</h2>
      	<table class="holidaylist" style="">
         <tr>
         	<th>ID</th>

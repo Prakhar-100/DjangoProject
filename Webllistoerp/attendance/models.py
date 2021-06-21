@@ -44,7 +44,7 @@ class HolidayData(models.Model):
 	occasion = models.CharField(max_length = 200)
 
 	def __str__(self):
-		return str(self.date)+"  "+str(self.day_name)
+		return str(self.date)+"  "+str(self.occasion)
 
 class UserDayoffData(models.Model):
 	name = models.CharField(max_length = 100)

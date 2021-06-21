@@ -25,6 +25,7 @@ SECRET_KEY = '1re0r@u7+oa^1z&0gn(37$u^#bo11$p1c%s2j+q-mpd=hyv324'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+# DEBUG = False
 
 ALLOWED_HOSTS = ['9d5985cbf040.ngrok.io', '127.0.0.1','testserver']
 

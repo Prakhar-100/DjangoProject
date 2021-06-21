@@ -1,11 +1,9 @@
-from __future__ import absolute_import, unicode_literals
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
 from .forms import AttendanceInfo, DayoffForm
 from core.models import CustomUser, UserHeirarchy
-from .somewhere import handle_uploaded_file
-from .models import AttendanceModel, AttendanceData, DatewiseData, HolidayData, UserDayoffData
-from .models import TimeSheetData
+# from .somewhere import handle_uploaded_file
+from .models import AttendanceModel, AttendanceData, DatewiseData, HolidayData, UserDayoffData, TimeSheetData
 from .serializers import AttendanceSerializer
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -14,19 +12,13 @@ from rest_framework import status
 from attendance.get_face_encoding import calculate_face_encoding
 from rest_framework.views import APIView
 from django.http import Http404
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, View
 from django.views.generic.edit import FormView
 from django.views import View
-from django.views.generic import View
 from django.core.paginator import Paginator
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models import Q
 from django.http.response import HttpResponse, HttpResponseBadRequest
-from django.views.generic import View
-from attendance.parameter import (
-    Column, ForeignColumn,
-    ColumnLink, PlaceholderColumnLink,
-    Order, ColumnOrderError)
 import json
 import datetime
 import time
@@ -61,7 +53,7 @@ def display_empname():
 def attendance_data(request):
     ''' Uploading the image of employees or users in the form'''
     if request.method == 'POST':
-        emp_id, emp_image = request.POST['name2'], request.FILES['userimage']
+        emp_id, emp_image = request.POST.get('name2'), request.FILES['userimage']
         custom_user = CustomUser.objects.get(id = emp_id)
 		# Image is encoded using calculate_face_encoding method
         en_image = str(emp_image)
@@ -281,11 +273,12 @@ def mail_for_leave(subject, message, email_from, recipient_list):
 
 def dayoff_form(request):
     ''' Function to display Leave Request Form '''
-    username = request.user.email
-    name = username[:username.rfind('@')]
+    
     if request.method == 'POST':
-        calen1, calen2 =  request.POST['calen1'], request.POST['calen2']
-        rec1, rec2 = request.POST['hr'], request.POST['tl']
+        username = request.user.email
+        name = username[:username.rfind('@')]
+        calen1, calen2 =  request.POST.get('calen1'), request.POST.get('calen2')
+        rec1, rec2 = request.POST.get('hr'), request.POST.get('tl')
 
         # Retreiving a record from CustomUser
         recp1 = CustomUser.objects.get(email = rec1)
@@ -294,7 +287,7 @@ def dayoff_form(request):
 
         # Creating a attendance record of employee
         UserDayoffData.objects.create(
-                                  name = username,
+                                  name = name,
                                   leave_request_date = calen1,
                                   leave_from = calen1,
                                   leave_to = calen2,
@@ -333,6 +326,7 @@ def notifications_page(request):
     data = request.user.notifications.unread()
     onelink, multilink = filter_channel_names(request)
     mydict = {'onelink': onelink, 'multilink': multilink, 'data': data}
+    # mydict = {'onelink': onelink, 'multilink': multilink}
     return render(request, 'attendance/notifications.html', mydict)
 
 def not_object(obj, id1):
@@ -560,8 +554,8 @@ def holiday_display(request):
 
     if request.method == "POST":
         HolidayData.objects.create(
-                            date = request.POST['calen1'],
-                            occasion = request.POST['occassion']
+                            date = request.POST.get('calen1'),
+                            occasion = request.POST.get('occassion')
                             )
         subject = 'Holiday Alert'
         message = """ On occassion of """+str(request.POST['occassion'])+ """ there is holiday tomorrow .
@@ -650,7 +644,9 @@ def timesheet_record(request):
     mydata = {**data, **btndict}
     onelink, multilink = filter_channel_names(request)
     mydict = {'onelink': onelink, 'multilink': multilink}
+    # return render(request, 'attendance/timesheet_record.html', mydict)
     return render(request, 'attendance/timesheet_record.html', {**mydata, **mydict})
+
 
 def record_updation(obj6):
     current_time = datetime.datetime.now()

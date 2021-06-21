@@ -9850,6 +9850,8 @@ form.log-form .form-control {
     width: 85%;
 }
 
+/*.logbtn:hover {background-color: #777f87}*/
+
 form.log-form .input-group {
     margin-bottom: 25px;
 }
@@ -9864,3 +9866,21 @@ form.log-form .input-group-addon {
 .login-img i.icon_lock_alt {
     font-size: 45px;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

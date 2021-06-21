@@ -118,6 +118,7 @@ class GroupChat(View):
     def post(self, request, id, **kwargs):
         txt = request.POST['mytext']
         name = request.user.first_name +"  "+ request.user.last_name
+        name = "Prakhar Dwivedi"
         GroupMessage.objects.create(e_id = request.user.id,
                                     e_name = name,
                                     e_message = txt,
@@ -133,7 +134,8 @@ class OneChatRoom(View):
     def get(self, request, id, **kwargs):
         onelink, multilink = filter_channel_names(request)
         message = OnetoOneMessage.objects.filter(e_groupid = id).order_by('id')
-        name = request.user.first_name +"  "+ request.user.last_name
+        # name = request.user.first_name +"  "+ request.user.last_name
+        # name = "Prakhar Dwivedi"
         context = {'onelink': onelink, 'multilink': multilink, 'message': message,
                     'room_name': id, 'user_name': name}
         return render(request, self.template_name, context)
@@ -141,6 +143,8 @@ class OneChatRoom(View):
     def post(self, request, id, **kwargs):
         txt = request.POST['mytext']
         name = request.user.first_name +"  "+ request.user.last_name
+        # name = "Prakhar Dwivedi"
+        # myid = "34"
         OnetoOneMessage.objects.create(e_id = request.user.id,
                                        e_name = name,
                                        e_message = txt,

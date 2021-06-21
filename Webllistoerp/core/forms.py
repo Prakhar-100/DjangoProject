@@ -37,12 +37,6 @@ class Login_form(forms.Form):
 		'placeholder' : 'Password'
 		}))
 
-class UpdateForm(forms.Form):
-	first_name = forms.CharField(max_length = 50,
-		widget = forms.TextInput())
-	last_name = forms.CharField(max_length = 50,
-		widget = forms.TextInput()) 
-	email = forms.EmailField(widget = forms.EmailInput())
 
 class ProfileForm(forms.ModelForm):
 	child = forms.MultipleChoiceField()

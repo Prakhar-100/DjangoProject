@@ -3,7 +3,7 @@ from django.http import HttpResponse, HttpResponseRedirect, JsonResponse, HttpRe
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login, logout
-from .forms import Login_form, UserForm, UpdateForm, ProfileForm, DesignationUpdateForm
+from .forms import Login_form, UserForm, ProfileForm, DesignationUpdateForm
 from .models import CustomUser, UserHeirarchy
 from  chat.models import ChatGroupList
 from django.views.generic.edit import UpdateView
@@ -203,14 +203,13 @@ class Promodel(View, Useful_Methods):
 		return render(request, self.template_name, {**context, **mydict})
 
 	def post(self, request, *args, **kwargs):
-		print(request.POST)
 		user_id = int(request.POST.get('usernm'))
 
 		for record in request.POST.getlist('child[]'):
 			profilemodel = UserHeirarchy.objects.create(
-				usernm_id = user_id,
-				child_id = record
-				)
+														usernm_id = user_id,
+														child_id = record
+														)
 		return HttpResponseRedirect('/index') 
 
 
@@ -278,8 +277,10 @@ def designation_update(request):
 	# context =  display_empname()
 	onelink, multilink = filter_channel_names(request)
 	mydict = {'onelink': onelink, 'multilink': multilink}
-	# return render(request, 'core/designationupdate.html', {**context, **mydict})
-	return render(request, 'core/designationupdate.html', mydict)
+	context1 = filter_name(request)
+	context2 = form_data_filter(context1)
+	# return render(request, 'core/designationupdate.html', mydict)
+	return render(request, 'core/designationupdate.html', {**mydict, **context2})
 
 
 

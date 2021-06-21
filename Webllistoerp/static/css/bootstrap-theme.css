@@ -2103,11 +2103,14 @@ fieldset[disabled] .btn-link:focus {
   text-decoration: none;
 }
 .btn-lg {
-  padding: 10px 16px;
+  padding: 13px 16px;
   font-size: 18px;
   line-height: 1.33;
   border-radius: 6px;
 }
+
+.btn-block:hover {background-color: #777f87}
+
 .btn-sm,
 .btn-xs {
   padding: 5px 10px;
