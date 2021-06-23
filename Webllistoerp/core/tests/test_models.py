@@ -18,7 +18,6 @@ class SignUpModelTest(TestCase):
 		self.assertEqual(self.user.first_name, 'Prakhar1')
 
 
-
 class LoginPageTest(TestCase):
 	
 	def setUp(self):
@@ -33,24 +32,14 @@ class LoginPageTest(TestCase):
 
 
 # Failed Model Test
-# class DesignationUpdateModelTest(TestCase):
-
-# 	def setUp(self):
-# 		print("This is Designation Update SetUp")
-# 		self.user = CustomUser.objects.create(first_name=f, last_name=l, email=e,password=p,designation='Web Developer')
-
-# 	def test_first_name(self):
-# 		self.assertEqual(self.user.first_name, 'Prakhar1')
-
-
 # class ProfileModelTest(TestCase):
 
 # 	def setUp(self):
 # 		print("This is Profilemodel SetUp")
 # 		parent = '46'
 # 		# child = ['56', '88']
-# 		# child = CustomUser.objects.get(username = 'pratul_sharma@gmail.com')
-# 		self.user = UserHeirarchy.objects.create(usernm_id = parent, child_id = 88)
+# 		child = CustomUser.objects.get(id = '88')
+# 		self.user = UserHeirarchy.objects.create(usernm_id = parent, child = child)
 
 # 	def test_parent_name(self):
 # 		self.assertEqual(self.user.usernm_id,  '46')

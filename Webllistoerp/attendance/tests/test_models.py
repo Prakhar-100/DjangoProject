@@ -25,14 +25,14 @@ class DayoffFormModelTest(TestCase):
 		calen1 = '2021-06-17'
 		calen2 = '2021-06-19'
 		self.user = UserDayoffData.objects.create(
-                                  				name = name,
-                                  				leave_request_date = calen1,
-                                  				leave_from = calen1,
-                                  				leave_to = calen2,
-                                  				hr_approval = "Pending",
-                                  				tl_approval = "Pending",
-                                  				leave_reason = '\t\t\t\tLeave for Vaccination'
-                               					)
+                                  				  name = name,
+                                  				  leave_request_date = calen1,
+                                  				  leave_from = calen1,
+                                  				  leave_to = calen2,
+                                  				  hr_approval = "Pending",
+                                  				  tl_approval = "Pending",
+                                  				  leave_reason = '\t\t\t\tLeave for Vaccination'
+                               					  )
 
 	def test_first_name(self):
 		self.assertEqual(self.user.name, 'alban.shhai32')

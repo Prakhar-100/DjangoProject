@@ -3,7 +3,7 @@ from django.http import HttpResponse, HttpResponseRedirect, JsonResponse, HttpRe
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login, logout
-from .forms import Login_form, UserForm, ProfileForm, DesignationUpdateForm
+from .forms import Login_form, UserForm
 from .models import CustomUser, UserHeirarchy
 from  chat.models import ChatGroupList
 from django.views.generic.edit import UpdateView
@@ -177,15 +177,16 @@ class Login1(View):
 		return render(request, self.template_name, {'form': form})
 
 	def post(self, request):
-		usermail = request.POST['user_email']
-		password = request.POST['password']
-		user = authenticate(email=usermail, password=password)
+		usermail = request.POST.get('user_email')
+		password = request.POST.get('password')
+		f = self.form_class(request.POST)
 
+		user = authenticate(email=usermail, password=password)
 		if user is not None:
 			login(request, user)
 			return redirect('/index')
 		else:
-			return HttpResponse("Username and password is incorrect")
+			return render(request, self.template_name, {'form': f})
 		return render(request, "registration/login.html")
 	
 

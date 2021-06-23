@@ -23,6 +23,7 @@ class UserForm(UserCreationForm):
 		model = CustomUser
 		fields = ['first_name', 'last_name', 'email', 
 		 'password1', 'password2','designation']
+		 
 
 
 class Login_form(forms.Form):
@@ -36,28 +37,6 @@ class Login_form(forms.Form):
 		'class' : 'form-control',
 		'placeholder' : 'Password'
 		}))
-
-
-class ProfileForm(forms.ModelForm):
-	child = forms.MultipleChoiceField()
-	# child = forms.CharField(
-	# 	widget = MultiSelectField(is_hidden = True),
-	# )
-
-	class Meta:
-		model  = UserHeirarchy
-		fields = ['usernm', 'child']
-		labels = {'child': "Child", 'usernm':'Parent'}
-
-	# def __init__(self, *args, **kwargs):
-	# 	super().__init__(*args, **kwargs)
-	# 	# self.fields['child'].queryset = CustomUser.objects.all()
-	
-class DesignationUpdateForm(forms.Form):
-	parent = forms.ModelChoiceField(queryset = CustomUser.objects.all())
-	child = forms.CharField(widget = forms.TextInput())
-	current_designation = forms.CharField(widget = forms.TextInput())
-	change_designation = forms.CharField(widget = forms.TextInput())
 
 
       
