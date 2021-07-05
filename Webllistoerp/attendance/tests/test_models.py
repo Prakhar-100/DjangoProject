@@ -1,8 +1,10 @@
 from django.test import TestCase
 from chat.models import OnetoOneMessage
-from attendance.models import HolidayData, UserDayoffData
+from attendance.models import HolidayData, UserDayoffData, TimeSheetData, DatewiseData, AttendanceData
+from core.models import CustomUser
 from django.utils import timezone
 from django.test import Client
+import datetime
 
 
 
@@ -15,6 +17,7 @@ class HolidayModelTest(TestCase):
 
 	def test_first_name(self):
 		self.assertEqual(self.user.occasion, 'Testing Day')
+		self.assertTrue(isinstance(self.user, HolidayData))
 
 
 
@@ -36,4 +39,63 @@ class DayoffFormModelTest(TestCase):
 
 	def test_first_name(self):
 		self.assertEqual(self.user.name, 'alban.shhai32')
+
+
+class TimeSheetModelTest(TestCase):
+
+	def setUp(self):
+		# obj1 = CustomUser.objects.get(id = 5)
+		# use = '5'
+		n = "Piyush Singh"
+		d = datetime.date(2021, 6, 25)
+		st = "11:50:21"
+		ft = "12:05:40"
+		tt = "00:02:00"
+		self.user = TimeSheetData.objects.create(name = n,
+												 date = d,
+												 start_time = st,
+												 finish_time = ft,
+												 total_time =  tt
+												 )
+
+	def test_first_name(self):
+		self.assertEqual(self.user.date, datetime.date(2021, 6, 25))
+		self.assertTrue(isinstance(self.user, TimeSheetData))
+
+
+class DatewiseModelTest(TestCase):
+
+	def setUp(self):
+		n = "alban_sheikh"
+		d = datetime.date(2021, 6, 23)
+		wk = "Thursday"
+		ti = "08:30 PM"
+		to = "07:30 PM"
+		ws = "Full Day Working"
+		self.user = DatewiseData.objects.create(name = n,
+												date = d,
+												week = wk,
+												time_in = ti,
+												time_out =  to,
+												work_status = ws
+												)
+
+	def test_first_name(self):
+		self.assertEqual(self.user.date, datetime.date(2021, 6, 23))
+		self.assertTrue(isinstance(self.user, DatewiseData))
+
+
+class AttendanceDataModelTest(TestCase):
+
+	def setUp(self):
+		self.user = AttendanceData.objects.create(timestamp = '19-Apr-2021 (19:15:35.263131)',
+												  emp = "meghraj_pardesi")
+
+	def test_first_name(self):
+		self.assertEqual(self.user.emp, "meghraj_pardesi")
+		self.assertTrue(isinstance(self.user, AttendanceData))
+
+
+
+
 

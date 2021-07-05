@@ -186,7 +186,8 @@ class Login1(View):
 			login(request, user)
 			return redirect('/index')
 		else:
-			return render(request, self.template_name, {'form': f})
+			error = "Please enter valid useremail and password"
+			return render(request, self.template_name, {'form': f, 'key': error})
 		return render(request, "registration/login.html")
 	
 

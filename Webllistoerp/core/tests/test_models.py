@@ -16,6 +16,7 @@ class SignUpModelTest(TestCase):
 
 	def test_first_name(self):
 		self.assertEqual(self.user.first_name, 'Prakhar1')
+		self.assertTrue(isinstance(self.user, CustomUser))
 
 
 class LoginPageTest(TestCase):
@@ -29,17 +30,14 @@ class LoginPageTest(TestCase):
 		self.assertEqual(response.status_code, 200)
 
 
+class ProfileModelTest(TestCase):
 
+	def setUp(self):
+		# parent = '46'
+		# child = ['56', '88']
+		# child = CustomUser.objects.get(id = '88')
+		self.user = UserHeirarchy.objects.create()
 
-# Failed Model Test
-# class ProfileModelTest(TestCase):
-
-# 	def setUp(self):
-# 		print("This is Profilemodel SetUp")
-# 		parent = '46'
-# 		# child = ['56', '88']
-# 		child = CustomUser.objects.get(id = '88')
-# 		self.user = UserHeirarchy.objects.create(usernm_id = parent, child = child)
-
-# 	def test_parent_name(self):
-# 		self.assertEqual(self.user.usernm_id,  '46')
+	def test_parent_name(self):
+		self.assertEqual(self.user.usernm_id,  None)
+		self.assertTrue(isinstance(self.user, UserHeirarchy))
