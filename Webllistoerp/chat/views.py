@@ -134,7 +134,7 @@ class OneChatRoom(View):
     def get(self, request, id, **kwargs):
         onelink, multilink = filter_channel_names(request)
         message = OnetoOneMessage.objects.filter(e_groupid = id).order_by('id')
-        # name = request.user.first_name +"  "+ request.user.last_name
+        name = request.user.first_name +"  "+ request.user.last_name
         # name = "Prakhar Dwivedi"
         context = {'onelink': onelink, 'multilink': multilink, 'message': message,
                     'room_name': id, 'user_name': name}
