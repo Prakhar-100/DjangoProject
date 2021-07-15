@@ -20,50 +20,50 @@
             <h4>Notification by {{ ele.actor }}  at  {{ ele.timestamp }}</h4>
             <h5 class = "">{{ ele.description }}</h5>
             <button class="btn notibtn" style=""
-            onclick="location.href='{% url 'make-read' ele.id ele.recipient_id %}'">
+            onclick="location.href='{% url 'make-read' ele.id %}'">
             OK</button>
           {% elif "Holiday" in ele.verb %}
             <h4>Notification by {{ ele.actor }}  at  {{ ele.timestamp }}</h4>
             <h5 class = "desclass">{{ ele.description }}</h5>
             <button class="btn notibtn" style=""
-            onclick="location.href='{% url 'make-read' ele.id ele.recipient_id %}'">
+            onclick="location.href='{% url 'make-read' ele.id  %}'">
             OK</button>
           {% else %}
-            <h4><a href="{% url 'tl-leave'  ele.id ele.recipient_id %}">
+            <h4><a href="{% url 'tl-leave'  ele.id %}">
               Notification by {{ ele.actor }}  at  {{ ele.timestamp }}</a></h4>
           {% endif %}
       {% elif request.user.designation == "Cheif Technical Officer" %}
           {% if "Response" in ele.verb %}
-           <h4>Notification by {{ ele.actor }}  at  {{ ele.timestamp }}</h4>
-           <h5 class = "desclass">{{ ele.description }}</h5>
-           <button class="btn notibtn" style=""
-           onclick="location.href='{% url 'make-read' ele.id ele.recipient_id %}'">
-           OK</button>
+             <h4>Notification by {{ ele.actor }}  at  {{ ele.timestamp }}</h4>
+             <h5 class = "desclass">{{ ele.description }}</h5>
+             <button class="btn notibtn" style=""
+             onclick="location.href='{% url 'make-read' ele.id  %}'">
+             OK</button>
           {% elif "Holiday" in ele.verb %}
-          <h4>Notification by {{ ele.actor }}  at  {{ ele.timestamp }}</h4>
-           <h5 class = "desclass">{{ ele.description }}</h5>
-           <button class="btn notibtn" style=""
-           onclick="location.href='{% url 'make-read' ele.id ele.recipient_id %}'">
-           OK</button>
+            <h4>Notification by {{ ele.actor }}  at  {{ ele.timestamp }}</h4>
+             <h5 class = "desclass">{{ ele.description }}</h5>
+             <button class="btn notibtn" style=""
+             onclick="location.href='{% url 'make-read' ele.id  %}'">
+             OK</button>
           {% else %}
-           <h4><a href="{% url 'hr-leave'  ele.id ele.recipient_id %}">
-            Notification by {{ ele.actor }}  at  {{ ele.timestamp }}</a></h4>
+             <h4><a href="{% url 'hr-leave'  ele.id %}">
+              Notification by {{ ele.actor }}  at  {{ ele.timestamp }}</a></h4>
           {% endif %}
       {% elif request.user.designation == "Director" %}
           {% if "Response" in ele.verb %}
-           <h4 class="nothead">Notification by {{ ele.actor }}  at  {{ ele.timestamp }}</h4>
-           <h5 class = "desclass">{{ ele.description }}</h5>
-           <button class="btn notibtn" style=""
-            onclick="location.href='{% url 'make-read' ele.id ele.recipient_id %}'">
-            OK</button>
+             <h4 class="nothead">Notification by {{ ele.actor }}  at  {{ ele.timestamp }}</h4>
+             <h5 class = "desclass">{{ ele.description }}</h5>
+             <button class="btn notibtn" style=""
+              onclick="location.href='{% url 'make-read' ele.id  %}'">
+              OK</button>
           {% elif "Holiday" in ele.verb %}
-          <h4 class="">Notification by {{ ele.actor }}  at  {{ ele.timestamp }}</h4>
-           <h5 class = "desclass">{{ ele.description }}</h5>
-          <button class="btn notibtn" style=""
-            onclick="location.href='{% url 'make-read' ele.id ele.recipient_id %}'">
-            OK</button>
+            <h4 class="">Notification by {{ ele.actor }}  at  {{ ele.timestamp }}</h4>
+             <h5 class = "desclass">{{ ele.description }}</h5>
+            <button class="btn notibtn" style=""
+              onclick="location.href='{% url 'make-read' ele.id  %}'">
+              OK</button>
           {% else %}
-           <h4><a href="{% url 'tl-leave'  ele.id ele.recipient_id %}">
+            <h4><a href="{% url 'tl-leave'  ele.id %}">
             Notification by {{ ele.actor }}  at  {{ ele.timestamp }}</a></h4>
           {% endif %}
       {% elif request.user.designation == "Tech Leader" %}
@@ -71,16 +71,16 @@
            <h4>Notification by {{ ele.actor }}  at  {{ ele.timestamp }}</h4>
            <h5 class = "desclass">{{ ele.description }}</h5>
            <button class="btn notibtn" style=""
-           onclick="location.href='{% url 'make-read' ele.id ele.recipient_id %}'">
+           onclick="location.href='{% url 'make-read' ele.id  %}'">
            OK</button>
           {% elif "Holiday" in ele.verb %}
             <h4>Notification by {{ ele.actor }}  at  {{ ele.timestamp }}</h4>
             <h5 class = "desclass">{{ ele.description }}</h5>
             <button class="btn notibtn" style=""
-            onclick="location.href='{% url 'make-read' ele.id ele.recipient_id %}'">
+            onclick="location.href='{% url 'make-read' ele.id  %}'">
             OK</button>
          {% else %}
-           <h4><a href="{% url 'tl-leave'  ele.id ele.recipient_id %}">
+           <h4><a href="{% url 'tl-leave'  ele.id  %}">
            Notification by {{ ele.actor }}  at  {{ ele.timestamp }}</a></h4>
          {% endif %}
       
@@ -89,13 +89,13 @@
            <h4>Notification by {{ ele.actor }}  at  {{ ele.timestamp }}</h4>
            <h5 class = "desclass">{{ ele.description }}</h5>
            <button class="btn notibtn" style=""
-           onclick="location.href='{% url 'make-read' ele.id ele.recipient_id %}'">
+           onclick="location.href='{% url 'make-read' ele.id  %}'">
            OK</button>
           {% elif "Holiday" in ele.verb %}
             <h4>Notification by {{ ele.actor }}  at  {{ ele.timestamp }}</h4>
             <h5>{{ ele.description }}</h5>
             <button class="btn notibtn" style=""
-            onclick="location.href='{% url 'make-read' ele.id ele.recipient_id %}'">
+            onclick="location.href='{% url 'make-read' ele.id  %}'">
             OK</button>
           {% else %}
           {% endif %}

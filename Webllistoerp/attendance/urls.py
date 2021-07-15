@@ -9,34 +9,34 @@ from attendance import views
 urlpatterns = [
 
   # Attendance URL
-  path('attendance/form', views.attendance_data, name = 'attendance-form'),
-  path('attendance/info', views.attendance_form, name = 'attendance-info'),
+  path('attendance/form', views.EmployeeData.as_view(), name = 'attendance-form'),
+  path('attendance/info', views.AttendanceInfo.as_view(), name = 'attendance-info'),
 
   # Leave URL
-  path('attendance/dayoff/form', views.dayoff_form, name = 'dayoff-form'),
-  path('attendance/dayoff/success', views.leave_form_success, name = 'dayoff-form-success'),
+  path('attendance/dayoff/form', views.DayoffForm.as_view(), name = 'dayoff-form'),
+  path('attendance/dayoff/success', views.LeaveFormSuccess.as_view(), name = 'dayoff-form-success'),
+  path('attendance/leave/info', views.LeaveInfo.as_view(), name = 'leave-info'),
 
   # Notification URL
-  path('attendance/notifications_page', views.notifications_page, name = 'notifications_page'),
-  path('not/read/<int:id1>/<int:id2>/', views.delete_not, name = 'make-read'),
+  path('attendance/notifications_page', views.NotificationsPage.as_view(), name = 'notifications_page'),
+  path('not/read/<int:id1>/', views.DeleteNot.as_view(), name = 'make-read'),
 
   # Holiday and Leave URL
-  path('attendance/holidays', views.holiday_display, name = 'holidays-page'),
-  path('attendance/leave/info', views.leave_info, name = 'leave-info'),
-  path('attendance/remove-holiday/<int:pk>/', views.remove_holiday, name = 'remove-holiday'),
+  path('attendance/holidays', views.HolidayDisplay.as_view(), name = 'holidays-page'),
+  path('attendance/remove-holiday/<int:pk>/', views.RemoveHoliday.as_view(), name = 'remove-holiday'),
 
   # Timesheet URL
-  path('timesheet/record/', views.timesheet_record, name = 'timesheet-record'),
-  path('timesheet/start/', views.start_time, name = 'start-time'),
-  path('timesheet/finish/', views.finish_time, name = 'finish-time'),
+  path('timesheet/record/', views.TimeSheetRecord.as_view(), name = 'timesheet-record'),
+  path('timesheet/start/', views.StartTime.as_view(), name = 'start-time'),
+  path('timesheet/finish/', views.FinishTime.as_view(), name = 'finish-time'),
 
   # TL approve path
-  path('att/tl/not/<int:id>/<int:id2>/', views.tl_leave, name = 'tl-leave'),
+  path('att/tl/not/<int:id>/', views.TlLeave.as_view(), name = 'tl-leave'),
   path('attendance/tl/approve/<int:id1>/<int:id2>/', views.tl_leave_approve, name = 'tl-approve'),
   path('attendance/tl/not-approve/<int:id1>/<int:id2>/', views.tl_leave_not_approve, name = 'tl-not-approve'),
 
   # HR approve path
-  path('att/hr/not/<int:id1>/<int:id2>/', views.hr_leave, name = 'hr-leave'),
+  path('att/hr/not/<int:id1>/', views.HrLeave.as_view(), name = 'hr-leave'),
   path('attendance/approve/hr/<int:id1>/<int:id2>/', views.hr_leave_approve, name = 'hr-approve'),
   path('attendance/hr/not-approve/<int:id1>/<int:id2>/', views.hr_not_approve, name = 'hr-not-approve'),
 

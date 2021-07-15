@@ -11,7 +11,7 @@
    	<h4>{{ id }}. Request for Leave</h4>
          <p>{{ des }}</p>
          <button type="submit" value=""  name='mybtn2' class="btn btn-primary"
-         onclick="location.href='{% url 'hr-approve' id recipient_id %}'">
+         onclick="location.href='{% url 'hr-approve' id %}'">
           Approve</button>
          <button type="submit" value="" name='mybtn3' class="btn btn-primary"
          onclick="location.href='{% url 'hr-not-approve' id recipient_id %}'">

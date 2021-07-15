@@ -3,83 +3,36 @@ from django.http import HttpResponse, HttpResponseRedirect, JsonResponse, HttpRe
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login, logout
-from .forms import Login_form, UserForm
-from .models import CustomUser, UserHeirarchy
+from core.forms import Login_form, UserForm
+from core.models import CustomUser, UserHeirarchy
 from  chat.models import ChatGroupList
-from django.views.generic.edit import UpdateView
-# from django.views.generic import TemplateView
+from django.views.generic.edit import UpdateView, FormView
 from django.views.generic.base import View, TemplateView
-from django.views.generic.edit import FormView
-# from django.views import View
 from django.conf import settings
 from django.core.mail import send_mail
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models import Q
-# from django.utils import six
 import json
 from chat.views import filter_channel_names
 
 
-class Useful_Methods():
-	def display_empname(self):
-		all_members = CustomUser.objects.all()
-		PM,Web,CTO,TL,DIR = [],[],[],[],[]
-		for member in all_members:
-		    if member.designation == 'Project Manager':
-		        PM.append(member)
-		    elif member.designation == 'Web Developer':
-		        Web.append(member)
-		    elif member.designation == 'Cheif Technical Officer':
-		        CTO.append(member)
-		    elif member.designation == 'Director':
-		        DIR.append(member)
-		    else:
-		        TL.append(member)
-		return {'all_members': all_members,'PM': PM, 'Web':Web,'CTO':CTO, 'DIR':DIR, 'TL': TL}
 
-	def filter_name(request, self):
-		if self.user.designation == 'Director':
-			data = CustomUser.objects.all()
+
+def display_empname(request):
+	all_members = CustomUser.objects.all()
+	PM,Web,CTO,TL,DIR = [],[],[],[],[]
+	for member in all_members:
+		if member.designation == 'Project Manager':
+			PM.append(member)
+		elif member.designation == 'Web Developer':
+			Web.append(member)
+		elif member.designation == 'Cheif Technical Officer':
+			CTO.append(member)
+		elif member.designation == 'Director':
+			DIR.append(member)
 		else:
-			obj1 = UserHeirarchy.objects.filter(child__username = self.user.username)
-			obj5 = CustomUser.objects.filter(username = obj1[0].usernm)
-			mylist = [obj5[0].id, self.user.id]
-			for ele in UserHeirarchy.objects.filter(usernm__username = self.user.username):
-				obj2 = CustomUser.objects.get(username = ele.child)
-				mylist.append(obj2.id)
-				for ele2 in UserHeirarchy.objects.filter(usernm__username = ele.child):
-					obj3 = CustomUser.objects.get(username = ele2.child)
-					mylist.append(obj3.id)
-					for ele3 in UserHeirarchy.objects.filter(usernm__username = ele2.child):
-						obj4 = CustomUser.objects.get(username = ele3.child)
-						mylist.append(obj4.id)
-			data = CustomUser.objects.filter(id__in = mylist).order_by('designation')
-		return data
-
-	def filter_channel_names(request, self):
-		chatlink = ChatGroupList.objects.all()
-		mylink, onelink, multilink = [], [], []
-
-		for obj in chatlink:
-		    if self.user in obj.member_name.all():
-		        mylink.append(obj)
-
-		for obj1 in mylink:
-		    if obj1.member_name.all().count() > 2:
-		    	multilink.append(obj1)
-		    else:
-		    	onelink.append(obj1)
-		return onelink, multilink
-
-	def form_data_filter(self, request, context1):
-		Web = [ele for ele in context1 if ele.designation == 'Web Developer']
-		DIR = [ele for ele in context1 if ele.designation == 'Director']
-		TL  = [ele for ele in context1  if ele.designation == 'Tech Leader']
-		PM  = [ele for ele in context1 if ele.designation == 'Project Manager']
-		CTO = [ele for ele in context1 if ele.designation == 'Cheif Technical Officer']
-		return {'Web': Web, 'DIR': DIR, 'TL':TL, 'PM': PM, 'CTO': CTO}
-
-
+			TL.append(member)
+	return {'all_members': all_members,'PM': PM, 'Web':Web,'CTO':CTO, 'DIR':DIR, 'TL': TL}
 
 def filter_name(request):
 	if request.user.designation == 'Director':
@@ -100,7 +53,8 @@ def filter_name(request):
 		data = CustomUser.objects.filter(id__in = mylist).order_by('designation')
 	return data
 
-def form_data_filter(context1):
+def form_data_filter(request):
+	context1 = filter_name(request)
 	Web = [ele for ele in context1 if ele.designation == 'Web Developer']
 	DIR = [ele for ele in context1 if ele.designation == 'Director']
 	TL  = [ele for ele in context1  if ele.designation == 'Tech Leader']
@@ -125,25 +79,14 @@ def filter_channel_names(request):
 
 
 
-# class Index(TemplateView, Useful_Methods):
-# 	template_name = 'core/index.html'
+class Index(TemplateView):
+	template_name = 'core/index.html'
 
-# 	def get_context_data(self, *args, **kwargs):
-# 		import pdb; pdb.set_trace()
-# 		context1 = super().filter_name(self)
-# 		context2 = super().form_data_filter(context1, self)
-# 		onelink, multilink = super().filter_channel_names(self)
-# 		mydict = {'onelink': onelink, 'multilink': multilink}
-# 		context3 = super(Index, self).get_context_data(*args, **kwargs)
-# 		context = {**context3, **mydict}
-# 		return context
-
-def index(request):
-	context1 = filter_name(request)
-	context2 = form_data_filter(context1)
-	onelink, multilink = filter_channel_names(request)
-	mydict = {'onelink': onelink, 'multilink': multilink}
-	return render(request, 'core/index.html', {**context2, **mydict})
+	def get(self, request, *args, **kwargs):
+		context2 = form_data_filter(request)
+		onelink, multilink = filter_channel_names(request)
+		mydict = {'onelink': onelink, 'multilink': multilink}
+		return render(request, self.template_name, {**context2, **mydict})
 
 
 
@@ -192,13 +135,13 @@ class Login1(View):
 	
 
 
-class Promodel(View, Useful_Methods):
+class Promodel(View):
 	""" This function is create a designation heirarchy of the users """
 	template_name = 'core/profile.html'
 	
 
 	def get(self, request, *args, **kwargs):
-		context =  super().display_empname()
+		context =  display_empname(request)
 		onelink, multilink = filter_channel_names(request)
 
 		mydict = {'onelink': onelink, 'multilink': multilink}
@@ -242,10 +185,16 @@ def load_names(request):
 	return JsonResponse(choice, safe=False)
 
 
-def designation_update(request):
-	""" This function is used to update the designation of the user and 
-	update the User Heirarchy """
-	if request.method == 'POST':
+
+class DesignationUpdate(View):
+
+	def get(self, request, *args, **kwargs):
+		onelink, multilink = filter_channel_names(request)
+		mydict = {'onelink': onelink, 'multilink': multilink}
+		context2 = form_data_filter(request)
+		return render(request, 'core/designationupdate.html', {**mydict, **context2})
+
+	def post(self, request, *args, **kwargs):
 		# Fetching child name
 		child_name = request.POST.get('child2')
 		# Fetching parent name
@@ -276,13 +225,8 @@ def designation_update(request):
 		# send_mail( subject, message, email_from, recipient_list )
 		return redirect('/index')
 
-	# context =  display_empname()
-	onelink, multilink = filter_channel_names(request)
-	mydict = {'onelink': onelink, 'multilink': multilink}
-	context1 = filter_name(request)
-	context2 = form_data_filter(context1)
-	# return render(request, 'core/designationupdate.html', mydict)
-	return render(request, 'core/designationupdate.html', {**mydict, **context2})
+
+
 
 
 

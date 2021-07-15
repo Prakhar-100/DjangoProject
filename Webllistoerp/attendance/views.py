@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
 from core.models import CustomUser, UserHeirarchy
-# from .somewhere import handle_uploaded_file
-from .models import AttendanceModel, AttendanceData, DatewiseData, HolidayData, UserDayoffData, TimeSheetData
+from attendance.models import AttendanceModel, AttendanceData, DatewiseData, HolidayData, UserDayoffData, TimeSheetData
+from chat.models import ChatGroupList
 from .serializers import AttendanceSerializer
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -11,12 +11,12 @@ from rest_framework import status
 from attendance.get_face_encoding import calculate_face_encoding
 from rest_framework.views import APIView
 from django.http import Http404
-from django.views.generic import TemplateView, View
-from django.views.generic.edit import FormView
+from django.views.generic import TemplateView, View, DetailView, ListView
+from django.views.generic.detail import DetailView
+from django.views.generic.edit import FormView, UpdateView, CreateView
+from django.views.generic.list import ListView
 from django.views import View
-from django.core.paginator import Paginator
 from django.core.serializers.json import DjangoJSONEncoder
-from django.db.models import Q
 from django.http.response import HttpResponse, HttpResponseBadRequest
 import json
 import datetime
@@ -27,6 +27,23 @@ from django.conf import settings
 from django.core.mail import send_mail
 from dateutil import tz 
 from chat.views import filter_channel_names
+
+
+
+def filter_channel_names(request):
+    chatlink = ChatGroupList.objects.all()
+    mylink, onelink, multilink = [], [], []
+
+    for obj in chatlink:
+        if request.user in obj.member_name.all():
+            mylink.append(obj)
+
+    for obj1 in mylink:
+        if obj1.member_name.all().count() > 2:
+            multilink.append(obj1)
+        else:
+            onelink.append(obj1)
+    return onelink, multilink
 
 
 
@@ -49,21 +66,42 @@ def display_empname():
             TL.append(member)
     return {'all_members': all_members,'PM': PM, 'Web':Web,'CTO':CTO, 'DIR':DIR, 'TL': TL}
 
-def attendance_data(request):
-    ''' Uploading the image of employees or users in the form'''
-    if request.method == 'POST':
+# def attendance_data(request):
+#     ''' Uploading the image of employees or users in the form'''
+#     if request.method == 'POST':
+#         emp_id, emp_image = request.POST.get('name2'), request.FILES['userimage']
+#         custom_user = CustomUser.objects.get(id = emp_id)
+#     	# Image is encoded using calculate_face_encoding method
+#         en_image = str(emp_image)
+#         image_path = f'/home/dell/images/{en_image}'
+#         encod_image = calculate_face_encoding(image_path)
+#         AttendanceModel.objects.create(emp = custom_user,image = emp_image,encod_image  = encod_image)
+#         return redirect('/attendance/home')
+#     context = display_empname()
+#     onelink, multilink = filter_channel_names(request)
+#     mydict = {'onelink': onelink, 'multilink': multilink}
+#     return render(request, 'attendance/att_form.html', {**context, **mydict})
+
+class EmployeeData(FormView):
+
+    def get(self, request, *args, **kwargs):
+        context = display_empname()
+        onelink, multilink = filter_channel_names(request)
+        mydict = {'onelink': onelink, 'multilink': multilink}
+        return render(request, 'attendance/att_form.html', {**context, **mydict})
+
+    def post(self, request, *args, **kwargs):
         emp_id, emp_image = request.POST.get('name2'), request.FILES['userimage']
         custom_user = CustomUser.objects.get(id = emp_id)
-		# Image is encoded using calculate_face_encoding method
+        # Image is encoded using calculate_face_encoding method
         en_image = str(emp_image)
         image_path = f'/home/dell/images/{en_image}'
         encod_image = calculate_face_encoding(image_path)
         AttendanceModel.objects.create(emp = custom_user,image = emp_image,encod_image  = encod_image)
         return redirect('/attendance/home')
-    context = display_empname()
-    onelink, multilink = filter_channel_names(request)
-    mydict = {'onelink': onelink, 'multilink': multilink}
-    return render(request, 'attendance/att_form.html', {**context, **mydict})
+
+
+
 
 
 class DataCollection(APIView):
@@ -204,15 +242,27 @@ def attendance_form_filter(context, context1):
 
 
 
-def attendance_form(request):
-    ''' User can search attendance record w.r.t. monthly , weekly, yearly and of juniors also. '''
+# def attendance_info(request):
+#     ''' User can search attendance record w.r.t. monthly , weekly, yearly and of juniors also. '''
 
-    context =  display_empname()
-    context1 = filter_attendance_name(request)
-    data = attendance_form_filter(context, context1)
-    onelink, multilink = filter_channel_names(request)
-    mydict = {'onelink': onelink, 'multilink': multilink}
-    return render(request, 'attendance/attendance_form.html', {**data, **mydict})
+#     context =  display_empname()
+#     context1 = filter_attendance_name(request)
+#     data = attendance_form_filter(context, context1)
+#     onelink, multilink = filter_channel_names(request)
+#     mydict = {'onelink': onelink, 'multilink': multilink}
+#     return render(request, 'attendance/attendance_form.html', {**data, **mydict})
+
+class AttendanceInfo(DetailView):
+    template_name = 'attendance/attendance_form.html'
+
+    def get(self, request, *args, **kwargs):
+        context =  display_empname()
+        context1 = filter_attendance_name(request)
+        data = attendance_form_filter(context, context1)
+        onelink, multilink = filter_channel_names(request)
+        mydict = {'onelink': onelink, 'multilink': multilink}
+        return render(request, self.template_name, {**data, **mydict})
+
 
 
 def load_names(request):
@@ -237,8 +287,8 @@ def load_names(request):
     obj4 = DatewiseData.objects.filter(id__in = week_data)
 
     # Filtering the records yearly
-    obj5 = [ele.date for ele in obj4 if ele.date.year == int(request.GET.get('year'))]
-    obj6 = DatewiseData.objects.filter(date__in = obj5).order_by('date')
+    obj5 = [ele.id for ele in obj4 if ele.date.year == int(request.GET.get('year'))]
+    obj6 = DatewiseData.objects.filter(id__in = obj5).order_by('date')
 
     # Converting the record in list data type
     obj7 = list(obj6.values())
@@ -258,8 +308,8 @@ def load_names_monthly(request):
     obj2 = DatewiseData.objects.filter(id__in = tup)
 
     # Filtering the attendance record yearly 
-    obj3 = [ele.date for ele in obj2 if ele.date.year == int(request.GET.get('year'))]
-    obj4 = DatewiseData.objects.filter(date__in = obj3).order_by('date')
+    obj3 = [ele.id for ele in obj2 if ele.date.year == int(request.GET.get('year'))]
+    obj4 = DatewiseData.objects.filter(id__in = obj3).order_by('date')
 
     # Converting the record in list data type
     obj5 = list(obj4.values())
@@ -270,10 +320,16 @@ def mail_for_leave(subject, message, email_from, recipient_list):
     send_mail(subject, message, email_from, recipient_list)
 
 
-def dayoff_form(request):
-    ''' Function to display Leave Request Form '''
-    
-    if request.method == 'POST':
+class DayoffForm(FormView):
+    template_name = 'attendance/dayoff_form.html'
+
+    def get(self, request, *args, **kwargs):
+        onedict = display_empname()
+        onelink, multilink = filter_channel_names(request)
+        mydict = {'onelink': onelink, 'multilink': multilink}
+        return render(request, self.template_name, {**mydict, **onedict})
+
+    def post(self, request, *args, **kwargs):
         username = request.user.email
         name = username[:username.rfind('@')]
         calen1, calen2 =  request.POST.get('calen1'), request.POST.get('calen2')
@@ -311,22 +367,25 @@ def dayoff_form(request):
         recipient_list = [rec2, rec1]
         mail_for_leave(subject, message, email_from, recipient_list)
         return redirect('/attendance/dayoff/success')
-    onedict = display_empname()
-    onelink, multilink = filter_channel_names(request)
-    mydict = {'onelink': onelink, 'multilink': multilink}
-    return render(request, 'attendance/dayoff_form.html', {**mydict, **onedict})
 
-def leave_form_success(request):
-    ''' Function ensuring that Request have been sent successfully by displaying this message'''
-    return render(request, 'attendance/leave_success.html', {})
 
-def notifications_page(request):
+# def leave_form_success(request):
+#     ''' Function ensuring that Request have been sent successfully by displaying this message'''
+#     return render(request, 'attendance/leave_success.html', {})
+
+class LeaveFormSuccess(TemplateView):
+    template_name = 'attendance/leave_success.html'
+
+
+class NotificationsPage(ListView):
     ''' This function display the notifications '''
-    data = request.user.notifications.unread()
-    onelink, multilink = filter_channel_names(request)
-    mydict = {'onelink': onelink, 'multilink': multilink, 'data': data}
-    # mydict = {'onelink': onelink, 'multilink': multilink}
-    return render(request, 'attendance/notifications.html', mydict)
+    template_name = 'attendance/notifications.html'
+
+    def get(self, request, *args, **kwargs):
+        data = request.user.notifications.unread()
+        onelink, multilink = filter_channel_names(request)
+        return render(request, 'attendance/notifications.html', {'onelink': onelink, 'multilink': multilink, 'data': data})
+
 
 def not_object(obj, id1):
     ''' This function filter the particular object of notification ''' 
@@ -343,31 +402,38 @@ def delete_not_object(obj, id1):
         if i.id == id1:
             i.mark_as_read()
 
-def delete_not(request, id1, id2):
-    ''' Makes the particular object of notifications as read '''
-    user = CustomUser.objects.get(pk = id2)
-    obj = user.notifications.unread()
-    for i in obj:
-        if i.id == id1:
-            i.mark_as_read()
-    return redirect('/attendance/notifications_page')
 
-            
 
-def tl_leave(request, id, id2):
-    ''' Displaying the particular notifications of TL/PM '''
-    user = CustomUser.objects.get(pk = id2)
-    obj = user.notifications.unread()
-    mydata = not_object(obj, id)
-    return render(request, 'attendance/tl_leave.html', mydata)
+class DeleteNot(View):
 
-def tl_leave_approve(request,  id1, id2):
+    def get(self, request, id1):
+        ''' Makes the particular object of notifications as read '''
+        obj = request.user.notifications.unread()
+        for i in obj:
+            if i.id == id1:
+                i.mark_as_read()
+        return redirect('/attendance/notifications_page')
+
+
+class TlLeave(DetailView):
+    template_name = 'attendance/tl_leave.html'
+
+    def get(self, request, id, **kwargs):
+        ''' Displaying the particular notifications of TL/PM '''
+        obj = request.user.notifications.unread()
+        mydata = not_object(obj, id)
+        return render(request, 'attendance/tl_leave.html', mydata)
+
+
+# class TlLeaveApprove(UpdateView):
+    # template_name = 'attendance/notifications.html'
+
+def tl_leave_approve(self, request,  id1, id2):
     ''' This is a AJAX function and this will call when the TL/PM will approve the 
           leave request. '''
     data = request.user.notifications.unread()
     user = CustomUser.objects.get(pk = id2)
-    obj = user.notifications.unread()
-    mydata = not_object(obj, id1)
+    obj = request.user.notifications.unread()
 
     date1 = mydata['verb'][:mydata['verb'].rfind('@')]
     date2 = mydata['verb'][mydata['verb'].rfind('@') + 1:]
@@ -398,14 +464,17 @@ def tl_leave_approve(request,  id1, id2):
     # Unread the particular object of notification
     delete_not_object(obj, id1)
 
-    return render(request, 'attendance/notifications.html', {'data': data})
+    return render(request, 'attendance/notifications.html', {'data': obj})
+
+# class TlLeaveNotApprove(UpdateView):
+#     template_name = 'attendance/notifications.html'
 
 def tl_leave_not_approve(request, id1, id2):
     ''' This is a AJAX function and this will call when the TL/PM will not approve the 
           leave request. '''
-    data = request.user.notifications.unread()
-    user = CustomUser.objects.get(pk = id2)
-    obj = user.notifications.unread()
+    # data = request.user.notifications.unread()
+    # user = CustomUser.objects.get(pk = id2)
+    obj = request.user.notifications.unread()
     mydata = not_object(obj, id1)
 
     date1 = mydata['verb'][:mydata['verb'].rfind('@')]
@@ -438,7 +507,7 @@ def tl_leave_not_approve(request, id1, id2):
     # Unread the particular object of notification
     delete_not_object(obj, id1)
 
-    return render(request, 'attendance/notifications.html', {'data': data})
+    return render(request, self.template_name, {'data': obj})
 
 def hr_leave_approve(request, id1, id2):
     ''' This is a AJAX function and this will call when the CTO/HR will approve the 
@@ -504,12 +573,15 @@ def hr_leave_approve(request, id1, id2):
 
     return render(request, 'attendance/notifications.html', {'data': data})
 
-def hr_leave(request, id1, id2):
-    ''' Displaying the particular notifications of HR/ CTO '''
-    user = CustomUser.objects.get(pk = id2)
-    obj = user.notifications.unread()
-    mydata = not_object(obj, id1)
-    return render(request, 'attendance/hr_leave.html', mydata)
+
+class HrLeave(UpdateView):
+    template_name = 'attendance/hr_leave.html'
+
+    def hr_leave(request, id1):
+        ''' Displaying the particular notifications of HR/ CTO '''
+        obj = request.user.notifications.unread()
+        mydata = not_object(obj, id1)
+        return render(request, self.template_name, mydata)
 
 def hr_not_approve(request, id1, id2):
     ''' This is a AJAX function and this will call when the CTO/HR will NOT approve the 
@@ -538,20 +610,28 @@ def hr_not_approve(request, id1, id2):
 
     # Making a particular notification object as read
     delete_not_object(obj, id1)
-
     return render(request, 'attendance/notifications.html', {'data': data})
 
-def remove_holiday(request, pk):
+class RemoveHoliday(UpdateView):
     ''' This function will call when particular holiday object have been delete '''
-    obj1 = HolidayData.objects.get(id = pk)
-    obj1.delete()
-    return redirect('/attendance/holidays')
+    def get(self, request, pk):
+        obj1 = HolidayData.objects.get(id = pk)
+        obj1.delete()
+        return redirect('/attendance/holidays')
 
 
-def holiday_display(request):
-    ''' This function will display holiday list '''
 
-    if request.method == "POST":
+class HolidayDisplay(ListView):
+    template_name = 'attendance/holiday.html'
+
+    def get(self, request, *args, **kwargs):
+        data = HolidayData.objects.all()
+        onelink, multilink = filter_channel_names(request)
+        return render(request, self.template_name, {'onelink': onelink, 'multilink': multilink, 'data': data})
+
+    def post(self, request, *args, **kwargs):
+        data = HolidayData.objects.all()
+        onelink, multilink = filter_channel_names(request)
         HolidayData.objects.create(
                             date = request.POST.get('calen1'),
                             occasion = request.POST.get('occassion')
@@ -569,26 +649,20 @@ def holiday_display(request):
         time_diff = date_obj1 - datetime.date.today()
         if time_diff ==  datetime.timedelta(1):
             mail_for_leave(subject, message, email_from, recipient_list)
-
-    data = HolidayData.objects.all()
-    onelink, multilink = filter_channel_names(request)
-    mydict = {'onelink': onelink, 'multilink': multilink, 'data': data}
-    return render(request, 'attendance/holiday.html',mydict)
+        return render(request, self.template_name, {'onelink': onelink, 'multilink': multilink, 'data': data})
 
 
-def leave_info(request):
+class LeaveInfo(DetailView):
     ''' This function will display leave information of a particular employee '''
-    nm = request.user.username
-    obj1 = UserDayoffData.objects.filter(name = request.user.username)
-    obj2 = obj1.exclude(hr_approval = 'Not Approved')
-    obj3 = obj2.exclude(tl_approval = 'Not Approved').order_by('-leave_to')
+    template_name = 'attendance/leaveinfo.html'
 
-    onedict = display_empname()
-    onelink, multilink = filter_channel_names(request)
-    mydict = {'onelink': onelink, 'multilink': multilink}
-    alldict = {**mydict, **onedict}
-    objectdict = {'data': obj3}
-    return render(request, 'attendance/leaveinfo.html', {**alldict, **objectdict})
+    def get(self, request, *args, **kwargs):
+        obj1 = UserDayoffData.objects.filter(name = request.user.username).exclude(hr_approval = 'Not Approved', tl_approval = 'Not Approved').order_by('-leave_to')
+        onelink, multilink = filter_channel_names(request)
+        return render(request, self.template_name, {'onelink': onelink, 'multilink': multilink, 'data': obj1})
+
+
+
 
 def start_button_status(request):
     obj1 = TimeSheetData.objects.filter(user_id = request.user.id,
@@ -601,50 +675,57 @@ def start_button_status(request):
     return {'Start': "", "Finish": ""}
 
 
-def start_time(request):
-    obj1 = CustomUser.objects.get(id = request.user.id)
-    start_tm = str(datetime.datetime.now().time())[:8]
+class StartTime(CreateView):
 
-    nm = CustomUser.objects.get(email = request.user.email)
-    obj2 = TimeSheetData.objects.filter(user_id = nm,
-                                        date = datetime.datetime.now()
+    def get(self, request):
+        obj1 = CustomUser.objects.get(id = request.user.id)
+        start_tm = str(datetime.datetime.now().time())[:8]
+
+        nm = CustomUser.objects.get(email = request.user.email)
+        obj2 = TimeSheetData.objects.filter(user_id = nm,
+                                            date = datetime.datetime.now()
+                                            )
+
+        if not obj2:
+            TimeSheetData.objects.create(user_id = obj1,
+                                     name = request.user.first_name +" "+ request.user.last_name,
+                                     start_time = start_tm,
+                                     )
+        return redirect('/timesheet/record')
+
+class FinishTime(UpdateView):
+
+    def get(self, request):
+        current_time = datetime.datetime.now()
+        obj2 = CustomUser.objects.get(id = request.user.id)
+        obj3 = TimeSheetData.objects.get(
+                                        user_id = obj2,
+                                        date = datetime.datetime.now(),
                                         )
+        obj3.finish_time = str(datetime.datetime.now().time())[:8]
+        start_tm = datetime.datetime.strptime(str(obj3.start_time), "%H:%M:%S").time()
+        t1 = datetime.timedelta(hours = current_time.hour, minutes = current_time.minute)
+        t2 = datetime.timedelta(hours = start_tm.hour, minutes = start_tm.minute)
+        time_diff = t1 - t2
+        obj3.total_time = str(datetime.datetime.strptime(str(time_diff), "%H:%M:%S").time())
+        obj3.save()
+        return redirect('/timesheet/record')
 
-    if not obj2:
-        TimeSheetData.objects.create(user_id = obj1,
-                                 name = request.user.first_name +" "+ request.user.last_name,
-                                 start_time = start_tm,
-                                 )
-    return redirect('/timesheet/record')
-    # return redirect('/timesheet/form')
 
-def finish_time(request):
-    current_time = datetime.datetime.now()
-    obj2 = CustomUser.objects.get(id = request.user.id)
-    obj3 = TimeSheetData.objects.get(
-                                    user_id = obj2,
-                                    date = datetime.datetime.now(),
-                                    )
-    obj3.finish_time = str(datetime.datetime.now().time())[:8]
-    start_tm = datetime.datetime.strptime(str(obj3.start_time), "%H:%M:%S").time()
-    t1 = datetime.timedelta(hours = current_time.hour, minutes = current_time.minute)
-    t2 = datetime.timedelta(hours = start_tm.hour, minutes = start_tm.minute)
-    time_diff = t1 - t2
-    obj3.total_time = str(datetime.datetime.strptime(str(time_diff), "%H:%M:%S").time())
-    obj3.save()
-    return redirect('/timesheet/record')
-    # return redirect('/timesheet/form')
+class TimeSheetRecord(DetailView):
+    template_name = 'attendance/timesheet_record.html'
 
-def timesheet_record(request):
-    context =  display_empname()
-    context1 = filter_attendance_name(request)
-    data = attendance_form_filter(context, context1)
-    btndict = start_button_status(request)
-    mydata = {**data, **btndict}
-    onelink, multilink = filter_channel_names(request)
-    mydict = {'onelink': onelink, 'multilink': multilink}
-    # return render(request, 'attendance/timesheet_record.html', mydict)
-    return render(request, 'attendance/timesheet_record.html', {**mydata, **mydict})
+    def get(self, request, *args, **kwargs):
+        context =  display_empname()
+        context1 = filter_attendance_name(request)
+        data = attendance_form_filter(context, context1)
+        btndict = start_button_status(request)
+        mydata = {**data, **btndict}
+        onelink, multilink = filter_channel_names(request)
+        mydict = {'onelink': onelink, 'multilink': multilink}
+        # return render(request, 'attendance/timesheet_record.html', mydict)
+        return render(request, self.template_name, {**mydata, **mydict})
+
 
 
 def record_updation(obj6):
