@@ -8,7 +8,9 @@ from django.views import View
 
 
 def display_empname():
-    all_members = CustomUser.objects.all()
+    # all_members = CustomUser.objects.all()
+    all_members = CustomUser.objects.only('id', 'username', 'first_name', 'last_name', 'designation')
+
     PM,Web,CTO,TL,DIR = [],[],[],[],[]
     for member in all_members:
         if member.designation == 'Project Manager':
@@ -73,7 +75,9 @@ def load_channel_usernames(request):
     return JsonResponse(choice, safe=False)
 
 def filter_channel_names(request):
-    chatlink = ChatGroupList.objects.all()
+    # chatlink = ChatGroupList.objects.all()
+    chatlink = ChatGroupList.objects.only('member_name', 'admin_name', 'group_name', 'description')
+    
     mylink, onelink, multilink = [], [], []
 
     for obj in chatlink:

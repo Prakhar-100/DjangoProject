@@ -1,25 +1,29 @@
-from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse, HttpResponseBadRequest
-from django.contrib.auth.models import User
-from django.contrib.auth.forms import UserCreationForm
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
-from core.forms import Login_form, UserForm
-from core.models import CustomUser, UserHeirarchy
-from  chat.models import ChatGroupList
 from django.views.generic.edit import UpdateView, FormView
-from django.views.generic.base import View, TemplateView
-from django.conf import settings
-from django.core.mail import send_mail
 from django.core.serializers.json import DjangoJSONEncoder
+from django.views.generic.base import View, TemplateView
+from django.contrib.auth.forms import UserCreationForm
+from django.utils.functional import cached_property
+from core.models import CustomUser, UserHeirarchy
+from django.contrib.auth.models import User
+from core.forms import Login_form, UserForm
+from chat.views import filter_channel_names
+from  chat.models import ChatGroupList
+from django.core.mail import send_mail
+from django.conf import settings
 from django.db.models import Q
 import json
-from chat.views import filter_channel_names
 
 
 
 
 def display_empname(request):
-	all_members = CustomUser.objects.all()
+	# all_members = CustomUser.objects.select_related('username', 'first_name', 'last_name', 'designation')
+	all_members = CustomUser.objects.only('id', 'username', 'first_name', 'last_name', 'designation')
+	# all_members = CustomUser.objects.all()
+
 	PM,Web,CTO,TL,DIR = [],[],[],[],[]
 	for member in all_members:
 		if member.designation == 'Project Manager':
@@ -37,20 +41,23 @@ def display_empname(request):
 def filter_name(request):
 	if request.user.designation == 'Director':
 		data = CustomUser.objects.all()
+		# data = CustomUser.objects.iterator()
+		# data = CustomUser.objects.only('id', 'designation', 'username', 'first_name', 'last_name')
 	else:
-		obj1 = UserHeirarchy.objects.filter(child__username = request.user.username)
-		obj5 = CustomUser.objects.filter(username = obj1[0].usernm)
+		obj1 = UserHeirarchy.objects.get(child__username = request.user.username)
+		obj5 = CustomUser.objects.filter(username = obj1.usernm)
 		mylist = [obj5[0].id, request.user.id]
-		for ele in UserHeirarchy.objects.filter(usernm__username = request.user.username):
+		for ele in UserHeirarchy.objects.filter(usernm__username = request.user.username).select_related('usernm', 'child'):
 			obj2 = CustomUser.objects.get(username = ele.child)
 			mylist.append(obj2.id)
-			for ele2 in UserHeirarchy.objects.filter(usernm__username = ele.child):
+			for ele2 in UserHeirarchy.objects.filter(usernm__username = ele.child).select_related('usernm', 'child'):
 				obj3 = CustomUser.objects.get(username = ele2.child)
 				mylist.append(obj3.id)
-				for ele3 in UserHeirarchy.objects.filter(usernm__username = ele2.child):
+				for ele3 in UserHeirarchy.objects.filter(usernm__username = ele2.child).select_related('usernm', 'child'):
 					obj4 = CustomUser.objects.get(username = ele3.child)
 					mylist.append(obj4.id)
-		data = CustomUser.objects.filter(id__in = mylist).order_by('designation')
+		data = CustomUser.objects.filter(id__in = mylist).only('id', 'designation', 'username', 'first_name', 'last_name')
+		# print(data.explain(verbose = True, analyze = True))
 	return data
 
 def form_data_filter(request):
@@ -63,7 +70,7 @@ def form_data_filter(request):
 	return {'Web': Web, 'DIR': DIR, 'TL':TL, 'PM': PM, 'CTO': CTO}
 
 def filter_channel_names(request):
-	chatlink = ChatGroupList.objects.all()
+	chatlink = ChatGroupList.objects.only('member_name', 'admin_name', 'group_name', 'description')
 	mylink, onelink, multilink = [], [], []
 
 	for obj in chatlink:
@@ -148,7 +155,7 @@ class Promodel(View):
 		return render(request, self.template_name, {**context, **mydict})
 
 	def post(self, request, *args, **kwargs):
-		user_id = int(request.POST.get('usernm'))
+		user_id = int(request.POST.get('parent2'))
 
 		for record in request.POST.getlist('child[]'):
 			profilemodel = UserHeirarchy.objects.create(

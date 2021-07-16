@@ -1,37 +1,39 @@
-from django.shortcuts import render, redirect
-from django.http import HttpResponse, JsonResponse
-from core.models import CustomUser, UserHeirarchy
 from attendance.models import AttendanceModel, AttendanceData, DatewiseData, HolidayData, UserDayoffData, TimeSheetData
-from chat.models import ChatGroupList
-from .serializers import AttendanceSerializer
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
 from .serializers import AttendanceSerializer, AttendanceDataSerializer
-from rest_framework import status
-from attendance.get_face_encoding import calculate_face_encoding
-from rest_framework.views import APIView
-from django.http import Http404
 from django.views.generic import TemplateView, View, DetailView, ListView
-from django.views.generic.detail import DetailView
 from django.views.generic.edit import FormView, UpdateView, CreateView
-from django.views.generic.list import ListView
-from django.views import View
-from django.core.serializers.json import DjangoJSONEncoder
 from django.http.response import HttpResponse, HttpResponseBadRequest
-import json
+from attendance.get_face_encoding import calculate_face_encoding
+from django.core.serializers.json import DjangoJSONEncoder
+from django.views.generic.detail import DetailView
+from core.models import CustomUser, UserHeirarchy
+from django.http import HttpResponse, JsonResponse
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
+from .serializers import AttendanceSerializer
+from django.views.generic.list import ListView
+from django.shortcuts import render, redirect
+from chat.views import filter_channel_names
+from notifications.signals import notify
+from rest_framework.views import APIView
+from django.core.mail import send_mail
+from chat.models import ChatGroupList
+from django.conf import settings
+from django.http import Http404
+from rest_framework import status
+from django.views import View
+from dateutil import tz 
+import calendar
 import datetime
 import time
-import calendar
-from notifications.signals import notify
-from django.conf import settings
-from django.core.mail import send_mail
-from dateutil import tz 
-from chat.views import filter_channel_names
+import json
+
+
 
 
 
 def filter_channel_names(request):
-    chatlink = ChatGroupList.objects.all()
+    chatlink = ChatGroupList.objects.only('member_name', 'admin_name', 'group_name', 'description')
     mylink, onelink, multilink = [], [], []
 
     for obj in chatlink:
@@ -46,12 +48,9 @@ def filter_channel_names(request):
     return onelink, multilink
 
 
-
-# class Home(TemplateView):
-#     template_name = "attendance/home.html"
-
 def display_empname():
-    all_members = CustomUser.objects.all()
+    # all_members = CustomUser.objects.all()
+    all_members = CustomUser.objects.only('id', 'username', 'first_name', 'last_name', 'designation')
     PM,Web,CTO,TL,DIR = [],[],[],[],[]
     for member in all_members:
         if member.designation == 'Project Manager':
@@ -66,21 +65,6 @@ def display_empname():
             TL.append(member)
     return {'all_members': all_members,'PM': PM, 'Web':Web,'CTO':CTO, 'DIR':DIR, 'TL': TL}
 
-# def attendance_data(request):
-#     ''' Uploading the image of employees or users in the form'''
-#     if request.method == 'POST':
-#         emp_id, emp_image = request.POST.get('name2'), request.FILES['userimage']
-#         custom_user = CustomUser.objects.get(id = emp_id)
-#     	# Image is encoded using calculate_face_encoding method
-#         en_image = str(emp_image)
-#         image_path = f'/home/dell/images/{en_image}'
-#         encod_image = calculate_face_encoding(image_path)
-#         AttendanceModel.objects.create(emp = custom_user,image = emp_image,encod_image  = encod_image)
-#         return redirect('/attendance/home')
-#     context = display_empname()
-#     onelink, multilink = filter_channel_names(request)
-#     mydict = {'onelink': onelink, 'multilink': multilink}
-#     return render(request, 'attendance/att_form.html', {**context, **mydict})
 
 class EmployeeData(FormView):
 
@@ -101,15 +85,12 @@ class EmployeeData(FormView):
         return redirect('/attendance/home')
 
 
-
-
-
 class DataCollection(APIView):
-
 	def get(self, request, format=None):
 		snippets = AttendanceModel.objects.all()
 		serializer = AttendanceSerializer(snippets, many=True)
 		return Response(serializer.data)
+
 
 def formatted_time(ele):
     ''' Returns the formatted time and date '''
@@ -119,6 +100,7 @@ def formatted_time(ele):
     time_obj = datetime.datetime.strptime(ele3, '%H:%M:%S.%f').time()
     time_obj2 = time_obj.strftime("%I:%M %p")
     return time_obj, time_obj2, date_obj
+
 
 def user_attendance_update(obj3, time_obj, time_obj2):
     ''' Updates the time out and work Status of the employees attendance record '''
@@ -144,8 +126,10 @@ def weekday_attendance_record(date_obj, nm):
                     work_status = 'Weekend'
                 )
 
+
 def weekend_attendance_update(obj3, time_obj2):
     obj3.update(time_in = time_obj2)
+
 
 def holiday_attendance_record(nm, date_obj):
     ''' Updates the holiday record of employee '''
@@ -213,10 +197,12 @@ class PostCollection(APIView):
 def get_dates(week, month, year=2021):
     return calendar.monthcalendar(year,month)[week]
 
+
 def filter_attendance_name(request):
     ''' Filter attendance name according to their UserHeirarchy'''
     if request.user.designation == 'Director':
-        newlist = CustomUser.objects.all()
+        # newlist = CustomUser.objects.all()
+        newlist = CustomUser.objects.only('id', 'first_name', 'last_name', 'designation', 'username')
     else:
         mylist = [request.user.id]
         for ele in UserHeirarchy.objects.filter(usernm__username = request.user.username):
@@ -228,8 +214,9 @@ def filter_attendance_name(request):
                 for ele3 in UserHeirarchy.objects.filter(usernm__username = ele2.child):
                     obj4 = CustomUser.objects.get(username = ele3.child)
                     mylist.append(obj4.id)
-        newlist = CustomUser.objects.filter(id__in = mylist)
+        newlist = CustomUser.objects.filter(id__in = mylist).only('id', 'first_name', 'last_name', 'designation', 'username')
     return newlist
+
 
 def attendance_form_filter(context, context1):
     ''' Returns a list of objects according to their designation'''
@@ -240,17 +227,6 @@ def attendance_form_filter(context, context1):
     CTO = [ele for ele in context['CTO'] if ele in context1]
     return {'Web': Web, 'DIR': DIR, 'TL':TL, 'PM': PM, 'CTO': CTO}
 
-
-
-# def attendance_info(request):
-#     ''' User can search attendance record w.r.t. monthly , weekly, yearly and of juniors also. '''
-
-#     context =  display_empname()
-#     context1 = filter_attendance_name(request)
-#     data = attendance_form_filter(context, context1)
-#     onelink, multilink = filter_channel_names(request)
-#     mydict = {'onelink': onelink, 'multilink': multilink}
-#     return render(request, 'attendance/attendance_form.html', {**data, **mydict})
 
 class AttendanceInfo(DetailView):
     template_name = 'attendance/attendance_form.html'
@@ -369,10 +345,6 @@ class DayoffForm(FormView):
         return redirect('/attendance/dayoff/success')
 
 
-# def leave_form_success(request):
-#     ''' Function ensuring that Request have been sent successfully by displaying this message'''
-#     return render(request, 'attendance/leave_success.html', {})
-
 class LeaveFormSuccess(TemplateView):
     template_name = 'attendance/leave_success.html'
 
@@ -425,9 +397,6 @@ class TlLeave(DetailView):
         return render(request, 'attendance/tl_leave.html', mydata)
 
 
-# class TlLeaveApprove(UpdateView):
-    # template_name = 'attendance/notifications.html'
-
 def tl_leave_approve(self, request,  id1, id2):
     ''' This is a AJAX function and this will call when the TL/PM will approve the 
           leave request. '''
@@ -466,8 +435,6 @@ def tl_leave_approve(self, request,  id1, id2):
 
     return render(request, 'attendance/notifications.html', {'data': obj})
 
-# class TlLeaveNotApprove(UpdateView):
-#     template_name = 'attendance/notifications.html'
 
 def tl_leave_not_approve(request, id1, id2):
     ''' This is a AJAX function and this will call when the TL/PM will not approve the 
