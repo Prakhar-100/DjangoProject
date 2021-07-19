@@ -1,16 +1,16 @@
-from django.shortcuts import render, redirect
 from .models import GroupMessage, ChatGroupList, OnetoOneMessage
 from django.views.generic.edit import FormView
-import datetime
-from core.models import CustomUser
+from django.shortcuts import render, redirect
 from django.http import JsonResponse
+from core.models import CustomUser
 from django.views import View
+import datetime
+
+
 
 
 def display_empname():
-    # all_members = CustomUser.objects.all()
-    all_members = CustomUser.objects.only('id', 'username', 'first_name', 'last_name', 'designation')
-
+    all_members = CustomUser.objects.all()
     PM,Web,CTO,TL,DIR = [],[],[],[],[]
     for member in all_members:
         if member.designation == 'Project Manager':
@@ -26,27 +26,24 @@ def display_empname():
     return {'all_members': all_members,'PM': PM, 'Web':Web,'CTO':CTO, 'DIR':DIR, 'TL': TL}
 
 
-class CreateChannel(FormView):
-    template_name = 'chat/create_channel.html'
 
-    def get(self, request, *args, **kwargs):
-        empdict =  display_empname()
-        onelink, multilink = filter_channel_names(request)
-        mydict = {'onelink': onelink, 'multilink': multilink}
-        return render(request, self.template_name, {**mydict, **empdict})
-
-    def post(self, request, *args, **kwargs):
+def create_channel(request):
+    empdict =  display_empname()
+    
+    if request.method == "POST":
         l3 = request.POST.getlist('members') + [str(request.user.id)]
         ides = CustomUser.objects.filter(id__in = l3)
         obj2 = ChatGroupList.objects.create(
-                                    admin_name = request.user.username,
-                                    group_name = request.POST['grpname'],
-                                    description = request.POST['description'], 
-                                    )
+                                admin_name = request.user.username,
+                                group_name = request.POST['grpname'],
+                                description = request.POST['description'], 
+                                )
         obj2.member_name.set(ides)
         return redirect('/index')
-
-
+        # return redirect()
+    onelink, multilink = filter_channel_names(request)
+    mydict = {'onelink': onelink, 'multilink': multilink}
+    return render(request, 'chat/create_channel.html', {**mydict, **empdict})
 
 def load_channel_usernames(request):
     """ This function is used to pass the record of the user on ajax request 
@@ -75,9 +72,7 @@ def load_channel_usernames(request):
     return JsonResponse(choice, safe=False)
 
 def filter_channel_names(request):
-    # chatlink = ChatGroupList.objects.all()
-    chatlink = ChatGroupList.objects.only('member_name', 'admin_name', 'group_name', 'description')
-    
+    chatlink = ChatGroupList.objects.all()
     mylink, onelink, multilink = [], [], []
 
     for obj in chatlink:
@@ -90,6 +85,7 @@ def filter_channel_names(request):
         else:
             onelink.append(obj1)
     return onelink, multilink
+    
 
 class GroupChat(FormView):
 
@@ -163,9 +159,4 @@ class CreateOneChannel(FormView):
                         )
         obj2.member_name.set(ides)
         return redirect('/index')
-
-
-
-
-
 

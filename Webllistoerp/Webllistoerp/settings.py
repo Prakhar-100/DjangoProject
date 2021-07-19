@@ -15,8 +15,6 @@ import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')
-STATIC_DIR = os.path.join(BASE_DIR, 'static')
 
 
 # Quick-start development settings - unsuitable for production
@@ -52,10 +50,11 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'django.middleware.gzip.GZipMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -66,10 +65,9 @@ ROOT_URLCONF = 'Webllistoerp.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [TEMPLATE_DIR,],
+        'DIRS': ['templates'],
         'APP_DIRS': True,
         'OPTIONS': {
-            
             'context_processors': [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
@@ -83,6 +81,9 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'Webllistoerp.wsgi.application'
+
+TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')
+STATIC_DIR = os.path.join(BASE_DIR, 'static')
 
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
@@ -116,9 +117,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-INTERNAL_IPS = [
-    '127.0.0.1',
-]
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
@@ -147,11 +145,16 @@ STATICFILES_DIRS = [STATIC_DIR,]
 AUTH_USER_MODEL = "core.CustomUser"
 
 # LOGIN_URL = '/'
-# backend authentication
+
+# AUTH_USER_MODEL = 
+
+# AUTH_USER_MODEL = 'main.User'
+
 AUTHENTICATION_BACKENDS = [
-                            'django.contrib.auth.backends.ModelBackend',       
-                            'core.models.EmailBackend',
-                        ]
+
+                    'django.contrib.auth.backends.ModelBackend',       
+                    'core.models.EmailBackend',
+]
 
 # email variables
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -161,23 +164,24 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = "shakshi.jshai@gmail.com"
 EMAIL_HOST_PASSWORD = "Shi0shihai"
 
-# file upload setting
 FILE_UPLOAD_HANDLERS = [
     "django.core.files.uploadhandler.MemoryFileUploadHandler",
     "django.core.files.uploadhandler.TemporaryFileUploadHandler"
  ]
 
-# uploading photos in media folder
 MEDIA_URL = '/media/'
+
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-# django notification 
 DJANGO_NOTIFICATIONS_CONFIG = { 'USE_JSONFIELD': True}
 
-# asgi application
+# CRONJOBS = [
+   # ('*/59 * * * *', 'Webllistoerp.attendance.cron,my_schedule_job'),
+   # ('* 17 * * *', 'Webllistoerp.attendance.cron.my_schedule_holiday'),
+ # ]
+
 ASGI_APPLICATION = "Webllistoerp.asgi.application"
 
-# redis channel layer
 CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
@@ -187,6 +191,9 @@ CHANNEL_LAYERS = {
     },
 }
 
+INTERNAL_IPS = [
+    '127.0.0.1',
+]
 
 # debug toolbar panels
 DEBUG_TOOLBAR_PANELS = [
@@ -205,17 +212,3 @@ DEBUG_TOOLBAR_PANELS = [
     'debug_toolbar.panels.redirects.RedirectsPanel',
     'debug_toolbar.panels.profiling.ProfilingPanel',
 ]
-
-
-
-
-
-
-
-
-
-
-
-
-
-

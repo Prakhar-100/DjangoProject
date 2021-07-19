@@ -15,7 +15,6 @@ urlpatterns = [
   # Leave URL
   path('attendance/dayoff/form', views.DayoffForm.as_view(), name = 'dayoff-form'),
   path('attendance/dayoff/success', views.LeaveFormSuccess.as_view(), name = 'dayoff-form-success'),
-  path('attendance/leave/info', views.LeaveInfo.as_view(), name = 'leave-info'),
 
   # Notification URL
   path('attendance/notifications_page', views.NotificationsPage.as_view(), name = 'notifications_page'),
@@ -23,6 +22,7 @@ urlpatterns = [
 
   # Holiday and Leave URL
   path('attendance/holidays', views.HolidayDisplay.as_view(), name = 'holidays-page'),
+  path('attendance/leave/info', views.LeaveInfo.as_view(), name = 'leave-info'),
   path('attendance/remove-holiday/<int:pk>/', views.RemoveHoliday.as_view(), name = 'remove-holiday'),
 
   # Timesheet URL

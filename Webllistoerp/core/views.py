@@ -10,13 +10,12 @@ from core.models import CustomUser, UserHeirarchy
 from django.contrib.auth.models import User
 from core.forms import Login_form, UserForm
 from chat.views import filter_channel_names
+from django.views.generic import DetailView
 from  chat.models import ChatGroupList
 from django.core.mail import send_mail
 from django.conf import settings
 from django.db.models import Q
 import json
-
-
 
 
 def display_empname(request):
@@ -40,9 +39,9 @@ def display_empname(request):
 
 def filter_name(request):
 	if request.user.designation == 'Director':
-		data = CustomUser.objects.all()
+		# data = CustomUser.objects.all()
 		# data = CustomUser.objects.iterator()
-		# data = CustomUser.objects.only('id', 'designation', 'username', 'first_name', 'last_name')
+		data = CustomUser.objects.only('id', 'designation', 'username', 'first_name', 'last_name')
 	else:
 		obj1 = UserHeirarchy.objects.get(child__username = request.user.username)
 		obj5 = CustomUser.objects.filter(username = obj1.usernm)
@@ -69,6 +68,7 @@ def form_data_filter(request):
 	CTO = [ele for ele in context1 if ele.designation == 'Cheif Technical Officer']
 	return {'Web': Web, 'DIR': DIR, 'TL':TL, 'PM': PM, 'CTO': CTO}
 
+
 def filter_channel_names(request):
 	chatlink = ChatGroupList.objects.only('member_name', 'admin_name', 'group_name', 'description')
 	mylink, onelink, multilink = [], [], []
@@ -86,14 +86,14 @@ def filter_channel_names(request):
 
 
 
-class Index(TemplateView):
+class Index(DetailView):
 	template_name = 'core/index.html'
 
 	def get(self, request, *args, **kwargs):
+		# onelink, multilink = filter_channel_names(request)
 		context2 = form_data_filter(request)
-		onelink, multilink = filter_channel_names(request)
-		mydict = {'onelink': onelink, 'multilink': multilink}
-		return render(request, self.template_name, {**context2, **mydict})
+		# mydict = {'onelink': onelink, 'multilink': multilink}
+		return render(request, self.template_name, context2)
 
 
 
@@ -118,6 +118,7 @@ class Sign_up(FormView):
 		return super().form_valid(form)
 
 
+
 class Login1(View):
 	form_class = Login_form
 	template_name = 'registration/login.html'
@@ -127,17 +128,18 @@ class Login1(View):
 		return render(request, self.template_name, {'form': form})
 
 	def post(self, request):
-		usermail = request.POST.get('user_email')
-		password = request.POST.get('password')
-		f = self.form_class(request.POST)
 
-		user = authenticate(email=usermail, password=password)
-		if user is not None:
-			login(request, user)
-			return redirect('/index')
-		else:
-			error = "Please enter valid useremail and password"
-			return render(request, self.template_name, {'form': f, 'key': error})
+		f = self.form_class(request.POST)
+		if f.is_valid():
+			usermail = f.cleaned_data.get('user_email')
+			password = f.cleaned_data.get('password')
+			user = authenticate(email=usermail, password=password)
+			if user is not None:
+				login(request, user)
+				return redirect('/index')
+			else:
+				error = "Please enter valid useremail and password"
+				return render(request, self.template_name, {'form': f, 'key': error})
 		return render(request, "registration/login.html")
 	
 
@@ -145,18 +147,16 @@ class Login1(View):
 class Promodel(View):
 	""" This function is create a designation heirarchy of the users """
 	template_name = 'core/profile.html'
-	
 
 	def get(self, request, *args, **kwargs):
 		context =  display_empname(request)
-		onelink, multilink = filter_channel_names(request)
+		# onelink, multilink = filter_channel_names(request)
+		# mydict = {'onelink': onelink, 'multilink': multilink}
+		return render(request, self.template_name, context)
 
-		mydict = {'onelink': onelink, 'multilink': multilink}
-		return render(request, self.template_name, {**context, **mydict})
 
 	def post(self, request, *args, **kwargs):
 		user_id = int(request.POST.get('parent2'))
-
 		for record in request.POST.getlist('child[]'):
 			profilemodel = UserHeirarchy.objects.create(
 														usernm_id = user_id,
@@ -193,13 +193,14 @@ def load_names(request):
 
 
 
-class DesignationUpdate(View):
+class DesignationUpdate(FormView):
+	template_name = 'core/designationupdate.html'
 
 	def get(self, request, *args, **kwargs):
-		onelink, multilink = filter_channel_names(request)
-		mydict = {'onelink': onelink, 'multilink': multilink}
+		# onelink, multilink = filter_channel_names(request)
+		# mydict = {'onelink': onelink, 'multilink': multilink}
 		context2 = form_data_filter(request)
-		return render(request, 'core/designationupdate.html', {**mydict, **context2})
+		return render(request, self.template_name, context2)
 
 	def post(self, request, *args, **kwargs):
 		# Fetching child name
@@ -231,9 +232,6 @@ class DesignationUpdate(View):
 		recipient_list = ["somil.jainland@gmail.com", ]
 		# send_mail( subject, message, email_from, recipient_list )
 		return redirect('/index')
-
-
-
 
 
 
