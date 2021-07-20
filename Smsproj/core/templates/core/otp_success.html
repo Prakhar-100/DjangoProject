@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Verification Otp</title>
+</head>
+<body>
+<h2>{{ sucmsg }}</h2>
+<a href="{% url 'index' %}">Home page</a>
+
+<center>
+	<h4>Sms Chat</h4>
+	<div>
+		{% for dt in data %}
+		<p>{{ dt }}</p>
+		{% endfor %}
+	</div>
+<div>
+	
+	<form method="POST">
+		{% csrf_token %}
+
+		{{ form.label_tag }} {{ form }}
+		<input type="submit" name="" value="Send">
+	</form>
+</div>
+</center>
+
+</body>
+</html>
